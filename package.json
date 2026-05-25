@@ -1,0 +1,27 @@
+{
+  "name": "wp-property",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "node --import ./scripts/register-websocket.mjs ./node_modules/nuxt/bin/nuxt.mjs build",
+    "dev": "node --import ./scripts/register-websocket.mjs ./node_modules/nuxt/bin/nuxt.mjs dev",
+    "generate": "node --import ./scripts/register-websocket.mjs ./node_modules/nuxt/bin/nuxt.mjs generate",
+    "preview": "node --import ./scripts/register-websocket.mjs ./node_modules/nuxt/bin/nuxt.mjs preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxtjs/supabase": "^2.0.9",
+    "@riz007/thai-address-data": "^0.1.4",
+    "nuxt": "^4.4.6",
+    "vue": "^3.5.34",
+    "vue-router": "^5.0.7",
+    "ws": "^8.21.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@types/ws": "^8.18.1"
+  }
+}
