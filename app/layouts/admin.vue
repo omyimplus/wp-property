@@ -3,6 +3,8 @@ const route = useRoute()
 const { profile, displayName, roleLabel, fetchProfile } = useStaffProfile()
 const { signOut } = useAdminAuth()
 
+const { totalPending, refreshPendingCounts, pendingForNav } = useDashboardPending()
+
 const navItems = [
   { label: 'แดชบอร์ด', to: '/admin', icon: '◉' },
   { label: 'สินเชื่อ', to: '/admin/loans', icon: '◇' },
@@ -12,10 +14,18 @@ const navItems = [
   { label: 'ผู้ใช้งาน', to: '/admin/users', icon: '◇' },
 ]
 
+let pendingTimer: ReturnType<typeof setInterval> | null = null
+
 onMounted(() => {
   if (!profile.value) {
     fetchProfile()
   }
+  refreshPendingCounts()
+  pendingTimer = setInterval(refreshPendingCounts, 60_000)
+})
+
+onUnmounted(() => {
+  if (pendingTimer) clearInterval(pendingTimer)
 })
 </script>
 
@@ -38,7 +48,14 @@ onMounted(() => {
           active-class="bg-slate-800 text-white"
         >
           <span class="text-xs opacity-60">{{ item.icon }}</span>
-          {{ item.label }}
+          <span class="min-w-0 flex-1 truncate">{{ item.label }}</span>
+          <span
+            v-if="pendingForNav(item.to) > 0"
+            class="shrink-0 rounded-full bg-amber-500 px-1.5 py-0.5 text-[10px] font-bold leading-none text-slate-900"
+            :title="`รอดำเนินการ ${pendingForNav(item.to)} รายการ`"
+          >
+            {{ pendingForNav(item.to) > 99 ? '99+' : pendingForNav(item.to) }}
+          </span>
         </NuxtLink>
       </nav>
 
@@ -60,10 +77,18 @@ onMounted(() => {
     </aside>
 
     <div class="flex min-w-0 flex-1 flex-col">
-      <header class="border-b border-slate-200 bg-white px-6 py-4">
+      <header class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-white px-6 py-4">
         <h1 class="text-lg font-semibold text-slate-900">
           {{ route.meta.title ?? 'แดชบอร์ด' }}
         </h1>
+        <NuxtLink
+          v-if="totalPending > 0 && route.path !== '/admin'"
+          to="/admin"
+          class="rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-950 hover:bg-amber-200"
+          role="alert"
+        >
+          {{ totalPending }} รายการรอดำเนินการ
+        </NuxtLink>
       </header>
 
       <main class="flex-1 p-6">

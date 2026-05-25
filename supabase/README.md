@@ -12,7 +12,9 @@ cp .env.example .env
 |--------|-----------|
 | `NUXT_PUBLIC_SUPABASE_URL` | URL โปรเจกต์ |
 | `NUXT_PUBLIC_SUPABASE_KEY` | Publishable / anon key (ฝั่งเบราว์เซอร์) |
-| `NUXT_SUPABASE_SECRET_KEY` | **Service role / secret key** — ใช้สร้าง user และเปลี่ยนรหัสผ่านจากหน้า `/admin/users` เท่านั้น ห้ามเปิดเผย |
+| `NUXT_SUPABASE_SECRET_KEY` | **Service role / secret key** — API หลังบ้าน, สร้าง user, อัปโหลดรูป ห้ามเปิดเผย |
+
+ค่าเหล่านี้ใส่ใน `.env` (เครื่อง) หรือ Environment ของเซิร์ฟเวอร์จริง — **ไม่ commit `.env`**
 
 > Secret key อยู่ที่ Settings → API Keys → `service_role` (legacy) หรือ Secret key ใหม่
 

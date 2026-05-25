@@ -6,10 +6,11 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "build": "node --import ./scripts/register-websocket.mjs ./node_modules/nuxt/bin/nuxt.mjs build",
+    "build": "nuxt build",
     "dev": "node --import ./scripts/register-websocket.mjs ./node_modules/nuxt/bin/nuxt.mjs dev",
-    "generate": "node --import ./scripts/register-websocket.mjs ./node_modules/nuxt/bin/nuxt.mjs generate",
-    "preview": "node --import ./scripts/register-websocket.mjs ./node_modules/nuxt/bin/nuxt.mjs preview",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "start": "node .output/server/index.mjs",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
