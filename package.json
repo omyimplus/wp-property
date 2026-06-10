@@ -10,7 +10,7 @@
     "dev": "node --import ./scripts/register-websocket.mjs ./node_modules/nuxt/bin/nuxt.mjs dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "start": "node .output/server/index.mjs",
+    "start": "node app.js",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
