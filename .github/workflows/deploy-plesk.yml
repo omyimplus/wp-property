@@ -32,9 +32,9 @@ jobs:
 
       - name: Prepare deploy bundle
         run: |
-          mkdir -p deploy
-          cp app.cjs app.js package.json .node-version .nvmrc deploy/
-          cp -r .output deploy/
+          mkdir -p deploy/.output
+          cp -r .output/* deploy/.output/
+          cp plesk/app.cjs plesk/ping.cjs package.json .node-version .nvmrc deploy/.output/
 
       - name: Deploy to Plesk (SFTP)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
@@ -49,3 +49,7 @@ jobs:
           timeout: 600000
           log-level: minimal
           dangerous-clean-slate: false
+          # Default excludes **/node_modules/** — ทำให้ .output/server/node_modules ไม่ถูกอัปโหลด
+          exclude: |
+            **/.git*
+            **/.git*/**
