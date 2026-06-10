@@ -33,7 +33,7 @@ jobs:
       - name: Prepare deploy bundle
         run: |
           mkdir -p deploy
-          cp app.js package.json deploy/
+          cp app.cjs app.js package.json .node-version .nvmrc deploy/
           cp -r .output deploy/
 
       - name: Deploy to Plesk (SFTP)
