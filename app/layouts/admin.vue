@@ -1,4 +1,10 @@
 <script setup lang="ts">
+useHead({
+  htmlAttrs: {
+    class: 'site-admin',
+  },
+})
+
 const route = useRoute()
 const { profile, displayName, roleLabel, fetchProfile } = useStaffProfile()
 const { signOut } = useAdminAuth()

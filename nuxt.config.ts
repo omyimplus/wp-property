@@ -20,7 +20,35 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/supabase'],
+  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/supabase', '@nuxtjs/i18n'],
+
+  i18n: {
+    locales: [
+      { code: 'th', language: 'th-TH', name: 'ไทย', file: 'th.json' },
+      { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
+    ],
+    defaultLocale: 'th',
+    strategy: 'prefix_except_default',
+    langDir: 'locales',
+    lazy: true,
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'wp_i18n',
+      redirectOn: 'root',
+      alwaysRedirect: false,
+    },
+  },
+
+  hooks: {
+    'pages:extend'(pages) {
+      for (const page of pages) {
+        if (page.file?.includes('/admin/')) {
+          page.meta ||= {}
+          page.meta.i18n = false
+        }
+      }
+    },
+  },
 
   supabase: {
     redirect: true,

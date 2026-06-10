@@ -8,4 +8,21 @@
     font-family: 'Prompt', ui-sans-serif, system-ui, sans-serif;
     @apply antialiased;
   }
+
+  html.site-public {
+    font-size: 18px;
+  }
+
+  html.site-admin {
+    font-size: 16px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-hero-fade-in,
+    .animate-hero-fade-up {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
 }

@@ -1,0 +1,188 @@
+{
+  "nav": {
+    "home": "Home",
+    "services": "Our Services",
+    "consignBuy": "Consign & Buy",
+    "about": "About Us",
+    "articles": "Articles",
+    "reviews": "Reviews",
+    "contact": "Contact Us"
+  },
+  "common": {
+    "viewAll": "View All",
+    "search": "Search",
+    "sale": "Sale",
+    "rent": "Rent",
+    "price": "Price",
+    "currency": "THB",
+    "featured": "Featured",
+    "cheapHomes": "Affordable Homes",
+    "success": "Success"
+  },
+  "header": {
+    "logoAlt": "WP Property",
+    "openMenu": "Open menu"
+  },
+  "locale": {
+    "th": "ไทย",
+    "en": "English",
+    "switchTo": "Switch language"
+  },
+  "home": {
+    "hero": {
+      "carouselLabel": "Hero banner",
+      "slidePrev": "Previous slide",
+      "slideNext": "Next slide",
+      "goToSlide": "Go to slide {n}",
+      "tagline": "WP Property Wealthy Millionaire",
+      "titleLine1": "Real Estate Experts",
+      "titleLine2": "for Over 19 Years",
+      "cta": "Consult Us Now",
+      "stats": {
+        "customers": "Trusted by clients",
+        "returns": "Maximum returns",
+        "approval": "Fastest deal close"
+      },
+      "statsValues": {
+        "customers": "3,000+",
+        "returns": "5–8%",
+        "approval": "7 Days"
+      }
+    },
+    "services": {
+      "title": "Our Services",
+      "debt": {
+        "title": "Debt Consolidation",
+        "description": "Clear your debt, get approved for a loan, and move into a new home."
+      },
+      "rentBuy": {
+        "title": "Rent-to-Own",
+        "description": "Houses, condos, land, commercial buildings, prime locations."
+      },
+      "consign": {
+        "title": "Consign for Sale/Rent",
+        "description": "Invest in real estate and earn returns."
+      }
+    },
+    "search": {
+      "typePlaceholder": "Select property type",
+      "pricePlaceholder": "Select price range",
+      "keywordPlaceholder": "Project, province, district, sub-district, road",
+      "types": {
+        "house": "House",
+        "condo": "Condo",
+        "townhouse": "Townhouse",
+        "commercial": "Commercial",
+        "apartment": "Apartment"
+      },
+      "prices": {
+        "1-2": "1–2M THB",
+        "2-5": "2–5M THB",
+        "5+": "5M+ THB"
+      },
+      "propertyTypes": {
+        "houseTown": "Detached / Semi-detached",
+        "townhouse": "Townhouse",
+        "condo": "Condominium",
+        "commercial": "Commercial Building",
+        "apartment": "Apartment"
+      }
+    },
+    "properties": {
+      "title": "Featured Properties",
+      "listingSale": "For Sale",
+      "listingRent": "For Rent",
+      "price": "Price {price} THB",
+      "beds": "{n} beds",
+      "baths": "{n} baths",
+      "parking": "{n} parking",
+      "card": {
+        "title": "Detached house in the city center, near On Nut BTS",
+        "location": "On Nut Subdistrict, On Nut District, Bangkok"
+      }
+    },
+    "interestingContent": {
+      "title": "Interesting Content",
+      "slidePrev": "Previous slide",
+      "slideNext": "Next slide",
+      "goToSlide": "Go to slide {n}",
+      "items": {
+        "1": { "alt": "5 benefits of debt consolidation" },
+        "2": { "alt": "How WP can help you" },
+        "3": { "alt": "LTV extension for 100% home loans" }
+      }
+    },
+    "articles": {
+      "title": "Related Articles",
+      "items": {
+        "1": {
+          "title": "Quality indebtedness — a path to grow with confidence",
+          "excerpt": "Understand debt from a new perspective, organize your finances, and move toward your property investment goals with stability."
+        },
+        "2": {
+          "title": "Quality indebtedness — a path to grow with confidence",
+          "excerpt": "Understand debt from a new perspective, organize your finances, and move toward your property investment goals with stability."
+        },
+        "3": {
+          "title": "Quality indebtedness — a path to grow with confidence",
+          "excerpt": "Understand debt from a new perspective, organize your finances, and move toward your property investment goals with stability."
+        }
+      }
+    },
+    "clips": {
+      "title": "WP Property Clips",
+      "slidePrev": "Previous clip",
+      "slideNext": "Next clip",
+      "goToSlide": "Go to clip {n}",
+      "items": {
+        "1": { "alt": "Second-hand home ready to decorate, Rangsit-Bang Phun area" },
+        "2": { "alt": "Second-hand home ready to decorate, Rangsit-Bang Phun area" },
+        "3": { "alt": "Second-hand home ready to decorate, Rangsit-Bang Phun area" },
+        "4": { "alt": "Second-hand home ready to decorate, Rangsit-Bang Phun area" },
+        "5": { "alt": "Second-hand home ready to decorate, Rangsit-Bang Phun area" },
+        "6": { "alt": "Second-hand home ready to decorate, Rangsit-Bang Phun area" }
+      }
+    },
+    "reviews": {
+      "title": "Customer Reviews",
+      "slidePrev": "Previous review",
+      "slideNext": "Next review",
+      "items": {
+        "1": { "alt": "Transfer completed, debts cleared before loan — condo loan 3,498,000" },
+        "2": { "alt": "Transfer completed, debts cleared before loan — condo loan 3,498,000" },
+        "3": { "alt": "Transfer completed, debts cleared before loan — condo loan 3,498,000" },
+        "4": { "alt": "Transfer completed, debts cleared before loan — condo loan 3,498,000" },
+        "5": { "alt": "Transfer completed, debts cleared before loan — condo loan 3,498,000" }
+      }
+    }
+  },
+  "footer": {
+    "description": "WP Property Wealthy Millionaire Co., Ltd. — finance and real estate specialists offering end-to-end consultation and services including rent-to-own, consignment, and professional property management with over 19 years of experience.",
+    "sitemap": "Sitemap",
+    "services": "Our Services",
+    "contact": "Contact Us",
+    "addressLabel": "Address",
+    "address": "255 Moo 9, Tha Sai Subdistrict, Mueang District, Chiang Rai",
+    "phoneLabel": "Phone",
+    "phone": "02 999 9999",
+    "emailLabel": "Email",
+    "email": "info{'@'}wpproperty.co.th",
+    "lineLabel": "Line ID",
+    "line": "{'@'}wpproperty",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "sitemapLinks": {
+      "home": "Home",
+      "about": "About Us",
+      "loanServices": "Loan Services",
+      "properties": "Properties",
+      "contact": "Contact Us"
+    },
+    "serviceLinks": {
+      "properties": "Properties",
+      "loans": "Loans",
+      "consign": "Consign Property",
+      "rent": "Rentals"
+    }
+  }
+}

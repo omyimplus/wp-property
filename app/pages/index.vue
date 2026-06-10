@@ -1,32 +1,65 @@
 <script setup lang="ts">
+import { services } from '~/data/home-content'
+
 definePageMeta({
   layout: 'default',
 })
+
+const { t } = useI18n()
+
 </script>
 
 <template>
-  <section class="mx-auto max-w-4xl px-4 py-16 sm:px-6 sm:py-24">
-    <p class="text-sm font-medium uppercase tracking-wider text-amber-700">
-      ยินดีต้อนรับ
-    </p>
-    <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-      WP Property
-    </h1>
-    <p class="mt-6 text-lg leading-relaxed text-slate-600">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-      incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-      exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    </p>
-    <p class="mt-4 leading-relaxed text-slate-600">
-      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-      fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa
-      qui officia deserunt mollit anim id est laborum.
-    </p>
-    <div class="mt-10 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 class="text-base font-semibold text-slate-900">บริการของเรา</h2>
-      <p class="mt-2 text-slate-600">
-        สินเชื่อ · อสังหาริมทรัพย์ · แจ้งสินเชื่อ · เช่าทรัพย์ · ฝากขายทรัพย์
-      </p>
-    </div>
-  </section>
+  <div>
+    <HomeHero />
+
+    <div class="h-[50px] bg-black" aria-hidden="true" />
+
+    <!-- Services -->
+    <section id="services" class="bg-wp-navy pb-10 pt-6 sm:pb-14 sm:pt-8">
+      <div class="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+        <div class="text-center">
+          <h2 class="inline-block border-b-2 border-white pb-3 text-2xl font-medium text-white sm:text-3xl">
+            {{ t('home.services.title') }}
+          </h2>
+        </div>
+        <div class="mx-auto mt-10 grid max-w-5xl gap-4 sm:grid-cols-2 sm:gap-5 lg:max-w-6xl lg:grid-cols-3">
+          <article
+            v-for="service in services"
+            :id="service.key === 'consign' ? 'consign-buy' : undefined"
+            :key="service.key"
+            class="overflow-hidden rounded-2xl bg-white shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
+          >
+            <div class="aspect-[4/3] overflow-hidden">
+              <img
+                :src="service.image"
+                :alt="t(`home.services.${service.key}.title`)"
+                class="h-full w-full object-cover transition duration-300 hover:scale-105"
+              >
+            </div>
+            <div class="p-4 sm:p-5">
+              <h3 class="text-center text-lg font-medium text-wp-navy sm:text-xl">
+                {{ t(`home.services.${service.key}.title`) }}
+              </h3>
+              <p class="mt-1.5 text-center text-xs leading-relaxed text-slate-600 sm:mt-2 sm:text-sm">
+                {{ t(`home.services.${service.key}.description`) }}
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <HomeSearch />
+
+    <HomeFeaturedProperties />
+
+    <HomeInterestingContent />
+
+    <HomeRelatedArticles />
+
+    <HomeReels />
+
+    <HomeReviews />
+  </div>
 </template>
