@@ -36,14 +36,16 @@ jobs:
           cp app.js package.json deploy/
           cp -r .output deploy/
 
-      - name: Deploy to Plesk (FTP)
+      - name: Deploy to Plesk (SFTP)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
-          port: 21
+          protocol: sftp
+          port: 22
           local-dir: deploy/
           server-dir: httpdocs/
+          timeout: 600000
+          log-level: minimal
           dangerous-clean-slate: false
