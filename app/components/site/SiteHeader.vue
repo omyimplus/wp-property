@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { navItems } from '~/data/home-content'
+import { navItems } from '~/data/site-routes'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
-const { pathWithHash, isNavActive } = useSiteNav()
+const { navTo, isNavActive } = useSiteNav()
 const mobileOpen = ref(false)
 const scrolled = ref(false)
 
@@ -11,7 +11,7 @@ const navLinks = computed(() =>
   navItems.map(item => ({
     key: item.key,
     label: t(`nav.${item.key}`),
-    to: pathWithHash(item.hash),
+    to: navTo(item.path),
   })),
 )
 

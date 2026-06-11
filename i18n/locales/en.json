@@ -184,5 +184,77 @@
       "consign": "Consign Property",
       "rent": "Rentals"
     }
+  },
+  "pages": {
+    "common": {
+      "loading": "Loading...",
+      "learnMore": "Learn more"
+    },
+    "forms": {
+      "error": "Submission failed. Please try again.",
+      "loanSuccess": "Your loan request was submitted. Our team will contact you soon.",
+      "rentalSuccess": "Your rental request was submitted. Our team will contact you soon.",
+      "consignSuccess": "Your consignment was submitted. Our team will contact you soon."
+    },
+    "properties": {
+      "title": "Properties",
+      "subtitle": "Browse published properties for sale and rent",
+      "empty": "No properties match your search",
+      "back": "Back to listings",
+      "notFound": "Property not found",
+      "noImage": "No image",
+      "usableArea": "Usable area",
+      "landArea": "Land area",
+      "resultCount": "{count} results"
+    },
+    "services": {
+      "title": "Our Services",
+      "subtitle": "End-to-end finance and real estate services",
+      "loanCta": "Loan consultation"
+    },
+    "loans": {
+      "title": "Loan / Debt Consolidation Inquiry",
+      "subtitle": "Fill in your details and we will get back to you",
+      "adminNote": "Submissions go to Admin → Loan applications (source: website)"
+    },
+    "consign": {
+      "title": "Consign for Sale / Rent",
+      "subtitle": "Submit your property details for review",
+      "adminNote": "Submissions go to Admin → Consignments (pending approval)"
+    },
+    "rent": {
+      "title": "Rentals",
+      "subtitle": "Browse rental listings and submit a rental request",
+      "formTitle": "Rental request form",
+      "adminNote": "Submissions go to Admin → Rental requests"
+    },
+    "about": {
+      "title": "About Us",
+      "subtitle": "WP Property Wealthy Millionaire",
+      "body": "We provide professional finance and real estate services with over 19 years of experience, helping clients achieve their goals transparently."
+    },
+    "articles": {
+      "title": "Articles",
+      "subtitle": "Finance and property insights",
+      "back": "Back to articles",
+      "published": "Article",
+      "placeholderBody": "Full article content will be added later — currently showing the home page summary."
+    },
+    "reviews": {
+      "title": "Customer Reviews",
+      "subtitle": "Real results and feedback from our clients"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "subtitle": "Get in touch and explore related services",
+      "cta": "Contact us",
+      "servicesTitle": "Related services"
+    },
+    "legal": {
+      "privacyIntro": "WP Property privacy policy",
+      "privacyBody": "We only use information you submit through forms to contact you and provide services. We do not share it with third parties without consent.",
+      "termsIntro": "Website terms of use",
+      "termsBody": "By using this website you agree to our terms. Listings and prices are for reference and may change."
+    }
   }
 }

@@ -36,7 +36,24 @@ jobs:
           cp -r .output/* deploy/.output/
           cp plesk/app.cjs plesk/ping.cjs package.json .node-version .nvmrc deploy/.output/
 
-      - name: Deploy to Plesk (SFTP)
+      - name: Verify server dependencies in bundle
+        run: |
+          test -d deploy/.output/server/node_modules/@supabase/supabase-js
+          echo "server node_modules files: $(find deploy/.output/server/node_modules -type f | wc -l)"
+
+      - name: Pack server deps (manual fallback zip)
+        run: |
+          cd deploy/.output/server
+          zip -r -q ../../../server-node_modules.zip node_modules
+
+      - name: Upload deps zip (download จาก Actions ถ้า SFTP ไม่ครบ)
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-node_modules
+          path: server-node_modules.zip
+          retention-days: 7
+
+      - name: Deploy app to Plesk (SFTP)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -49,7 +66,23 @@ jobs:
           timeout: 600000
           log-level: minimal
           dangerous-clean-slate: false
-          # Default excludes **/node_modules/** — ทำให้ .output/server/node_modules ไม่ถูกอัปโหลด
+          exclude: |
+            **/.git*
+            **/.git*/**
+
+      - name: Deploy server node_modules (SFTP, แยกขั้นตอน)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: sftp
+          port: 22
+          local-dir: deploy/.output/server/node_modules/
+          server-dir: httpdocs/.output/server/node_modules/
+          timeout: 600000
+          log-level: verbose
+          dangerous-clean-slate: false
           exclude: |
             **/.git*
             **/.git*/**

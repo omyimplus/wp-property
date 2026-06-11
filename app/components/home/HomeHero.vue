@@ -2,7 +2,7 @@
 import { heroSlides, heroStats } from '~/data/home-content'
 
 const { t } = useI18n()
-const { pathWithHash } = useSiteNav()
+const { navTo } = useSiteNav()
 
 const current = ref(0)
 let timer: ReturnType<typeof setInterval> | null = null
@@ -135,7 +135,7 @@ onUnmounted(stopAutoplay)
         </div>
 
         <NuxtLink
-          :to="pathWithHash('contact')"
+          :to="navTo('/contact')"
           class="animate-hero-fade-up mt-6 inline-flex items-center rounded-xl border border-wp-hero-cta-mid bg-gradient-to-br from-wp-hero-navy to-wp-hero-cta-mid px-10 py-3 text-lg font-medium text-white shadow-[0_6px_20px_rgba(15,43,82,0.45)] transition [animation-delay:1260ms] hover:brightness-110"
         >
           {{ t('home.hero.cta') }}

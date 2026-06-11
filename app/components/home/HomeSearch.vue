@@ -1,12 +1,46 @@
 <script setup lang="ts">
 import { propertyTypeKeys } from '~/data/home-content'
+import { parsePriceRangeKey } from '~/types/public-property'
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 
 const listingMode = ref<'sale' | 'rent'>('sale')
 const searchType = ref('')
 const searchPrice = ref('')
 const searchKeyword = ref('')
+
+function onSearch() {
+  const range = parsePriceRangeKey(searchPrice.value)
+  navigateTo({
+    path: localePath('/properties'),
+    query: {
+      listing: listingMode.value,
+      ...(searchType.value ? { property_type: searchType.value } : {}),
+      ...(searchPrice.value ? { price: searchPrice.value } : {}),
+      ...(searchKeyword.value ? { keyword: searchKeyword.value } : {}),
+      ...(range.min ? { min_price: String(range.min) } : {}),
+      ...(range.max ? { max_price: String(range.max) } : {}),
+    },
+  })
+}
+
+const typeKeyToDb: Record<string, string> = {
+  houseTown: 'house',
+  townhouse: 'townhouse',
+  condo: 'condo',
+  commercial: 'commercial',
+  apartment: 'apartment',
+}
+
+function searchByType(key: string) {
+  const property_type = typeKeyToDb[key]
+  if (!property_type) return
+  navigateTo({
+    path: localePath('/properties'),
+    query: { listing: listingMode.value, property_type },
+  })
+}
 
 const fieldClass =
   'h-11 w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 px-4 text-sm text-slate-700 outline-none focus:border-wp-navy/40 focus:ring-1 focus:ring-wp-navy/20'
@@ -110,6 +144,7 @@ const fieldClass =
             <button
               type="button"
               class="h-11 shrink-0 rounded-xl bg-wp-navy px-12 text-base font-medium text-white transition hover:bg-wp-navy-light lg:min-w-[7.5rem] lg:px-14"
+              @click="onSearch"
             >
               {{ t('common.search') }}
             </button>
@@ -125,6 +160,7 @@ const fieldClass =
             :key="ptype.key"
             type="button"
             class="flex flex-col items-center justify-center gap-2.5 rounded-xl border border-dashed border-slate-300 px-2 py-4 text-center transition hover:border-slate-400 hover:bg-slate-50 sm:px-3 sm:py-5"
+            @click="searchByType(ptype.key)"
           >
             <img
               :src="ptype.image"

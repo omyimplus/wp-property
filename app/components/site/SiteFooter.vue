@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import { footerServiceItems, footerSitemapItems } from '~/data/home-content'
+import { footerServiceItems, footerSitemapItems } from '~/data/site-routes'
 
 const { t } = useI18n()
-const localePath = useLocalePath()
-const { pathWithHash } = useSiteNav()
+const { navTo } = useSiteNav()
 
 const sitemapLinks = computed(() =>
   footerSitemapItems.map(item => ({
     label: t(`footer.sitemapLinks.${item.key}`),
-    to: pathWithHash(item.hash),
+    to: navTo(item.path),
   })),
 )
 
 const serviceLinks = computed(() =>
   footerServiceItems.map(item => ({
     label: t(`footer.serviceLinks.${item.key}`),
-    to: pathWithHash(item.hash),
+    to: navTo(item.path),
   })),
 )
 </script>
@@ -24,7 +23,7 @@ const serviceLinks = computed(() =>
   <footer id="contact" class="bg-wp-footer text-white">
     <div class="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-4 lg:gap-8 lg:py-14">
       <div id="about" class="lg:col-span-1">
-        <NuxtLink :to="localePath('/')" class="inline-flex items-center">
+        <NuxtLink :to="navTo('/')" class="inline-flex items-center">
           <picture>
             <source srcset="/images/logo.webp" type="image/webp">
             <img
@@ -96,9 +95,9 @@ const serviceLinks = computed(() =>
 
     <div class="border-t border-white/30">
       <div class="mx-auto flex max-w-7xl items-center justify-center gap-3 px-4 py-5 text-sm text-white/85 sm:px-6">
-        <a href="#" class="transition hover:text-wp-gold">{{ t('footer.privacy') }}</a>
+        <NuxtLink :to="navTo('/privacy')" class="transition hover:text-wp-gold">{{ t('footer.privacy') }}</NuxtLink>
         <span aria-hidden="true">|</span>
-        <a href="#" class="transition hover:text-wp-gold">{{ t('footer.terms') }}</a>
+        <NuxtLink :to="navTo('/terms')" class="transition hover:text-wp-gold">{{ t('footer.terms') }}</NuxtLink>
       </div>
     </div>
   </footer>

@@ -1,27 +1,7 @@
-export const navItems = [
-  { key: 'home', hash: null },
-  { key: 'services', hash: 'services' },
-  { key: 'consignBuy', hash: 'consign-buy' },
-  { key: 'about', hash: 'about' },
-  { key: 'articles', hash: 'articles' },
-  { key: 'reviews', hash: 'reviews' },
-  { key: 'contact', hash: 'contact' },
-] as const
+import { siteArticles } from '~/data/site-routes'
 
-export const footerSitemapItems = [
-  { key: 'home', hash: null },
-  { key: 'about', hash: 'about' },
-  { key: 'loanServices', hash: 'services' },
-  { key: 'properties', hash: 'properties' },
-  { key: 'contact', hash: 'contact' },
-] as const
-
-export const footerServiceItems = [
-  { key: 'properties', hash: 'properties' },
-  { key: 'loans', hash: 'services' },
-  { key: 'consign', hash: 'consign-buy' },
-  { key: 'rent', hash: 'properties' },
-] as const
+export { navItems, footerSitemapItems, footerServiceItems, siteArticles } from '~/data/site-routes'
+export const articles = siteArticles
 
 export const heroStats = [
   { valueKey: 'home.hero.statsValues.customers', labelKey: 'home.hero.stats.customers', icon: 'trust' },
@@ -77,12 +57,6 @@ export const interestingContentItems = [
   { id: '1', image: '/images/content/content-1.png' },
   { id: '2', image: '/images/content/content-2.png' },
   { id: '3', image: '/images/content/content-3.png' },
-] as const
-
-export const articles = [
-  { id: '1', image: '/images/content/content-1.png' },
-  { id: '2', image: '/images/content/content-1.png' },
-  { id: '3', image: '/images/content/content-1.png' },
 ] as const
 
 /** ใส่ thumbnail + url TikTok/Reels ใน array นี้ */

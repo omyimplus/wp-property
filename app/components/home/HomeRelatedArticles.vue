@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { articles } from '~/data/home-content'
+import { siteArticles } from '~/data/site-routes'
 
 const { t } = useI18n()
+const localePath = useLocalePath()
+
+function articleSlug(id: string) {
+  return siteArticles.find(a => a.id === id)?.slug ?? id
+}
 </script>
 
 <template>
@@ -11,19 +17,20 @@ const { t } = useI18n()
         <h2 class="text-2xl font-medium text-white sm:text-3xl">
           {{ t('home.articles.title') }}
         </h2>
-        <button
-          type="button"
+        <NuxtLink
+          :to="localePath('/articles')"
           class="rounded-full bg-white px-5 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-100"
         >
           {{ t('common.viewAll') }}
-        </button>
+        </NuxtLink>
       </div>
 
       <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <article
+        <NuxtLink
           v-for="item in articles"
           :key="item.id"
-          class="overflow-hidden rounded-2xl bg-white shadow-sm"
+          :to="localePath(`/articles/${articleSlug(item.id)}`)"
+          class="block overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-md"
         >
           <div class="aspect-video overflow-hidden">
             <img
@@ -40,7 +47,7 @@ const { t } = useI18n()
               {{ t(`home.articles.items.${item.id}.excerpt`) }}
             </p>
           </div>
-        </article>
+        </NuxtLink>
       </div>
     </div>
   </section>
