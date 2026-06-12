@@ -1,4 +1,3 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import { requireStaff } from '../../../utils/require-staff'
 
 export default defineEventHandler(async (event) => {
@@ -8,7 +7,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'ไม่พบรายการ' })
   }
 
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
   const { data: row } = await service
     .from('rental_requests')
     .select('id, status, customer_name')

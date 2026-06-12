@@ -1,4 +1,3 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import { requireStaff } from '../../../utils/require-staff'
 import { purgeConsignmentFiles } from '../../../utils/purge-consignment'
 
@@ -9,7 +8,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'ไม่พบรายการ' })
   }
 
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
 
   const { data: pc, error: loadError } = await service
     .from('property_customers')

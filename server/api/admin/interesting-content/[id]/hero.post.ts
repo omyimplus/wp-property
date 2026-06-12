@@ -1,4 +1,3 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import { requireStaff } from '../../../../utils/require-staff'
 import {
   attachInterestingContentUrls,
@@ -22,7 +21,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'path รูปไม่ถูกต้อง (ต้องเป็น .webp)' })
   }
 
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
   const { data: existing } = await service
     .from('interesting_content_items')
     .select('hero_storage_path')

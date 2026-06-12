@@ -1,4 +1,3 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import { requireStaff } from '../../../../utils/require-staff'
 import { ADMIN_IMAGE_BUCKET } from '../../../../utils/admin-image-storage'
 import {
@@ -40,7 +39,7 @@ export default defineEventHandler(async (event) => {
   const ext = reelVideoExtension(contentType)
   const storagePath = `${reelVideoPrefix(id)}${crypto.randomUUID()}.${ext}`
 
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
 
   const { data: existing } = await service
     .from('reels')

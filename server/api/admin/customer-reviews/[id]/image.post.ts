@@ -1,4 +1,3 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import { requireStaff } from '../../../../utils/require-staff'
 import {
   CUSTOMER_REVIEW_SELECT,
@@ -22,7 +21,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'path รูปไม่ถูกต้อง (ต้องเป็น .webp)' })
   }
 
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
   const { data: existing } = await service
     .from('customer_reviews')
     .select('image_storage_path')

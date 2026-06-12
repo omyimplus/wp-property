@@ -1,4 +1,4 @@
-import { serverSupabaseClient, serverSupabaseServiceRole } from '#supabase/server'
+import { serverSupabaseClient } from '#supabase/server'
 import { requireStaff } from '../../../../utils/require-staff'
 import { approvePropertyCustomer } from '../../../../utils/property-customer-approve'
 import { attachImageUrls } from '../../../../utils/properties'
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const client = await serverSupabaseClient(event)
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
   const { property, property_customer } = await approvePropertyCustomer(
     client,
     service,

@@ -1,4 +1,3 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import { requireStaff } from '../../../utils/require-staff'
 
 export default defineEventHandler(async (event) => {
@@ -8,7 +7,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'ไม่พบทรัพย์' })
   }
 
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
 
   const { data: images } = await service
     .from('property_images')

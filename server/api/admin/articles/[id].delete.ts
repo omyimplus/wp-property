@@ -1,4 +1,3 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import { requireStaff } from '../../../utils/require-staff'
 import {
   collectArticleStoragePaths,
@@ -12,7 +11,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'ไม่พบรายการ' })
   }
 
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
   const { data: row } = await service
     .from('articles')
     .select('id, cover_storage_path, body_html')

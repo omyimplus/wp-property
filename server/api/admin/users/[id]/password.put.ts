@@ -1,4 +1,3 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import { requireAdmin } from '../../../../utils/require-admin'
 import { validatePassword } from '../../../../utils/staff-users'
 
@@ -17,7 +16,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' })
   }
 
-  const admin = serverSupabaseServiceRole(event)
+  const admin = getServiceRoleClient(event)
   const { error } = await admin.auth.admin.updateUserById(id, { password })
 
   if (error) {

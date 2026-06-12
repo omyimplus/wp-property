@@ -4,6 +4,10 @@ export default defineNuxtConfig({
   devtools: { enabled: process.env.NODE_ENV === 'development' },
 
   runtimeConfig: {
+    supabase: {
+      secretKey: '',
+      serviceKey: '',
+    },
     lineNotifyToken: process.env.NUXT_LINE_NOTIFY_TOKEN || '',
     public: {
       lineOaId: process.env.NUXT_PUBLIC_LINE_OA_ID || 'wpproperty',

@@ -1,4 +1,3 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import { requireStaff } from '../../../../utils/require-staff'
 import {
   REEL_SELECT,
@@ -22,7 +21,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'path วิดีโอไม่ถูกต้อง (MP4/WebM)' })
   }
 
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
   const { data: existing } = await service
     .from('reels')
     .select('video_storage_path')

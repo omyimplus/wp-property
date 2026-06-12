@@ -1,4 +1,4 @@
-import { serverSupabaseClient, serverSupabaseServiceRole } from '#supabase/server'
+import { serverSupabaseClient } from '#supabase/server'
 import { requireAdmin } from '../../../utils/require-admin'
 import { parseStaffRole, validateEmail, validateFullName } from '../../../utils/staff-users'
 
@@ -67,7 +67,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (newEmail) {
-    const service = serverSupabaseServiceRole(event)
+    const service = getServiceRoleClient(event)
     const { error: authError } = await service.auth.admin.updateUserById(id, {
       email: newEmail,
     })

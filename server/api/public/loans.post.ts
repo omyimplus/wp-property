@@ -1,4 +1,3 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import { LOAN_APPLICATION_SELECT, parseLoanApplicationBody } from '../../utils/loan-applications'
 
 export default defineEventHandler(async (event) => {
@@ -8,7 +7,7 @@ export default defineEventHandler(async (event) => {
     status: 'pending_approval',
   })
 
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
   const { data, error } = await service
     .from('loan_applications')
     .insert({

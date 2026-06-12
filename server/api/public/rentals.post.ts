@@ -1,4 +1,3 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import { RENTAL_REQUEST_SELECT, parseRentalRequestBody } from '../../utils/rental-requests'
 
 export default defineEventHandler(async (event) => {
@@ -8,7 +7,7 @@ export default defineEventHandler(async (event) => {
     status: 'pending_approval',
   })
 
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
   const { data, error } = await service
     .from('rental_requests')
     .insert({

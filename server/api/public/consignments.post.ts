@@ -1,4 +1,3 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import {
   assertPropertyCustomerCreateRequired,
   parsePropertyCustomerBody,
@@ -13,7 +12,7 @@ export default defineEventHandler(async (event) => {
   })
   assertPropertyCustomerCreateRequired(payload)
 
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
   const { data, error } = await service
     .from('property_customers')
     .insert({ ...payload, created_by: null })

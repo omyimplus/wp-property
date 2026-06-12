@@ -1,4 +1,4 @@
-import { serverSupabaseClient, serverSupabaseServiceRole } from '#supabase/server'
+import { serverSupabaseClient } from '#supabase/server'
 import { requireStaff } from '../../../utils/require-staff'
 import {
   attachInterestingContentUrls,
@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
 
   const orphaned = diffRemovedStoragePaths(existing.body_html ?? '', payload.body_html)
   if (orphaned.length) {
-    const service = serverSupabaseServiceRole(event)
+    const service = getServiceRoleClient(event)
     await removeStoragePaths(service, orphaned)
   }
 

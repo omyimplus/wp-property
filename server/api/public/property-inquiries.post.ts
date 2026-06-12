@@ -1,11 +1,10 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import { validatePropertyInquiryForm } from '~/types/property-inquiry'
 import { PROPERTY_INQUIRY_SELECT, parsePropertyInquiryBody } from '~~/server/utils/property-inquiries'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const body = await readBody(event)
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
 
   const form = {
     listing_type: body?.listing_type === 'rent' ? 'rent' : body?.listing_type === 'sale' ? 'sale' : '',

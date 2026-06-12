@@ -1,4 +1,3 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import { requireStaff } from '../../../../utils/require-staff'
 import {
   assertBodyMediaStoragePath,
@@ -24,7 +23,7 @@ export default defineEventHandler(async (event) => {
     assertBodyMediaStoragePath(id, path, 'path สื่อไม่ถูกต้อง', 'articles')
   }
 
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
   await removeStoragePaths(service, storage_paths)
 
   return { ok: true, removed: storage_paths.length }

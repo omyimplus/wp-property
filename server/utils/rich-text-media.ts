@@ -1,4 +1,3 @@
-import { serverSupabaseServiceRole } from '#supabase/server'
 import { ADMIN_IMAGE_BUCKET } from './admin-image-storage'
 
 const DATA_ATTR_RE = /data-storage-path=["']([^"']+)["']/gi
@@ -83,7 +82,7 @@ export function collectArticleStoragePaths(row: {
 }
 
 export async function removeStoragePaths(
-  service: Awaited<ReturnType<typeof serverSupabaseServiceRole>>,
+  service: Awaited<ReturnType<typeof getServiceRoleClient>>,
   storagePaths: string[],
 ) {
   const unique = [...new Set(storagePaths.filter(Boolean))]

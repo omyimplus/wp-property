@@ -88,7 +88,7 @@ jobs:
             **/.git*/**
 
       - name: Deploy server node_modules (FTPS)
-        if: steps.changes.outputs.deps == 'true' || inputs.upload_node_modules == true
+        if: steps.changes.outputs.deps == 'true' || (github.event_name == 'workflow_dispatch' && inputs.upload_node_modules)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -99,9 +99,6 @@ jobs:
           local-dir: deploy/.output/server/node_modules/
           server-dir: httpdocs/.output/server/node_modules/
           timeout: 600000
-          log-level: verbose
+          log-level: minimal
           security: loose
           dangerous-clean-slate: false
-          exclude: |
-            **/.git*
-            **/.git*/**

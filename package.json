@@ -15,6 +15,8 @@
     "test:build": "node scripts/check-build.mjs",
     "test:console:setup": "playwright install chromium",
     "test:console": "node scripts/check-public-console.mjs",
+    "test:site:setup": "playwright install chromium",
+    "test:site": "node scripts/check-site.mjs",
     "test": "npm run test:build"
   },
   "dependencies": {
