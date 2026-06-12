@@ -42,6 +42,10 @@ const detailTo = computed(() =>
         v-if="property.cover_url"
         :src="property.cover_url"
         :alt="title"
+        width="640"
+        height="480"
+        loading="lazy"
+        decoding="async"
         class="h-full w-full object-cover transition group-hover:scale-[1.02]"
       >
       <div v-else class="flex h-full items-center justify-center text-sm text-slate-400">

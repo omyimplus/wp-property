@@ -8,6 +8,10 @@ definePageMeta({
 
 const { t } = useI18n()
 
+useStaticPageSeo('seo.home.title', 'seo.home.description')
+useHead({
+  link: [{ rel: 'preload', as: 'image', href: '/images/bg-hero.webp', fetchpriority: 'high' }],
+})
 </script>
 
 <template>
@@ -35,6 +39,10 @@ const { t } = useI18n()
               <img
                 :src="service.image"
                 :alt="t(`home.services.${service.key}.title`)"
+                width="640"
+                height="480"
+                loading="lazy"
+                decoding="async"
                 class="h-full w-full object-cover transition duration-300 hover:scale-105"
               >
             </div>

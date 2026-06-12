@@ -66,8 +66,12 @@ onUnmounted(stopAutoplay)
         <img
           :src="slide.image"
           alt=""
+          width="1920"
+          height="600"
+          decoding="async"
           class="h-full w-full object-cover object-[center_38%] sm:object-[center_42%]"
-          fetchpriority="high"
+          :fetchpriority="index === 0 ? 'high' : 'low'"
+          :loading="index === 0 ? 'eager' : 'lazy'"
         >
       </div>
     </div>

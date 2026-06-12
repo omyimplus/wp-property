@@ -39,7 +39,37 @@ const breadcrumbItems = computed(() => [
   { label: title.value },
 ])
 
-useHead({ title: () => title.value })
+useSiteSeo({
+  title: () => title.value,
+  description: () => {
+    const p = property.value
+    if (!p) return t('pages.properties.subtitle')
+    const parts = [title.value, p.province, p.district].filter(Boolean)
+    return parts.join(' · ')
+  },
+  image: () => property.value?.images?.[0]?.public_url ?? property.value?.cover_url ?? undefined,
+  type: 'product',
+  jsonLd: computed(() => {
+    const p = property.value
+    if (!p) return undefined
+    const price = p.for_sale ? p.sale_price : p.rent_price
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: title.value,
+      sku: p.property_code,
+      image: p.images?.[0]?.public_url ?? p.cover_url ?? undefined,
+      offers: price
+        ? {
+            '@type': 'Offer',
+            price,
+            priceCurrency: 'THB',
+            availability: 'https://schema.org/InStock',
+          }
+        : undefined,
+    }
+  }),
+})
 
 const activeImage = ref(0)
 const galleryOpen = ref(false)

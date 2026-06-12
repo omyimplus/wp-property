@@ -1,9 +1,18 @@
 <script setup lang="ts">
+const i18nHead = useLocaleHead({
+  addDirAttribute: true,
+  addSeoAttributes: true,
+})
+
 useHead({
   htmlAttrs: {
     class: 'site-public',
   },
 })
+
+useHead(i18nHead)
+
+useSiteOrganizationSchema()
 </script>
 
 <template>

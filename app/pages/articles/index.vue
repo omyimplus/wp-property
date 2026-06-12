@@ -8,7 +8,7 @@ const localePath = useLocalePath()
 
 const { data, pending, error } = await useFetch<{ items: ArticleListItem[] }>('/api/articles')
 
-useHead({ title: () => t('pages.articles.title') })
+useStaticPageSeo('pages.articles.title', 'pages.articles.subtitle')
 </script>
 
 <template>

@@ -5,7 +5,7 @@ definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
 
-useHead({ title: () => t('pages.properties.title') })
+useStaticPageSeo('pages.properties.title', 'pages.properties.subtitle')
 </script>
 
 <template>

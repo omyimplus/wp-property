@@ -7,7 +7,7 @@ const { t } = useI18n()
 
 const { data, pending, error } = await useFetch<{ items: CustomerReviewListItem[] }>('/api/customer-reviews')
 
-useHead({ title: () => t('pages.reviews.title') })
+useStaticPageSeo('pages.reviews.title', 'pages.reviews.subtitle')
 </script>
 
 <template>

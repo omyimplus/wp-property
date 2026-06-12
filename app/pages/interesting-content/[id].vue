@@ -20,10 +20,11 @@ const breadcrumbItems = computed(() => [
   ...(item.value ? [{ label: item.value.title }] : []),
 ])
 
-useHead({ title: () => item.value?.title ?? t('home.interestingContent.title') })
-useSeoMeta({
+useSiteSeo({
   title: () => item.value?.title ?? t('home.interestingContent.title'),
   description: () => item.value?.excerpt ?? t('pages.interestingContent.subtitle'),
+  image: () => item.value?.cover_url ?? undefined,
+  type: 'article',
 })
 </script>
 

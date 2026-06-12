@@ -1,4 +1,12 @@
 {
+  "seo": {
+    "siteName": "WP Property",
+    "defaultDescription": "WP Property — full-service finance and real estate experts. Loans, debt consolidation, consignment, rentals, and property management with 19+ years of experience.",
+    "home": {
+      "title": "WP Property | Finance & Real Estate Experts",
+      "description": "Loans, debt consolidation, home refinancing, property consignment, rentals, and end-to-end real estate services from a team with 19+ years of experience."
+    }
+  },
   "nav": {
     "home": "Home",
     "services": "Our Services",

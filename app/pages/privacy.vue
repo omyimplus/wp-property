@@ -3,7 +3,7 @@ definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
 
-useHead({ title: () => t('footer.privacy') })
+useStaticPageSeo('footer.privacy', 'seo.defaultDescription')
 </script>
 
 <template>

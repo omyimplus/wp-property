@@ -27,7 +27,7 @@ function sectionPoints(key: AboutSectionKey): string[] {
   return points
 }
 
-useHead({ title: () => t('pages.about.title') })
+useStaticPageSeo('pages.about.title', 'pages.about.subtitle')
 </script>
 
 <template>

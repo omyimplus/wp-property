@@ -14,10 +14,14 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@fontsource/prompt": "^5.2.8",
+    "@nuxt/image": "^2.0.0",
     "@nuxtjs/i18n": "^10.4.0",
     "@nuxtjs/supabase": "^2.0.9",
     "@riz007/thai-address-data": "^0.1.4",
+    "@tinymce/tinymce-vue": "^6.3.0",
     "nuxt": "^4.4.6",
+    "tinymce": "^8.6.0",
     "vue": "^3.5.34",
     "vue-router": "^5.0.7",
     "ws": "^8.21.0"

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { ArticleListItem } from '~/types/article'
+import { absoluteSiteUrl } from '~/utils/site-url'
 
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+const config = useRuntimeConfig()
 const slug = computed(() => String(route.params.slug))
 
 const { data, error, pending } = await useFetch<{ item: ArticleListItem }>(
@@ -24,10 +26,21 @@ const breadcrumbItems = computed(() => [
   ...(article.value ? [{ label: article.value.title }] : []),
 ])
 
-useHead({ title: () => article.value?.title ?? t('pages.articles.title') })
-useSeoMeta({
+useSiteSeo({
   title: () => article.value?.title ?? t('pages.articles.title'),
   description: () => article.value?.excerpt ?? t('pages.articles.subtitle'),
+  image: () => article.value?.cover_url ?? undefined,
+  type: 'article',
+  jsonLd: computed(() => (article.value
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: article.value.title,
+        description: article.value.excerpt ?? undefined,
+        image: article.value.cover_url ?? undefined,
+        mainEntityOfPage: absoluteSiteUrl(config.public.siteUrl, route.path),
+      }
+    : undefined)),
 })
 </script>
 

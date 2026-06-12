@@ -31,7 +31,7 @@ async function onSubmit() {
   }
 }
 
-useHead({ title: () => t('pages.rent.title') })
+useStaticPageSeo('pages.rent.title', 'pages.rent.subtitle')
 </script>
 
 <template>

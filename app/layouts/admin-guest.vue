@@ -4,6 +4,8 @@ useHead({
     class: 'site-admin',
   },
 })
+
+useSeoMeta({ robots: 'noindex, nofollow' })
 </script>
 
 <template>

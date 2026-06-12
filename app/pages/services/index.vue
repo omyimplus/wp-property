@@ -12,7 +12,7 @@ const serviceLinks: Record<string, string> = {
   consign: '/consign',
 }
 
-useHead({ title: () => t('pages.services.title') })
+useStaticPageSeo('pages.services.title', 'pages.services.subtitle')
 </script>
 
 <template>

@@ -4,7 +4,7 @@ definePageMeta({ layout: 'default' })
 const { t } = useI18n()
 const localePath = useLocalePath()
 
-useHead({ title: () => t('pages.contact.title') })
+useStaticPageSeo('pages.contact.title', 'pages.contact.subtitle')
 </script>
 
 <template>

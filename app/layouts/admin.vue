@@ -5,6 +5,8 @@ useHead({
   },
 })
 
+useSeoMeta({ robots: 'noindex, nofollow' })
+
 const route = useRoute()
 const { profile, displayName, roleLabel, fetchProfile } = useStaffProfile()
 const { signOut } = useAdminAuth()

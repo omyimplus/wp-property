@@ -11,11 +11,7 @@ const { data, pending } = await useFetch<{ items: InterestingContentListItem[] }
   '/api/interesting-content',
 )
 
-useHead({ title: () => t('home.interestingContent.title') })
-useSeoMeta({
-  title: () => t('home.interestingContent.title'),
-  description: () => t('pages.interestingContent.subtitle'),
-})
+useStaticPageSeo('home.interestingContent.title', 'pages.interestingContent.subtitle')
 </script>
 
 <template>
