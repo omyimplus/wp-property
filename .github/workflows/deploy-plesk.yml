@@ -5,6 +5,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      upload_node_modules:
+        description: 'Force upload server node_modules (ช้า — ใช้เมื่อ deps เปลี่ยนหรือ server ขาดไฟล์)'
+        type: boolean
+        default: false
 
 jobs:
   build-and-deploy:
@@ -13,6 +18,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect dependency changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            deps:
+              - 'package.json'
+              - 'package-lock.json'
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -72,6 +88,7 @@ jobs:
             **/.git*/**
 
       - name: Deploy server node_modules (FTPS)
+        if: steps.changes.outputs.deps == 'true' || inputs.upload_node_modules == true
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
           server: ${{ secrets.FTP_HOST }}
