@@ -76,12 +76,16 @@ watch(slideCount, () => {
                 :aria-label="t('home.clips.playClip', { n: index + 1 })"
                 @click="openReel(item)"
               >
-                <img
+                <OptimizedImage
                   v-if="item.poster_url"
                   :src="item.poster_url"
                   :alt="t('home.clips.playClip', { n: index + 1 })"
+                  :width="360"
+                  :height="640"
+                  :aspect-ratio="9 / 16"
+                  sizes="(max-width: 640px) 45vw, 360px"
                   class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
-                >
+                />
 
                 <span class="absolute inset-0 bg-black/10 transition group-hover:bg-black/20" aria-hidden="true" />
 
@@ -127,17 +131,13 @@ watch(slideCount, () => {
             </svg>
           </button>
 
-          <div class="mt-5 flex justify-center gap-2 sm:hidden">
-            <button
+          <div class="mt-5 flex justify-center sm:hidden">
+            <CarouselDotButton
               v-for="index in maxIndex + 1"
               :key="index"
-              type="button"
-              class="h-2 rounded-full transition-all"
-              :class="index - 1 === current
-                ? 'w-6 bg-wp-gold'
-                : 'w-2 bg-white/50 hover:bg-white/80'"
-              :aria-label="t('home.clips.goToSlide', { n: index })"
-              :aria-current="index - 1 === current ? 'true' : undefined"
+              :active="index - 1 === current"
+              inactive-dot-class="h-2 w-2 bg-slate-300 group-hover:bg-slate-400"
+              :label="t('home.clips.goToSlide', { n: index })"
               @click="goTo(index - 1)"
             />
           </div>

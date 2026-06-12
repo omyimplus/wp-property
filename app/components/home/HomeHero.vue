@@ -63,16 +63,17 @@ onUnmounted(stopAutoplay)
         :class="index === current ? 'opacity-100' : 'opacity-0'"
         :aria-hidden="index !== current"
       >
-        <img
+        <OptimizedImage
           :src="slide.image"
           alt=""
-          width="1920"
-          height="600"
-          decoding="async"
+          :width="768"
+          :height="600"
+          sizes="100vw"
+          :quality="70"
           class="h-full w-full object-cover object-[center_38%] sm:object-[center_42%]"
           :fetchpriority="index === 0 ? 'high' : 'low'"
           :loading="index === 0 ? 'eager' : 'lazy'"
-        >
+        />
       </div>
     </div>
 
@@ -170,17 +171,13 @@ onUnmounted(stopAutoplay)
         </svg>
       </button>
 
-      <div class="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 gap-2">
-        <button
+      <div class="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center">
+        <CarouselDotButton
           v-for="(slide, index) in heroSlides"
           :key="slide.id"
-          type="button"
-          class="h-2 rounded-full transition-all"
-          :class="index === current
-            ? 'w-6 bg-wp-gold'
-            : 'w-2 bg-white/50 hover:bg-white/80'"
-          :aria-label="t('home.hero.goToSlide', { n: index + 1 })"
-          :aria-current="index === current ? 'true' : undefined"
+          :active="index === current"
+          inactive-dot-class="h-2 w-2 bg-white/50 group-hover:bg-white/80"
+          :label="t('home.hero.goToSlide', { n: index + 1 })"
           @click="goTo(index)"
         />
       </div>

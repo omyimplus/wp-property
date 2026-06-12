@@ -88,17 +88,14 @@ watch(slidesPerView, () => {
         </svg>
       </button>
 
-      <div class="mt-4 flex justify-center gap-2 sm:hidden">
-        <button
+      <div class="mt-4 flex justify-center sm:hidden">
+        <CarouselDotButton
           v-for="index in maxIndex + 1"
           :key="index"
-          type="button"
-          class="h-2 rounded-full transition-all"
-          :class="index - 1 === current
-            ? 'w-6 bg-wp-gold'
-            : 'w-2 bg-white/50 hover:bg-white/80'"
-          :aria-label="t('home.properties.goToSlide', { n: index })"
-          :aria-current="index - 1 === current ? 'true' : undefined"
+          :active="index - 1 === current"
+          inactive-dot-class="h-2 w-2 bg-slate-300 group-hover:bg-slate-400"
+          active-dot-class="h-2 w-6 bg-wp-gold"
+          :label="t('home.properties.goToSlide', { n: index })"
           @click="goTo(index - 1)"
         />
       </div>

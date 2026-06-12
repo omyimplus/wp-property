@@ -28,18 +28,26 @@ const coverFallback = '/images/content/content-1.png'
       v-if="variant === 'list'"
       class="aspect-[3/4] overflow-hidden bg-slate-100"
     >
-      <img
+      <OptimizedImage
         :src="item.cover_url || coverFallback"
         :alt="item.title"
+        :width="360"
+        :height="480"
+        :aspect-ratio="3 / 4"
+        sizes="(max-width: 640px) 85vw, 360px"
         class="h-full w-full object-cover transition group-hover:scale-[1.02]"
-      >
+      />
     </div>
-    <img
+    <OptimizedImage
       v-else
       :src="item.cover_url || coverFallback"
       :alt="item.title"
+      :width="360"
+      :height="480"
+      :aspect-ratio="3 / 4"
+      sizes="(max-width: 640px) 85vw, 360px"
       class="h-full w-full object-cover transition group-hover:scale-[1.02]"
-    >
+    />
 
     <div v-if="variant === 'list'" class="p-4">
       <h2 class="font-medium text-wp-navy">{{ item.title }}</h2>

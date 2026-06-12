@@ -70,13 +70,15 @@ function prev() {
             :aria-pressed="isActive(ptype.key)"
             @click="onSelect(ptype.key)"
           >
-            <img
+            <OptimizedImage
               :src="ptype.image"
               :alt="t(`home.search.propertyTypes.${ptype.key}`)"
+              :width="44"
+              :height="44"
+              sizes="44px"
+              :quality="70"
               class="h-11 w-11 object-contain"
-              width="44"
-              height="44"
-            >
+            />
             <span class="text-[11px] font-medium leading-snug text-slate-900">
               {{ t(`home.search.propertyTypes.${ptype.key}`) }}
             </span>
@@ -84,10 +86,10 @@ function prev() {
         </div>
       </div>
 
-      <div v-if="canSlide" class="mt-3 flex items-center justify-center gap-3">
+      <div v-if="canSlide" class="mt-3 flex items-center justify-center gap-1">
         <button
           type="button"
-          class="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-50 disabled:opacity-40"
+          class="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-50 disabled:opacity-40"
           :disabled="current === 0"
           :aria-label="t('home.search.categorySlidePrev')"
           @click="prev"
@@ -96,23 +98,20 @@ function prev() {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <div class="flex gap-1.5">
-          <button
+        <div class="flex items-center">
+          <CarouselDotButton
             v-for="index in maxIndex + 1"
             :key="index"
-            type="button"
-            class="h-1.5 rounded-full transition-all"
-            :class="index - 1 === current
-              ? 'w-5 bg-wp-navy'
-              : 'w-1.5 bg-slate-300 hover:bg-slate-400'"
-            :aria-label="t('home.search.categoryGoToSlide', { n: index })"
-            :aria-current="index - 1 === current ? 'true' : undefined"
+            :active="index - 1 === current"
+            active-dot-class="h-2 w-6 bg-wp-navy"
+            inactive-dot-class="h-2 w-2 bg-slate-300 group-hover:bg-slate-400"
+            :label="t('home.search.categoryGoToSlide', { n: index })"
             @click="goTo(index - 1)"
           />
         </div>
         <button
           type="button"
-          class="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-50 disabled:opacity-40"
+          class="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-50 disabled:opacity-40"
           :disabled="current >= maxIndex"
           :aria-label="t('home.search.categorySlideNext')"
           @click="next"
@@ -137,13 +136,15 @@ function prev() {
         :aria-pressed="isActive(ptype.key)"
         @click="onSelect(ptype.key)"
       >
-        <img
+        <OptimizedImage
           :src="ptype.image"
           :alt="t(`home.search.propertyTypes.${ptype.key}`)"
+          :width="56"
+          :height="56"
+          sizes="56px"
+          :quality="70"
           class="h-12 w-12 object-contain sm:h-14 sm:w-14"
-          width="56"
-          height="56"
-        >
+        />
         <span class="text-xs font-medium leading-snug text-slate-900 sm:text-sm">
           {{ t(`home.search.propertyTypes.${ptype.key}`) }}
         </span>

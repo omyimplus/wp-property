@@ -9,9 +9,6 @@ definePageMeta({
 const { t } = useI18n()
 
 useStaticPageSeo('seo.home.title', 'seo.home.description')
-useHead({
-  link: [{ rel: 'preload', as: 'image', href: '/images/bg-hero.webp', fetchpriority: 'high' }],
-})
 </script>
 
 <template>
@@ -36,15 +33,14 @@ useHead({
             class="overflow-hidden rounded-2xl bg-white shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
           >
             <div class="aspect-[4/3] overflow-hidden">
-              <img
+              <OptimizedImage
                 :src="service.image"
                 :alt="t(`home.services.${service.key}.title`)"
-                width="640"
-                height="480"
-                loading="lazy"
-                decoding="async"
+                :width="400"
+                :height="300"
+                sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 400px"
                 class="h-full w-full object-cover transition duration-300 hover:scale-105"
-              >
+              />
             </div>
             <div class="p-4 sm:p-5">
               <h3 class="text-center text-lg font-medium text-wp-navy sm:text-xl">

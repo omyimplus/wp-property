@@ -38,16 +38,15 @@ const detailTo = computed(() =>
     class="group block overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-md"
   >
     <div class="relative aspect-[4/3] overflow-hidden bg-slate-100">
-      <img
+      <OptimizedImage
         v-if="property.cover_url"
         :src="property.cover_url"
         :alt="title"
-        width="640"
-        height="480"
-        loading="lazy"
-        decoding="async"
+        :width="400"
+        :height="300"
+        sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 400px"
         class="h-full w-full object-cover transition group-hover:scale-[1.02]"
-      >
+      />
       <div v-else class="flex h-full items-center justify-center text-sm text-slate-400">
         {{ t('pages.properties.noImage') }}
       </div>

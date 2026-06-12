@@ -106,17 +106,13 @@ onUnmounted(stopAutoplay)
           </div>
         </div>
 
-        <div v-if="canSlide" class="mt-5 flex justify-center gap-2">
-          <button
+        <div v-if="canSlide" class="mt-5 flex justify-center">
+          <CarouselDotButton
             v-for="(_, index) in items"
             :key="index"
-            type="button"
-            class="h-2 rounded-full transition-all"
-            :class="index === current
-              ? 'w-6 bg-wp-gold'
-              : 'w-2 bg-white/50 hover:bg-white/80'"
-            :aria-label="t('home.interestingContent.goToSlide', { n: index + 1 })"
-            :aria-current="index === current ? 'true' : undefined"
+            :active="index === current"
+            inactive-dot-class="h-2 w-2 bg-slate-300 group-hover:bg-slate-400"
+            :label="t('home.interestingContent.goToSlide', { n: index + 1 })"
             @click="goTo(index)"
           />
         </div>

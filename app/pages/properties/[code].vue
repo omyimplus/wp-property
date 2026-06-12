@@ -199,12 +199,15 @@ function openGallery(index = activeImage.value) {
                 @click="openGallery()"
               >
                 <div class="aspect-[4/3]">
-                  <img
+                  <OptimizedImage
                     v-if="property.image_urls?.[activeImage]"
                     :src="property.image_urls[activeImage]"
                     :alt="title"
+                    :width="768"
+                    :height="576"
+                    sizes="(max-width: 1024px) 100vw, 768px"
                     class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.01]"
-                  >
+                  />
                   <div
                     v-else
                     class="flex h-full items-center justify-center text-sm text-slate-400"
@@ -232,7 +235,14 @@ function openGallery(index = activeImage.value) {
                   :class="activeImage === i ? 'border-wp-navy' : 'border-transparent opacity-80 hover:opacity-100'"
                   @click="activeImage = i"
                 >
-                  <img :src="url" alt="" class="h-full w-full object-cover">
+                  <OptimizedImage
+                    :src="url"
+                    alt=""
+                    :width="80"
+                    :height="64"
+                    sizes="80px"
+                    class="h-full w-full object-cover"
+                  />
                 </button>
               </div>
             </div>

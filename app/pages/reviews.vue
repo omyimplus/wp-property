@@ -34,12 +34,16 @@ useStaticPageSeo('pages.reviews.title', 'pages.reviews.subtitle')
             :key="item.id"
             class="overflow-hidden rounded-2xl bg-white shadow-sm"
           >
-            <img
+            <OptimizedImage
               v-if="item.image_url"
               :src="item.image_url"
               :alt="t('home.reviews.reviewImage', { n: index + 1 })"
+              :width="280"
+              :height="373"
+              :aspect-ratio="3 / 4"
+              sizes="(max-width: 640px) 45vw, 280px"
               class="aspect-[3/4] w-full object-cover"
-            >
+            />
           </figure>
         </div>
       </div>

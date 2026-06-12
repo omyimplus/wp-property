@@ -33,11 +33,14 @@ useStaticPageSeo('pages.services.title', 'pages.services.subtitle')
             :class="index % 2 === 0 ? 'lg:order-2' : 'lg:order-1'"
           >
             <div class="aspect-[4/3] overflow-hidden">
-              <img
+              <OptimizedImage
                 :src="service.image"
                 :alt="t(`home.services.${service.key}.title`)"
+                :width="400"
+                :height="300"
+                sizes="(max-width: 640px) 320px, 400px"
                 class="h-full w-full object-cover transition duration-500 hover:scale-[1.03]"
-              >
+              />
             </div>
           </div>
 

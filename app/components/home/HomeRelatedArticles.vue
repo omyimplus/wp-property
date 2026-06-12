@@ -39,12 +39,16 @@ const { data, pending } = await useFetch<{ items: ArticleListItem[] }>('/api/art
           class="block overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-md"
         >
           <div class="aspect-video overflow-hidden bg-slate-100">
-            <img
+            <OptimizedImage
               v-if="item.cover_url"
               :src="item.cover_url"
               :alt="item.title"
+              :width="400"
+              :height="225"
+              :aspect-ratio="16 / 9"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
               class="h-full w-full object-cover"
-            >
+            />
           </div>
           <div class="p-4 sm:p-5">
             <h3 class="truncate text-base font-medium text-wp-navy sm:text-lg">

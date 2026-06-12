@@ -226,12 +226,16 @@ onUnmounted(() => {
               class="aspect-[3/4] overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10"
               :class="!slide.state.isActive ? 'brightness-[0.8]' : ''"
             >
-              <img
+              <OptimizedImage
                 v-if="slide.item.image_url"
                 :src="slide.item.image_url"
                 :alt="reviewAlt(slide.itemIndex)"
+                :width="300"
+                :height="400"
+                :aspect-ratio="3 / 4"
+                sizes="(max-width: 640px) 250px, 350px"
                 class="h-full w-full object-cover"
-              >
+              />
             </div>
           </article>
 
