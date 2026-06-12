@@ -53,25 +53,38 @@ jobs:
           path: server-node_modules.zip
           retention-days: 7
 
-      - name: Deploy app to Plesk (SFTP)
-        uses: wangyucode/sftp-upload-action@v3
+      - name: Deploy app to Plesk (FTPS)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
-          host: ${{ secrets.FTP_HOST }}
+          server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          port: '22'
-          localDir: deploy
-          remoteDir: httpdocs
-          exclude: '**/.git*,**/.git*/**'
-          concurrency: '8'
+          protocol: ftps
+          port: 21
+          local-dir: deploy/
+          server-dir: httpdocs/
+          timeout: 600000
+          log-level: minimal
+          security: loose
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
 
-      - name: Deploy server node_modules (SFTP)
-        uses: wangyucode/sftp-upload-action@v3
+      - name: Deploy server node_modules (FTPS)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
-          host: ${{ secrets.FTP_HOST }}
+          server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          port: '22'
-          localDir: deploy/.output/server/node_modules
-          remoteDir: httpdocs/.output/server/node_modules
-          concurrency: '16'
+          protocol: ftps
+          port: 21
+          local-dir: deploy/.output/server/node_modules/
+          server-dir: httpdocs/.output/server/node_modules/
+          timeout: 600000
+          log-level: verbose
+          security: loose
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
