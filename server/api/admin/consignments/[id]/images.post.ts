@@ -1,5 +1,6 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { requireStaff } from '../../../../utils/require-staff'
+import { assertAdminWebpStoragePath } from '../../../../utils/admin-image-storage'
 import { attachImageUrls } from '../../../../utils/properties'
 import { storagePathPrefix } from '../../../../utils/property-customers'
 
@@ -13,17 +14,11 @@ export default defineEventHandler(async (event) => {
   const prefix = storagePathPrefix(id)
   const body = await readBody(event)
   const storage_path = typeof body?.storage_path === 'string' ? body.storage_path.trim() : ''
-  if (
-    !storage_path
-    || storage_path.includes('..')
-    || !storage_path.startsWith(prefix)
-    || !storage_path.endsWith('.webp')
-  ) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'path รูปไม่ถูกต้อง (ต้องอยู่ใต้ pc/{id}/ และเป็น .webp)',
-    })
-  }
+  assertAdminWebpStoragePath(
+    storage_path,
+    prefix,
+    'path รูปไม่ถูกต้อง (ต้องอยู่ใต้ pc/{id}/ และเป็น .webp)',
+  )
 
   const client = await serverSupabaseClient(event)
   const { data: pc } = await client

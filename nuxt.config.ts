@@ -3,6 +3,14 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
+  runtimeConfig: {
+    lineNotifyToken: process.env.NUXT_LINE_NOTIFY_TOKEN || '',
+    public: {
+      lineOaId: process.env.NUXT_PUBLIC_LINE_OA_ID || 'wpproperty',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://wplandproperty.com',
+    },
+  },
+
   tailwindcss: {
     cssPath: '~/assets/css/main.css',
   },
@@ -10,6 +18,8 @@ export default defineNuxtConfig({
   app: {
     head: {
       link: [
+        { rel: 'icon', type: 'image/webp', href: '/images/fav.webp' },
+        { rel: 'apple-touch-icon', href: '/images/fav.webp' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
         {

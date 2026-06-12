@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { EntityImage } from '~/composables/useEntityImageUpload'
 import {
-  isAllowedPropertyImageInput,
-  PROPERTY_IMAGE_INPUT_TYPES,
-  PROPERTY_IMAGE_MAX_WIDTH,
-} from '~/utils/prepare-property-image'
+  isAllowedAdminImageInput,
+  ADMIN_IMAGE_INPUT_TYPES,
+  ADMIN_IMAGE_MAX_WIDTH,
+} from '~/utils/admin-image'
 
 const props = defineProps<{
   entityId: string | null
@@ -31,7 +31,7 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const pendingFiles = ref<File[]>([])
 const pendingPreviews = ref<string[]>([])
 
-const acceptAttr = PROPERTY_IMAGE_INPUT_TYPES.join(',')
+const acceptAttr = ADMIN_IMAGE_INPUT_TYPES.join(',')
 
 const canPickFiles = computed(
   () => !props.disabled && (Boolean(props.entityId) || props.allowPendingBeforeSave),
@@ -62,15 +62,15 @@ function setPending(files: File[]) {
 function onFiles(fileList: FileList | File[]) {
   if (!canPickFiles.value) return
 
-  const incoming = Array.from(fileList).filter(isAllowedPropertyImageInput)
+  const incoming = Array.from(fileList).filter(isAllowedAdminImageInput)
   if (!incoming.length) {
     uploadError.value = 'ไฟล์ไม่รองรับ — ใช้ JPG, PNG, WebP หรือ GIF'
     return
   }
 
   if (props.entityId) {
-    uploadFiles(incoming, props.images.length).then((added) => {
-      if (added.length) emit('update:images', [...props.images, ...added])
+    uploadFiles(incoming, (props.images ?? []).length).then((added) => {
+      if (added.length) emit('update:images', [...(props.images ?? []), ...added])
     })
     return
   }
@@ -90,8 +90,8 @@ async function flushPendingUploads() {
   if (!props.entityId || !pendingFiles.value.length) return
   const files = [...pendingFiles.value]
   setPending([])
-  const added = await uploadFiles(files, props.images.length)
-  if (added.length) emit('update:images', [...props.images, ...added])
+  const added = await uploadFiles(files, (props.images ?? []).length)
+  if (added.length) emit('update:images', [...(props.images ?? []), ...added])
 }
 
 watch(
@@ -111,7 +111,7 @@ function onDrop(e: DragEvent) {
 async function onRemove(img: EntityImage) {
   if (!confirm('ลบรูปนี้?')) return
   const ok = await removeImage(img)
-  if (ok) emit('update:images', props.images.filter(i => i.id !== img.id))
+  if (ok) emit('update:images', (props.images ?? []).filter(i => i.id !== img.id))
 }
 
 function imageSrc(img: EntityImage) {
@@ -147,7 +147,7 @@ defineExpose({ flushPendingUploads })
         ลากรูปมาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์
       </p>
       <p class="mt-1 text-xs text-slate-500">
-        JPG, PNG, WebP, GIF · ปรับขนาดกว้างไม่เกิน {{ PROPERTY_IMAGE_MAX_WIDTH }}px แล้วเป็น WebP
+        JPG, PNG, WebP, GIF · ปรับขนาดกว้างไม่เกิน {{ ADMIN_IMAGE_MAX_WIDTH }}px แล้วเป็น WebP
       </p>
       <p
         v-if="statusMessage"
@@ -181,7 +181,7 @@ defineExpose({ flushPendingUploads })
       </div>
     </div>
 
-    <div v-if="images.length" class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+    <div v-if="(images ?? []).length" class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
       <div
         v-for="(img, idx) in images"
         :key="img.id"

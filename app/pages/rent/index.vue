@@ -39,13 +39,13 @@ useHead({ title: () => t('pages.rent.title') })
     <SitePageHero :title="t('pages.rent.title')" :subtitle="t('pages.rent.subtitle')" />
 
     <section class="bg-wp-navy py-10">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6">
+      <div class="site-container">
         <div class="flex items-center justify-between gap-4">
           <h2 class="text-xl font-medium text-white">
             {{ t('home.properties.listingRent') }}
           </h2>
           <NuxtLink
-            :to="localePath('/properties?listing=rent')"
+            :to="localePath('/services/properties?listing=rent')"
             class="rounded-full bg-white px-4 py-1.5 text-sm font-medium text-slate-900"
           >
             {{ t('common.viewAll') }}

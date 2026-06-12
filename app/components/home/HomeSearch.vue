@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { propertyTypeKeys } from '~/data/home-content'
+import PropertyTypeCategoryGrid from '~/components/site/PropertyTypeCategoryGrid.vue'
 import { parsePriceRangeKey } from '~/types/public-property'
 
 const { t } = useI18n()
@@ -13,7 +13,7 @@ const searchKeyword = ref('')
 function onSearch() {
   const range = parsePriceRangeKey(searchPrice.value)
   navigateTo({
-    path: localePath('/properties'),
+    path: localePath('/services/properties'),
     query: {
       listing: listingMode.value,
       ...(searchType.value ? { property_type: searchType.value } : {}),
@@ -25,20 +25,10 @@ function onSearch() {
   })
 }
 
-const typeKeyToDb: Record<string, string> = {
-  houseTown: 'house',
-  townhouse: 'townhouse',
-  condo: 'condo',
-  commercial: 'commercial',
-  apartment: 'apartment',
-}
-
-function searchByType(key: string) {
-  const property_type = typeKeyToDb[key]
-  if (!property_type) return
+function searchByType(propertyType: string) {
   navigateTo({
-    path: localePath('/properties'),
-    query: { listing: listingMode.value, property_type },
+    path: localePath('/services/properties'),
+    query: { listing: listingMode.value, property_type: propertyType },
   })
 }
 
@@ -48,8 +38,8 @@ const fieldClass =
 
 <template>
   <section class="bg-wp-navy pb-10 pt-4 sm:pb-14 sm:pt-6">
-    <div class="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
-      <div class="mx-auto max-w-5xl lg:max-w-6xl">
+    <div class="site-container">
+      <div class="mx-auto max-w-4xl lg:max-w-5xl">
       <div class="relative">
         <!-- Tabs -->
         <div class="relative z-10 flex items-end">
@@ -152,29 +142,7 @@ const fieldClass =
         </div>
       </div>
 
-      <!-- Property type categories -->
-      <div class="mt-5 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
-        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5 md:gap-4">
-          <button
-            v-for="ptype in propertyTypeKeys"
-            :key="ptype.key"
-            type="button"
-            class="flex flex-col items-center justify-center gap-2.5 rounded-xl border border-dashed border-slate-300 px-2 py-4 text-center transition hover:border-slate-400 hover:bg-slate-50 sm:px-3 sm:py-5"
-            @click="searchByType(ptype.key)"
-          >
-            <img
-              :src="ptype.image"
-              :alt="t(`home.search.propertyTypes.${ptype.key}`)"
-              class="h-12 w-12 object-contain sm:h-14 sm:w-14"
-              width="56"
-              height="56"
-            >
-            <span class="text-xs font-medium leading-snug text-slate-900 sm:text-sm">
-              {{ t(`home.search.propertyTypes.${ptype.key}`) }}
-            </span>
-          </button>
-        </div>
-      </div>
+        <PropertyTypeCategoryGrid @select="searchByType" />
       </div>
     </div>
   </section>

@@ -1,7 +1,4 @@
-import { siteArticles } from '~/data/site-routes'
-
-export { navItems, footerSitemapItems, footerServiceItems, siteArticles } from '~/data/site-routes'
-export const articles = siteArticles
+export { navItems, footerSitemapItems, footerServiceItems } from '~/data/site-routes'
 
 export const heroStats = [
   { valueKey: 'home.hero.statsValues.customers', labelKey: 'home.hero.stats.customers', icon: 'trust' },
@@ -28,76 +25,8 @@ export const propertyTypeKeys = [
   { key: 'apartment', image: '/images/icon-property-5.webp' },
 ] as const
 
-const mockListingImage = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80'
-
-const mockListing = {
-  code: 'WP0001',
-  price: '2,200,000',
-  beds: 2,
-  baths: 2,
-  parking: 2,
-  image: mockListingImage,
-} as const
-
-export const recommendedSaleListings = [
-  { id: 'sale-1', ...mockListing },
-  { id: 'sale-2', ...mockListing },
-  { id: 'sale-3', ...mockListing },
-  { id: 'sale-4', ...mockListing },
-] as const
-
-export const recommendedRentListings = [
-  { id: 'rent-1', ...mockListing },
-  { id: 'rent-2', ...mockListing },
-  { id: 'rent-3', ...mockListing },
-  { id: 'rent-4', ...mockListing },
-] as const
-
 export const interestingContentItems = [
   { id: '1', image: '/images/content/content-1.png' },
   { id: '2', image: '/images/content/content-2.png' },
   { id: '3', image: '/images/content/content-3.png' },
-] as const
-
-/** ใส่ thumbnail + url TikTok/Reels ใน array นี้ */
-export const reels = [
-  {
-    id: '1',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=540&q=80',
-    url: '',
-  },
-  {
-    id: '2',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=540&q=80',
-    url: '',
-  },
-  {
-    id: '3',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=540&q=80',
-    url: '',
-  },
-  {
-    id: '4',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=540&q=80',
-    url: '',
-  },
-  {
-    id: '5',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=540&q=80',
-    url: '',
-  },
-  {
-    id: '6',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=540&q=80',
-    url: '',
-  },
-] as const
-
-/** ใส่รูปการ์ดรีวิวเต็มใบใน array นี้ */
-export const reviews = [
-  { id: '1', image: '/images/content/content-1.png' },
-  { id: '2', image: '/images/content/content-2.png' },
-  { id: '3', image: '/images/content/content-3.png' },
-  { id: '4', image: '/images/service-1.webp' },
-  { id: '5', image: '/images/service-2.webp' },
 ] as const

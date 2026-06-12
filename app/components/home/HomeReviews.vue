@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { reviews } from '~/data/home-content'
+import type { CustomerReviewListItem } from '~/types/customer-review'
 
 const { t } = useI18n()
+
+const { data, pending } = await useFetch<{ items: CustomerReviewListItem[] }>('/api/customer-reviews')
+
+const reviews = computed(() => data.value?.items ?? [])
+const showSection = computed(() => pending.value || reviews.value.length > 0)
 
 const TRANSITION_MS = 600
 const VISIBLE_OFFSETS = [-2, -1, 0, 1, 2] as const
@@ -14,12 +19,10 @@ const CARD_POSITIONS: Record<number, number> = {
   [2]: 80,
 }
 
-const slideCount = reviews.length
-const canSlide = slideCount > 1
+const slideCount = computed(() => reviews.value.length)
+const canSlide = computed(() => slideCount.value > 1)
 
-/** รายการกลาง (เริ่มที่รายการที่ 3) */
-const centerIndex = ref(2)
-/** 0 = หยุด, 0–1 = กำลังเลื่อน */
+const centerIndex = ref(0)
 const slideProgress = ref(0)
 const direction = ref<1 | -1>(1)
 const isAnimating = ref(false)
@@ -28,7 +31,13 @@ let timer: ReturnType<typeof setInterval> | null = null
 let animationFrame: number | null = null
 
 function wrapIndex(index: number) {
-  return ((index % slideCount) + slideCount) % slideCount
+  const count = slideCount.value
+  if (!count) return 0
+  return ((index % count) + count) % count
+}
+
+function reviewAlt(index: number) {
+  return t('home.reviews.reviewImage', { n: index + 1 })
 }
 
 function lerp(a: number, b: number, t: number) {
@@ -85,16 +94,18 @@ function getSlideState(slotOffset: number) {
 }
 
 function getItemForSlot(slotOffset: number) {
-  return reviews[wrapIndex(centerIndex.value + slotOffset)]!
+  return reviews.value[wrapIndex(centerIndex.value + slotOffset)]!
 }
 
-const visibleSlides = computed(() =>
-  VISIBLE_OFFSETS.map(slotOffset => ({
+const visibleSlides = computed(() => {
+  if (!slideCount.value) return []
+  return VISIBLE_OFFSETS.map(slotOffset => ({
     slotOffset,
     item: getItemForSlot(slotOffset),
+    itemIndex: wrapIndex(centerIndex.value + slotOffset),
     state: getSlideState(slotOffset),
-  })),
-)
+  }))
+})
 
 function cancelAnimation() {
   if (animationFrame !== null) {
@@ -104,7 +115,7 @@ function cancelAnimation() {
 }
 
 function animateProgress(from: number, to: number) {
-  if (!canSlide) return Promise.resolve()
+  if (!canSlide.value) return Promise.resolve()
 
   isAnimating.value = true
   const startTime = performance.now()
@@ -131,7 +142,7 @@ function animateProgress(from: number, to: number) {
 }
 
 async function next() {
-  if (isAnimating.value) return
+  if (isAnimating.value || !canSlide.value) return
   direction.value = 1
   await animateProgress(0, 1)
   centerIndex.value = wrapIndex(centerIndex.value + 1)
@@ -139,7 +150,7 @@ async function next() {
 }
 
 async function prev() {
-  if (isAnimating.value) return
+  if (isAnimating.value || !canSlide.value) return
   direction.value = -1
   await animateProgress(0, 1)
   centerIndex.value = wrapIndex(centerIndex.value - 1)
@@ -147,7 +158,7 @@ async function prev() {
 }
 
 function startAutoplay() {
-  if (!canSlide || timer) return
+  if (!canSlide.value || timer) return
   timer = setInterval(() => {
     if (!isAnimating.value) next()
   }, 5000)
@@ -160,6 +171,14 @@ function stopAutoplay() {
   }
 }
 
+watch(reviews, (items) => {
+  if (items.length) {
+    centerIndex.value = Math.min(2, items.length - 1)
+  } else {
+    centerIndex.value = 0
+  }
+}, { immediate: true })
+
 onMounted(startAutoplay)
 onUnmounted(() => {
   stopAutoplay()
@@ -169,6 +188,7 @@ onUnmounted(() => {
 
 <template>
   <section
+    v-if="showSection"
     id="reviews"
     class="bg-wp-navy pb-10 pt-6 sm:pb-14 sm:pt-8"
     aria-roledescription="carousel"
@@ -176,16 +196,20 @@ onUnmounted(() => {
     @mouseenter="stopAutoplay"
     @mouseleave="startAutoplay"
   >
-    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6">
-      <h2 class="text-2xl font-medium text-center text-white sm:text-3xl">
+    <div class="site-container">
+      <h2 class="text-center text-2xl font-medium text-white sm:text-3xl">
         {{ t('home.reviews.title') }}
       </h2>
 
-      <div class="relative overflow-hidden">
+      <div v-if="pending" class="mt-8 py-12 text-center text-sm text-white/70">
+        {{ t('pages.common.loading') }}
+      </div>
+
+      <div v-else class="relative overflow-hidden">
         <div class="pointer-events-none relative mx-auto h-[400px] w-full sm:h-[520px] lg:h-[580px]">
           <article
             v-for="slide in visibleSlides"
-            :key="slide.slotOffset"
+            :key="`${slide.item.id}-${slide.slotOffset}`"
             class="absolute bottom-0 w-[250px] will-change-[left,transform,opacity] sm:w-[300px] lg:w-[350px]"
             :class="slide.slotOffset === 0 ? 'pointer-events-auto' : ''"
             :style="{
@@ -203,8 +227,9 @@ onUnmounted(() => {
               :class="!slide.state.isActive ? 'brightness-[0.8]' : ''"
             >
               <img
-                :src="slide.item.image"
-                :alt="t(`home.reviews.items.${slide.item.id}.alt`)"
+                v-if="slide.item.image_url"
+                :src="slide.item.image_url"
+                :alt="reviewAlt(slide.itemIndex)"
                 class="h-full w-full object-cover"
               >
             </div>

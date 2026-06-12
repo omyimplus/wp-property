@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { reels } from '~/data/home-content'
+import { reelOpenUrl, type ReelListItem } from '~/types/reel'
 
 const { t } = useI18n()
+
+const { data, pending } = await useFetch<{ items: ReelListItem[] }>('/api/reels')
+
+const reels = computed(() => data.value?.items ?? [])
+const showSection = computed(() => pending.value || reels.value.length > 0)
 
 const current = ref(0)
 const slidesPerView = ref(4)
 
-const slideCount = reels.length
-const maxIndex = computed(() => Math.max(0, slideCount - slidesPerView.value))
-const canSlide = computed(() => slideCount > slidesPerView.value)
+const slideCount = computed(() => reels.value.length)
+const maxIndex = computed(() => Math.max(0, slideCount.value - slidesPerView.value))
+const canSlide = computed(() => slideCount.value > slidesPerView.value)
 const slideWidth = computed(() => 100 / slidesPerView.value)
 
 function updateSlidesPerView() {
@@ -41,10 +46,17 @@ function prev() {
   goTo(current.value - 1)
 }
 
-function openReel(url?: string) {
+function openReel(item: ReelListItem) {
+  const url = reelOpenUrl(item)
   if (!url) return
   window.open(url, '_blank', 'noopener,noreferrer')
 }
+
+watch(slideCount, () => {
+  if (current.value > maxIndex.value) {
+    current.value = maxIndex.value
+  }
+})
 
 onMounted(() => {
   updateSlidesPerView()
@@ -58,23 +70,28 @@ onUnmounted(() => {
 
 <template>
   <section
+    v-if="showSection"
     class="bg-wp-navy pb-10 pt-6 sm:pb-14 sm:pt-8"
     aria-roledescription="carousel"
     :aria-label="t('home.clips.title')"
   >
-    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6">
+    <div class="site-container">
       <h2 class="text-2xl font-medium text-white sm:text-3xl">
         {{ t('home.clips.title') }}
       </h2>
 
-      <div class="relative mt-8">
+      <div v-if="pending" class="mt-8 py-8 text-center text-sm text-white/70">
+        {{ t('pages.common.loading') }}
+      </div>
+
+      <div v-else class="relative mt-8">
         <div class="overflow-hidden">
           <div
             class="flex transition-transform duration-500 ease-out"
             :style="{ transform: `translateX(-${current * slideWidth}%)` }"
           >
             <article
-              v-for="item in reels"
+              v-for="(item, index) in reels"
               :key="item.id"
               class="group shrink-0 px-2 first:pl-0 last:pr-0 sm:px-2.5"
               :style="{ width: `${slideWidth}%` }"
@@ -82,13 +99,14 @@ onUnmounted(() => {
               <button
                 type="button"
                 class="relative block aspect-[9/16] w-full overflow-hidden rounded-2xl"
-                :class="item.url ? 'cursor-pointer' : 'cursor-default'"
-                :aria-label="t(`home.clips.items.${item.id}.alt`)"
-                @click="openReel(item.url)"
+                :class="reelOpenUrl(item) ? 'cursor-pointer' : 'cursor-default'"
+                :aria-label="t('home.clips.playClip', { n: index + 1 })"
+                @click="openReel(item)"
               >
                 <img
-                  :src="item.image"
-                  :alt="t(`home.clips.items.${item.id}.alt`)"
+                  v-if="item.poster_url"
+                  :src="item.poster_url"
+                  :alt="t('home.clips.playClip', { n: index + 1 })"
                   class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
                 >
 

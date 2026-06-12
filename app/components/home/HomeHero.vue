@@ -73,8 +73,8 @@ onUnmounted(stopAutoplay)
     </div>
 
     <!-- Content -->
-    <div class="relative mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6">
-      <div class="w-full max-w-5xl">
+    <div class="site-container relative flex h-full items-center">
+      <div class="w-full max-w-4xl">
         <p class="animate-hero-fade-up text-[22px] font-medium leading-tight text-wp-hero-navy [animation-delay:100ms]">
           {{ t('home.hero.tagline') }}
         </p>

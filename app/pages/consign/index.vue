@@ -2,12 +2,15 @@
 import {
   emptyPropertyCustomerForm,
   type PropertyCustomerFormData,
+  type PropertyCustomerImage,
 } from '~/types/property-customer'
 
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
 const form = ref<PropertyCustomerFormData>(emptyPropertyCustomerForm())
+const consignmentId = ref<string | null>(null)
+const images = ref<PropertyCustomerImage[]>([])
 const saving = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
@@ -17,7 +20,11 @@ async function onSubmit() {
   errorMessage.value = ''
   successMessage.value = ''
   try {
-    await $fetch('/api/public/consignments', { method: 'POST', body: form.value })
+    const { consignment } = await $fetch<{ consignment: { id: string } }>(
+      '/api/public/consignments',
+      { method: 'POST', body: form.value },
+    )
+    consignmentId.value = consignment.id
     successMessage.value = t('pages.forms.consignSuccess')
     form.value = emptyPropertyCustomerForm()
   } catch (e: unknown) {
@@ -46,7 +53,16 @@ useHead({ title: () => t('pages.consign.title') })
         <p v-if="errorMessage" class="mb-4 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">
           {{ errorMessage }}
         </p>
-        <PropertyForm v-model="form" mode="consignment" :saving="saving" @submit="onSubmit" />
+        <PropertyForm
+          v-model="form"
+          mode="consignment"
+          :property-id="consignmentId"
+          :images="images"
+          :show-images="false"
+          :saving="saving"
+          @update:images="images = $event"
+          @submit="onSubmit"
+        />
       </div>
     </section>
   </div>

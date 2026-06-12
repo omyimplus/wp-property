@@ -30,9 +30,27 @@ export function useSiteNav() {
     return route.path === normalizedBase
   }
 
+  function isNavActiveAny(paths: readonly string[]) {
+    return paths.some((path) => {
+      const target = localePath(path)
+      return route.path === target || route.path.startsWith(`${target}/`)
+    })
+  }
+
+  /** เมนู「บริการของเรา」— /services ใช้ exact match เพื่อไม่ชน /services/properties */
+  function isServiceParentNavActive(paths: readonly string[]) {
+    return paths.some((path) => {
+      const target = localePath(path)
+      if (path === '/services') return route.path === target
+      return route.path === target || route.path.startsWith(`${target}/`)
+    })
+  }
+
   return {
     navTo,
     pathWithHash,
     isNavActive,
+    isNavActiveAny,
+    isServiceParentNavActive,
   }
 }

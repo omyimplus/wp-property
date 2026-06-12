@@ -17,6 +17,12 @@ const navItems = [
   { label: 'เช่าทรัพย์', to: '/admin/rentals', icon: '◇' },
   { label: 'ฝากขายทรัพย์', to: '/admin/consignments', icon: '◇' },
   { label: 'อสังหาริมทรัพย์', to: '/admin/properties', icon: '◇' },
+  { label: 'สนใจซื้อ', to: '/admin/property-inquiries/sale', icon: '◇' },
+  { label: 'สนใจเช่า', to: '/admin/property-inquiries/rent', icon: '◇' },
+  { label: 'คอนเทนต์หน้าแรก', to: '/admin/interesting-content', icon: '◇' },
+  { label: 'บทความ', to: '/admin/articles', icon: '◇' },
+  { label: 'คลิปที่น่าสนใจ', to: '/admin/reels', icon: '◇' },
+  { label: 'รีวิวจากลูกค้า', to: '/admin/customer-reviews', icon: '◇' },
   { label: 'ผู้ใช้งาน', to: '/admin/users', icon: '◇' },
 ]
 

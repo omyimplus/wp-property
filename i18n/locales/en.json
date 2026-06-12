@@ -2,11 +2,19 @@
   "nav": {
     "home": "Home",
     "services": "Our Services",
-    "consignBuy": "Consign & Buy",
+    "rentBuy": "Rent-to-Own",
     "about": "About Us",
+    "interestingContent": "Content",
     "articles": "Articles",
     "reviews": "Reviews",
-    "contact": "Contact Us"
+    "contact": "Contact Us",
+    "serviceDropdown": {
+      "overview": "Services Overview",
+      "properties": "Properties",
+      "loans": "Loan Services",
+      "consign": "Consign for Sale / Rent",
+      "rent": "Rentals"
+    }
   },
   "common": {
     "viewAll": "View All",
@@ -86,12 +94,21 @@
         "condo": "Condominium",
         "commercial": "Commercial Building",
         "apartment": "Apartment"
-      }
+      },
+      "categorySlidePrev": "Previous categories",
+      "categorySlideNext": "Next categories",
+      "categoryGoToSlide": "Go to slide {n}"
     },
     "properties": {
       "title": "Featured Properties",
       "listingSale": "For Sale",
       "listingRent": "For Rent",
+      "loadError": "Could not load properties — ensure the latest deploy includes the /api/properties endpoint.",
+      "emptySale": "No published listings for sale yet.",
+      "emptyRent": "No published listings for rent yet.",
+      "slidePrev": "Previous properties",
+      "slideNext": "Next properties",
+      "goToSlide": "Go to slide {n}",
       "price": "Price {price} THB",
       "beds": "{n} beds",
       "baths": "{n} baths",
@@ -107,9 +124,15 @@
       "slideNext": "Next slide",
       "goToSlide": "Go to slide {n}",
       "items": {
-        "1": { "alt": "5 benefits of debt consolidation" },
-        "2": { "alt": "How WP can help you" },
-        "3": { "alt": "LTV extension for 100% home loans" }
+        "1": {
+          "alt": "5 benefits of debt consolidation"
+        },
+        "2": {
+          "alt": "How WP can help you"
+        },
+        "3": {
+          "alt": "LTV extension for 100% home loans"
+        }
       }
     },
     "articles": {
@@ -134,26 +157,13 @@
       "slidePrev": "Previous clip",
       "slideNext": "Next clip",
       "goToSlide": "Go to clip {n}",
-      "items": {
-        "1": { "alt": "Second-hand home ready to decorate, Rangsit-Bang Phun area" },
-        "2": { "alt": "Second-hand home ready to decorate, Rangsit-Bang Phun area" },
-        "3": { "alt": "Second-hand home ready to decorate, Rangsit-Bang Phun area" },
-        "4": { "alt": "Second-hand home ready to decorate, Rangsit-Bang Phun area" },
-        "5": { "alt": "Second-hand home ready to decorate, Rangsit-Bang Phun area" },
-        "6": { "alt": "Second-hand home ready to decorate, Rangsit-Bang Phun area" }
-      }
+      "playClip": "Play clip {n}"
     },
     "reviews": {
       "title": "Customer Reviews",
       "slidePrev": "Previous review",
       "slideNext": "Next review",
-      "items": {
-        "1": { "alt": "Transfer completed, debts cleared before loan — condo loan 3,498,000" },
-        "2": { "alt": "Transfer completed, debts cleared before loan — condo loan 3,498,000" },
-        "3": { "alt": "Transfer completed, debts cleared before loan — condo loan 3,498,000" },
-        "4": { "alt": "Transfer completed, debts cleared before loan — condo loan 3,498,000" },
-        "5": { "alt": "Transfer completed, debts cleared before loan — condo loan 3,498,000" }
-      }
+      "reviewImage": "Customer review {n}"
     }
   },
   "footer": {
@@ -174,6 +184,7 @@
     "sitemapLinks": {
       "home": "Home",
       "about": "About Us",
+      "interestingContent": "Featured Content",
       "loanServices": "Loan Services",
       "properties": "Properties",
       "contact": "Contact Us"
@@ -181,7 +192,7 @@
     "serviceLinks": {
       "properties": "Properties",
       "loans": "Loans",
-      "consign": "Consign Property",
+      "consign": "Consign (Sale / Rent)",
       "rent": "Rentals"
     }
   },
@@ -205,12 +216,59 @@
       "noImage": "No image",
       "usableArea": "Usable area",
       "landArea": "Land area",
-      "resultCount": "{count} results"
+      "resultCount": "{count} results",
+      "specsTitle": "Property details",
+      "locationTitle": "Location",
+      "relatedTitle": "Recommended listings",
+      "relatedSubtitle": "Latest properties you may also like",
+      "propertyType": "Type",
+      "bedrooms": "Bedrooms",
+      "bathrooms": "Bathrooms",
+      "projectName": "Project",
+      "floor": "Floor",
+      "floorsTotal": "Total floors",
+      "facing": "Facing",
+      "age": "Property age",
+      "parking": "Parking",
+      "deposit": "Deposit",
+      "depositMonths": "{n} months",
+      "ageYears": "{n} years",
+      "openGallery": "View all photos",
+      "photoCount": "{n} photos",
+      "inquiry": {
+        "title": "Interested in this property",
+        "subtitle": "Fill in your details and our team will get back to you soon",
+        "listingType": "Interested in",
+        "name": "Full name",
+        "phone": "Phone",
+        "line": "Line ID / contact",
+        "note": "Additional message",
+        "notePlaceholder": "e.g. Would like to schedule a viewing on Saturday",
+        "submit": "Submit inquiry",
+        "submitting": "Sending...",
+        "success": "Your inquiry has been submitted. Our team will contact you soon.",
+        "done": "Close",
+        "cancel": "Cancel",
+        "submitFailed": "Could not submit. Please try again.",
+        "nameRequired": "Please enter your name",
+        "phoneRequired": "Please enter your phone number",
+        "lineRequired": "Please enter your Line ID or contact info",
+        "listingTypeRequired": "Please choose buy or rent"
+      }
     },
     "services": {
       "title": "Our Services",
       "subtitle": "End-to-end finance and real estate services",
-      "loanCta": "Loan consultation"
+      "loanCta": "Loan consultation",
+      "debt": {
+        "detail": "We help you consolidate debt and restructure your finances with a clear plan. Our team coordinates with trusted financial institutions so you can get approved and manage repayments systematically—with options to move into a new home once your debt is resolved."
+      },
+      "rentBuy": {
+        "detail": "Rent-to-own for houses, condos, land, and commercial properties in locations that suit living and investment. We help you find the right property, assess pricing, and handle paperwork from start to finish so you can become an owner more easily."
+      },
+      "consign": {
+        "detail": "Consign your property for sale or rent with an experienced team. Fill in property details and choose listing type (sale/rent). Submissions go to Admin → Consignments for evaluation, photography, and listing."
+      }
     },
     "loans": {
       "title": "Loan / Debt Consolidation Inquiry",
@@ -219,8 +277,8 @@
     },
     "consign": {
       "title": "Consign for Sale / Rent",
-      "subtitle": "Submit your property details for review",
-      "adminNote": "Submissions go to Admin → Consignments (pending approval)"
+      "subtitle": "Submit property details and choose listing type (sale or rent) for our team to evaluate and list",
+      "adminNote": "Submissions go to Admin → Consignments (pending approval) based on the listing type selected"
     },
     "rent": {
       "title": "Rentals",
@@ -230,19 +288,76 @@
     },
     "about": {
       "title": "About Us",
-      "subtitle": "WP Property Wealthy Millionaire",
-      "body": "We provide professional finance and real estate services with over 19 years of experience, helping clients achieve their goals transparently."
+      "subtitle": "WP Property — full-service finance and real estate experts",
+      "lead": "WP Property — full-service finance and real estate experts",
+      "intro": "WP Property (WP Property Wealthy Millionaire Co., Ltd.) is a finance and real estate specialist offering end-to-end services: loans, debt consolidation, home refinancing, property consignment, buying and selling, and rental property management — with over 19 years of experience.\n\nWe understand that financial and property management challenges matter. WP Property focuses on clear, transparent advice tailored to each client's goals — whether reducing debt, improving cash flow, or generating income from real estate.",
+      "sections": {
+        "debtConsolidation": {
+          "title": "Why consolidate debt with a home loan through WP Property?",
+          "intro": "If you carry multiple debts — credit cards, personal loans, or other finance — consolidating with a home loan may help reduce your monthly burden.",
+          "helpsLead": "WP Property advises on home-loan debt consolidation to help clients",
+          "points": [
+            "Lower interest across multiple debts",
+            "Reduce monthly instalments",
+            "Single payment, easier to manage",
+            "Improve financial liquidity",
+            "Structure loans to fit your income"
+          ],
+          "outro": "Our team analyses each case in detail, from initial assessment and document preparation through to coordinating with lenders, so you get the most suitable options."
+        },
+        "consignSale": {
+          "title": "Why consign your home, condo, or property with WP Property?",
+          "intro": "WP Property offers full consignment services with marketing and sales teams that help close deals faster.",
+          "servicesLead": "Our services include",
+          "points": [
+            "Initial property valuation",
+            "Online marketing planning",
+            "Photography and promotional content",
+            "Listings across multiple channels",
+            "Lead screening and viewing appointments",
+            "End-to-end transaction documentation"
+          ],
+          "outro": "We focus on reaching the right buyers and reducing the hassle of doing it yourself."
+        },
+        "rentalManagement": {
+          "title": "Full rental management in one place",
+          "intro": "For owners who want to rent out but lack time to manage, WP Property handles tenant sourcing, contracts, rent collection, and coordination.",
+          "suitableLead": "Ideal for",
+          "points": [
+            "Real estate investors",
+            "Condo owners renting out units",
+            "Homeowners seeking long-term rental income",
+            "Owners who cannot manage tenants themselves"
+          ],
+          "outro": "We manage professionally so your asset generates income efficiently with fewer day-to-day hassles."
+        },
+        "whyChooseUs": {
+          "title": "Why do many clients choose WP Property?",
+          "intro": "Over 19 years of experience in real estate and finance",
+          "points": [
+            "Straightforward, honest advice",
+            "Full support for loans, buying/selling, and rentals",
+            "Professional team at every step",
+            "Trust, transparency, and long-term results"
+          ],
+          "outro": "WP Property is ready to be your partner in finance and real estate — making home, investment, and debt management simpler and more effective."
+        }
+      }
     },
     "articles": {
       "title": "Articles",
       "subtitle": "Finance and property insights",
       "back": "Back to articles",
       "published": "Article",
-      "placeholderBody": "Full article content will be added later — currently showing the home page summary."
+      "empty": "No articles yet",
+      "notFound": "Article not found",
+      "loadError": "Could not load articles"
     },
     "reviews": {
       "title": "Customer Reviews",
-      "subtitle": "Real results and feedback from our clients"
+      "subtitle": "Real results and feedback from our clients",
+      "empty": "No reviews yet",
+      "loadError": "Could not load reviews"
     },
     "contact": {
       "title": "Contact Us",
@@ -255,6 +370,12 @@
       "privacyBody": "We only use information you submit through forms to contact you and provide services. We do not share it with third parties without consent.",
       "termsIntro": "Website terms of use",
       "termsBody": "By using this website you agree to our terms. Listings and prices are for reference and may change."
+    },
+    "interestingContent": {
+      "subtitle": "Insights and highlights from WP Property",
+      "back": "Back to content list",
+      "empty": "No content yet",
+      "notFound": "Content not found"
     }
   }
 }

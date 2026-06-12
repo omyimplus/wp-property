@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import HomeFeaturedProperties from '~/components/home/HomeFeaturedProperties.vue'
 import { services } from '~/data/home-content'
 
 definePageMeta({
@@ -17,13 +18,13 @@ const { t } = useI18n()
 
     <!-- Services -->
     <section id="services" class="bg-wp-navy pb-10 pt-6 sm:pb-14 sm:pt-8">
-      <div class="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+      <div class="site-container">
         <div class="text-center">
           <h2 class="inline-block border-b-2 border-white pb-3 text-2xl font-medium text-white sm:text-3xl">
             {{ t('home.services.title') }}
           </h2>
         </div>
-        <div class="mx-auto mt-10 grid max-w-5xl gap-4 sm:grid-cols-2 sm:gap-5 lg:max-w-6xl lg:grid-cols-3">
+        <div class="mx-auto mt-10 grid max-w-4xl gap-4 sm:grid-cols-2 sm:gap-5 lg:max-w-5xl lg:grid-cols-3">
           <article
             v-for="service in services"
             :id="service.key === 'consign' ? 'consign-buy' : undefined"

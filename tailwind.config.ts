@@ -20,6 +20,10 @@ export default {
         'hero-fade-in': 'hero-fade-in 1.1s ease-out both',
         'hero-fade-up': 'hero-fade-up 0.75s ease-out both',
       },
+      maxWidth: {
+        /** container หลักเว็บสาธารณะ — เล็กกว่า max-w-7xl (80rem) มาตรฐาน */
+        site: '68rem',
+      },
       colors: {
         wp: {
           header: '#0f2b52',

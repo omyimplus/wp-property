@@ -49,6 +49,20 @@ const statCards = computed(() => {
       href: '/admin/properties?status=pending_approval',
       accent: 'amber',
     },
+    {
+      label: 'สนใจซื้อ',
+      sublabel: 'รอติดต่อ',
+      value: c.property_inquiries_sale_pending,
+      href: '/admin/property-inquiries/sale?status=pending_approval',
+      accent: 'rose',
+    },
+    {
+      label: 'สนใจเช่า',
+      sublabel: 'รอติดต่อ',
+      value: c.property_inquiries_rent_pending,
+      href: '/admin/property-inquiries/rent?status=pending_approval',
+      accent: 'pink',
+    },
   ]
 })
 
@@ -71,6 +85,7 @@ function alertBadgeClass(type: DashboardAlert['type']) {
     rental: 'bg-emerald-100 text-emerald-900',
     consignment: 'bg-violet-100 text-violet-900',
     property: 'bg-amber-100 text-amber-900',
+    property_inquiry: 'bg-rose-100 text-rose-900',
   }
   return map[type]
 }
@@ -82,6 +97,8 @@ function cardRingClass(accent: string, count: number) {
     emerald: 'border-emerald-300 ring-1 ring-emerald-100',
     violet: 'border-violet-300 ring-1 ring-violet-100',
     amber: 'border-amber-300 ring-1 ring-amber-100',
+    rose: 'border-rose-300 ring-1 ring-rose-100',
+    pink: 'border-pink-300 ring-1 ring-pink-100',
   }
   return rings[accent] ?? 'border-slate-200'
 }

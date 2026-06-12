@@ -1,28 +1,17 @@
 import type { PropertyImage } from '~/types/property'
 import type { PropertyCustomerImage } from '~/types/property-customer'
-import {
-  PROPERTY_IMAGE_MIME,
-  preparePropertyImageForUpload,
-} from '~/utils/prepare-property-image'
+import { useAdminImageStorage } from '~/composables/useAdminImageStorage'
 
 export type EntityImage = PropertyImage | PropertyCustomerImage
-
-const BUCKET = 'property-images'
-const MAX_UPLOAD_BYTES = 5 * 1024 * 1024
 
 export function useEntityImageUpload(options: {
   entityId: Ref<string | null>
   apiBase: string
   pathPrefix: (id: string) => string
 }) {
-  const supabase = useSupabaseClient()
+  const { prepareAndUpload, publicUrl } = useAdminImageStorage()
   const uploading = ref(false)
   const uploadError = ref('')
-
-  function publicUrl(path: string) {
-    const { data } = supabase.storage.from(BUCKET).getPublicUrl(path)
-    return data.publicUrl
-  }
 
   async function uploadFiles(files: File[], startOrder = 0): Promise<EntityImage[]> {
     const id = options.entityId.value
@@ -37,32 +26,13 @@ export function useEntityImageUpload(options: {
 
     try {
       for (let i = 0; i < files.length; i++) {
-        const prepared = await preparePropertyImageForUpload(files[i])
-        if (prepared.size > MAX_UPLOAD_BYTES) {
-          throw new Error(
-            `รูป ${files[i].name} ยังใหญ่เกินไปหลังปรับขนาด — ลองใช้รูปที่เล็กลง`,
-          )
-        }
-
-        const storage_path = `${options.pathPrefix(id)}${crypto.randomUUID()}.webp`
-
-        const { error: storageError } = await supabase.storage
-          .from(BUCKET)
-          .upload(storage_path, prepared, {
-            upsert: false,
-            cacheControl: '3600',
-            contentType: PROPERTY_IMAGE_MIME,
-          })
-
-        if (storageError) {
-          throw new Error(storageError.message)
-        }
+        const { storagePath } = await prepareAndUpload(files[i], options.pathPrefix(id))
 
         const { image } = await $fetch<{ image: EntityImage }>(
           `${options.apiBase}/${id}/images`,
           {
             method: 'POST',
-            body: { storage_path, sort_order: startOrder + i },
+            body: { storage_path: storagePath, sort_order: startOrder + i },
           },
         )
 
@@ -113,4 +83,49 @@ export function useConsignmentImageUpload(consignmentId: Ref<string | null>) {
     apiBase: '/api/admin/consignments',
     pathPrefix: id => `pc/${id}/`,
   })
+}
+
+export function useInterestingContentCoverUpload(itemId: Ref<string | null>) {
+  const { prepareAndUpload } = useAdminImageStorage()
+  const uploading = ref(false)
+  const uploadError = ref('')
+
+  async function uploadCover(file: File): Promise<string | null> {
+    const id = itemId.value
+    if (!id) {
+      uploadError.value = 'บันทึกข้อมูลก่อนอัปโหลดรูป'
+      return null
+    }
+
+    uploading.value = true
+    uploadError.value = ''
+
+    try {
+      const { storagePath, publicUrl: url } = await prepareAndUpload(file, `ic/${id}/cover/`)
+      const { item } = await $fetch<{ item: { cover_url: string | null } }>(
+        `/api/admin/interesting-content/${id}/cover`,
+        { method: 'POST', body: { storage_path: storagePath } },
+      )
+      return item.cover_url ?? url
+    } catch (e: unknown) {
+      uploadError.value = e instanceof Error ? e.message : 'อัปโหลดไม่สำเร็จ'
+      return null
+    } finally {
+      uploading.value = false
+    }
+  }
+
+  async function removeCover(): Promise<boolean> {
+    const id = itemId.value
+    if (!id) return false
+    try {
+      await $fetch(`/api/admin/interesting-content/${id}/cover`, { method: 'DELETE' })
+      return true
+    } catch {
+      uploadError.value = 'ลบรูปไม่สำเร็จ'
+      return false
+    }
+  }
+
+  return { uploading, uploadError, uploadCover, removeCover }
 }

@@ -1,0 +1,27 @@
+---
+description: ต้องตรวจ error จาก terminal ทุกครั้งหลังรันคำสั่ง
+alwaysApply: true
+---
+
+# ตรวจ terminal error เสมอ
+
+หลังรันคำสั่งใน terminal (build, dev, test, lint, migrate, npm, nuxt, supabase ฯลฯ) **ต้องอ่าน output จริง** ก่อนสรุปงานหรือบอกว่าเสร็จ
+
+## บังคับ
+
+1. **อย่าสมมติว่าสำเร็จ** — ดู exit code และข้อความ error/warning ที่เกี่ยวข้อง
+2. **หลังแก้โค้ดที่กระทบ runtime/build** — รันคำสั่งที่เหมาะสม (เช่น `npm run build`, `nuxt prepare`, typecheck) แล้วอ่านผล
+3. **ถ้ามี error** — แก้ให้หายหรืออธิบาย blocker ชัดเจน อย่าข้ามไปงานถัดไป
+4. **ถ้า build/dev ยังไม่ได้รัน** — อย่าบอกว่า "ใช้งานได้แล้ว" / "build ผ่านแล้ว"
+
+## ตัวอย่างที่ต้องจับ
+
+- `Could not resolve` / `ENOENT` / `TSConfckParseError` / `ENOSPC`
+- Rollup/Vite/Nitro stack trace
+- HTTP 4xx/5xx จาก curl หรือ API test
+- Pre-commit / test failure
+
+## ก่อนตอบ user
+
+- สรุปว่ารันคำสั่งอะไร ผลเป็นอย่างไร (ผ่าน / error อะไร)
+- ถ้ายัง error อยู่ บอกสาเหตุและขั้นถัดไป ไม่ปิดงานแบบ half-done

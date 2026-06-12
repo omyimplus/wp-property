@@ -21,6 +21,12 @@ const title = computed(
   () => props.property.listing_title || props.property.project_name || props.property.property_code,
 )
 
+const categoryLabel = computed(() => {
+  const type = props.property.property_type
+  if (!type) return ''
+  return t(`home.search.types.${type}`)
+})
+
 const detailTo = computed(() =>
   localePath(`/properties/${props.property.property_code}`),
 )
@@ -46,6 +52,12 @@ const detailTo = computed(() =>
       </span>
       <span class="absolute right-3 top-3 rounded-full bg-red-600 px-2.5 py-0.5 text-xs font-medium text-white">
         {{ property.property_code }}
+      </span>
+      <span
+        v-if="categoryLabel"
+        class="absolute bottom-3 left-3 rounded-full bg-white/95 px-2.5 py-0.5 text-xs font-medium text-slate-700 shadow-sm"
+      >
+        {{ categoryLabel }}
       </span>
     </div>
     <div class="p-4">

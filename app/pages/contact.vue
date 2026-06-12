@@ -12,7 +12,7 @@ useHead({ title: () => t('pages.contact.title') })
     <SitePageHero :title="t('pages.contact.title')" :subtitle="t('pages.contact.subtitle')" />
 
     <section id="contact" class="py-12">
-      <div class="mx-auto grid max-w-7xl gap-10 px-4 lg:grid-cols-2 sm:px-6">
+      <div class="site-container grid gap-10 lg:grid-cols-2">
         <div class="space-y-4 text-sm text-slate-700 sm:text-base">
           <p>
             <span class="font-medium text-slate-900">{{ t('footer.addressLabel') }}:</span>
@@ -53,7 +53,7 @@ useHead({ title: () => t('pages.contact.title') })
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink :to="localePath('/properties')" class="text-wp-navy hover:underline">
+              <NuxtLink :to="localePath('/services/properties')" class="text-wp-navy hover:underline">
                 → {{ t('pages.properties.title') }}
               </NuxtLink>
             </li>

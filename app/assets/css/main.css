@@ -26,3 +26,41 @@
     }
   }
 }
+
+@layer components {
+  .site-container {
+    @apply mx-auto w-full max-w-site px-4 sm:px-6;
+  }
+
+  .rich-content img,
+  .rich-content video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1rem 0;
+    border-radius: 0.75rem;
+  }
+
+  .rich-content video {
+    background: #000;
+  }
+
+  .rich-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+  }
+
+  .rich-content table td,
+  .rich-content table th {
+    border: 1px solid #e2e8f0;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .rich-content blockquote {
+    border-left: 4px solid #cbd5e1;
+    padding-left: 1rem;
+    color: #475569;
+    font-style: italic;
+  }
+}

@@ -21,7 +21,7 @@ const serviceLinks = computed(() =>
 
 <template>
   <footer id="contact" class="bg-wp-footer text-white">
-    <div class="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-4 lg:gap-8 lg:py-14">
+    <div class="site-container grid gap-10 py-12 lg:grid-cols-4 lg:gap-8 lg:py-14">
       <div id="about" class="lg:col-span-1">
         <NuxtLink :to="navTo('/')" class="inline-flex items-center">
           <picture>
@@ -94,7 +94,7 @@ const serviceLinks = computed(() =>
     </div>
 
     <div class="border-t border-white/30">
-      <div class="mx-auto flex max-w-7xl items-center justify-center gap-3 px-4 py-5 text-sm text-white/85 sm:px-6">
+      <div class="site-container flex items-center justify-center gap-3 py-5 text-sm text-white/85">
         <NuxtLink :to="navTo('/privacy')" class="transition hover:text-wp-gold">{{ t('footer.privacy') }}</NuxtLink>
         <span aria-hidden="true">|</span>
         <NuxtLink :to="navTo('/terms')" class="transition hover:text-wp-gold">{{ t('footer.terms') }}</NuxtLink>

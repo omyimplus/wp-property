@@ -25,20 +25,28 @@ type FormModel = PropertyFormData | PropertyCustomerFormData
 const props = withDefaults(
   defineProps<{
     modelValue: FormModel
-    propertyId: string | null
-    images: EntityImage[]
+    propertyId?: string | null
+    images?: EntityImage[]
     saving?: boolean
     codeReadonly?: boolean
     mode?: 'property' | 'consignment'
     readonly?: boolean
+    showImages?: boolean
+    imageApiBase?: string
   }>(),
-  { mode: 'property', readonly: false },
+  {
+    mode: 'property',
+    readonly: false,
+    propertyId: null,
+    images: () => [],
+    showImages: true,
+  },
 )
 
 const isConsignment = computed(() => props.mode === 'consignment')
 const entityId = computed(() => props.propertyId)
-const imageApiBase = computed(() =>
-  isConsignment.value ? '/api/admin/consignments' : '/api/admin/properties',
+const imageApiBase = computed(
+  () => props.imageApiBase ?? (isConsignment.value ? '/api/admin/consignments' : '/api/admin/properties'),
 )
 const imagePathPrefix = (id: string) =>
   isConsignment.value ? `pc/${id}/` : `${id}/`
@@ -502,6 +510,7 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
     </section>
 
     <section
+      v-if="showImages"
       id="property-images-section"
       ref="imagesSectionRef"
       class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"

@@ -12,6 +12,8 @@ export function useDashboardPending() {
       + c.rentals_pending
       + c.consignments_pending
       + c.properties_pending
+      + c.property_inquiries_sale_pending
+      + c.property_inquiries_rent_pending
     )
   })
 
@@ -35,6 +37,11 @@ export function useDashboardPending() {
     if (path.startsWith('/admin/rentals')) return c.rentals_pending
     if (path.startsWith('/admin/consignments')) return c.consignments_pending
     if (path.startsWith('/admin/properties')) return c.properties_pending
+    if (path.startsWith('/admin/property-inquiries/sale')) return c.property_inquiries_sale_pending
+    if (path.startsWith('/admin/property-inquiries/rent')) return c.property_inquiries_rent_pending
+    if (path.startsWith('/admin/property-inquiries')) {
+      return c.property_inquiries_sale_pending + c.property_inquiries_rent_pending
+    }
     return 0
   }
 
