@@ -1,0 +1,23 @@
+/** หน้า public ที่ใช้ smoke test / console check */
+export const PUBLIC_CONSOLE_ROUTES = [
+  '/',
+  '/about',
+  '/services',
+  '/services/properties',
+  '/services/loans',
+  '/consign',
+  '/rent',
+  '/contact',
+  '/articles',
+  '/reviews',
+  '/interesting-content',
+  '/privacy',
+  '/terms',
+  '/properties',
+  '/en',
+  '/en/about',
+  '/en/services',
+  '/en/services/properties',
+  '/en/consign',
+  '/en/contact',
+]

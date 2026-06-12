@@ -11,7 +11,11 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "start": "node app.cjs",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "test:build": "node scripts/check-build.mjs",
+    "test:console:setup": "playwright install chromium",
+    "test:console": "node scripts/check-public-console.mjs",
+    "test": "npm run test:build"
   },
   "dependencies": {
     "@fontsource/prompt": "^5.2.8",
@@ -28,6 +32,7 @@
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.14.0",
-    "@types/ws": "^8.18.1"
+    "@types/ws": "^8.18.1",
+    "playwright": "^1.58.2"
   }
 }

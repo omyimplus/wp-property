@@ -23,8 +23,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Build (with duplicate-import guard)
+        run: npm run test:build
         env:
           NODE_ENV: production
           NUXT_PUBLIC_SUPABASE_URL: ${{ secrets.NUXT_PUBLIC_SUPABASE_URL }}
@@ -54,35 +54,24 @@ jobs:
           retention-days: 7
 
       - name: Deploy app to Plesk (SFTP)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        uses: wangyucode/sftp-upload-action@v3
         with:
-          server: ${{ secrets.FTP_HOST }}
+          host: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: sftp
-          port: 22
-          local-dir: deploy/
-          server-dir: httpdocs/
-          timeout: 600000
-          log-level: minimal
-          dangerous-clean-slate: false
-          exclude: |
-            **/.git*
-            **/.git*/**
+          port: '22'
+          localDir: deploy
+          remoteDir: httpdocs
+          exclude: '**/.git*,**/.git*/**'
+          concurrency: '8'
 
-      - name: Deploy server node_modules (SFTP, แยกขั้นตอน)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+      - name: Deploy server node_modules (SFTP)
+        uses: wangyucode/sftp-upload-action@v3
         with:
-          server: ${{ secrets.FTP_HOST }}
+          host: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: sftp
-          port: 22
-          local-dir: deploy/.output/server/node_modules/
-          server-dir: httpdocs/.output/server/node_modules/
-          timeout: 600000
-          log-level: verbose
-          dangerous-clean-slate: false
-          exclude: |
-            **/.git*
-            **/.git*/**
+          port: '22'
+          localDir: deploy/.output/server/node_modules
+          remoteDir: httpdocs/.output/server/node_modules
+          concurrency: '16'
