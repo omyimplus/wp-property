@@ -82,8 +82,11 @@
     },
     "search": {
       "typePlaceholder": "เลือกประเภทอสังหา",
+      "typeLabel": "ประเภทอสังหาริมทรัพย์",
       "pricePlaceholder": "ช่วงราคา",
+      "priceLabel": "ช่วงราคา",
       "keywordPlaceholder": "โครงการ จังหวัด อำเภอ ตำบล ถนน",
+      "keywordLabel": "คำค้นหา",
       "types": {
         "house": "บ้าน",
         "condo": "คอนโด",

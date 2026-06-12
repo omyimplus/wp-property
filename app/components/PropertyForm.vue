@@ -32,6 +32,8 @@ const props = withDefaults(
     mode?: 'property' | 'consignment'
     readonly?: boolean
     showImages?: boolean
+    /** แสดงสถานะ/แหล่งที่มา (ปิดในหน้าลูกค้าฝากขาย) */
+    showStatus?: boolean
     imageApiBase?: string
   }>(),
   {
@@ -40,6 +42,7 @@ const props = withDefaults(
     propertyId: null,
     images: () => [],
     showImages: true,
+    showStatus: true,
   },
 )
 
@@ -208,7 +211,7 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
             จะได้รหัสอัตโนมัติเมื่อบันทึก (เช่น WP-0001)
           </p>
         </div>
-        <div v-else class="sm:col-span-2 rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-sm text-violet-900">
+        <div v-else-if="showStatus" class="sm:col-span-2 rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-sm text-violet-900">
           ยังไม่มีรหัสทรัพย์ — ระบบจะสร้างรหัส WP เมื่อกด「อนุมัติเข้าระบบ」
         </div>
         <div class="sm:col-span-2">
@@ -279,17 +282,18 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
             รายการที่ลูกค้าส่งผ่านหน้าเว็บจะถูกบันทึกเป็น「ลูกค้าฝากขายผ่านเว็บ」อัตโนมัติ
           </p>
         </div>
-        <div v-else>
+        <div v-else-if="showStatus">
           <label class="mb-1 block text-sm font-medium text-slate-700">แหล่งที่มา</label>
           <p class="rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-sm text-violet-900">
             ลูกค้าฝากขายผ่านเว็บ
           </p>
         </div>
-        <div>
+        <div v-if="showStatus">
           <label class="mb-1 block text-sm font-medium text-slate-700">สถานะ</label>
           <select
             :value="form.status"
             class="w-full rounded-lg border border-slate-300 px-3 py-2"
+            :disabled="readonly"
             @change="setField('status', ($event.target as HTMLSelectElement).value as typeof form.status)"
           >
             <option v-for="s in statusOptions" :key="s.value" :value="s.value">

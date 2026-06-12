@@ -17,6 +17,7 @@ export function useSiteSeo(options: SiteSeoOptions = {}) {
   const { t, locale } = useI18n()
   const config = useRuntimeConfig()
   const route = useRoute()
+  const switchLocalePath = useSwitchLocalePath()
   const siteUrl = normalizeSiteUrl(config.public.siteUrl)
 
   const siteName = computed(() => t('seo.siteName'))
@@ -31,7 +32,13 @@ export function useSiteSeo(options: SiteSeoOptions = {}) {
 
   const description = computed(() => toValue(options.description)?.trim() || defaultDescription.value)
   const ogImage = computed(() => resolveSiteMediaUrl(siteUrl, toValue(options.image)) ?? defaultImage.value)
-  const canonicalUrl = computed(() => absoluteSiteUrl(siteUrl, route.path))
+  /** URL ของหน้าปัจจุบันตาม locale (canonical/hreflang ใช้ useLocaleHead ใน layout) */
+  const pageUrl = computed(() => {
+    const localizedPath = switchLocalePath(locale.value)
+    if (localizedPath) return absoluteSiteUrl(siteUrl, localizedPath)
+    const path = route.fullPath.split('?')[0] || '/'
+    return absoluteSiteUrl(siteUrl, path)
+  })
   const ogLocale = computed(() => (locale.value === 'th' ? 'th_TH' : 'en_US'))
 
   useSeoMeta({
@@ -40,7 +47,7 @@ export function useSiteSeo(options: SiteSeoOptions = {}) {
     ogTitle: pageTitle,
     ogDescription: description,
     ogType: () => toValue(options.type) ?? 'website',
-    ogUrl: canonicalUrl,
+    ogUrl: pageUrl,
     ogImage,
     ogSiteName: siteName,
     ogLocale,
@@ -52,7 +59,6 @@ export function useSiteSeo(options: SiteSeoOptions = {}) {
   })
 
   useHead({
-    link: [{ rel: 'canonical', href: canonicalUrl }],
     script: computed(() => {
       const value = toValue(options.jsonLd)
       if (!value) return []

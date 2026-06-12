@@ -1,16 +1,14 @@
 <script setup lang="ts">
-const i18nHead = useLocaleHead({
-  addDirAttribute: true,
-  addSeoAttributes: true,
-})
+const i18nHead = useLocaleHead({ seo: true })
 
-useHead({
+useHead(() => ({
   htmlAttrs: {
+    ...i18nHead.value.htmlAttrs,
     class: 'site-public',
   },
-})
-
-useHead(i18nHead)
+  link: i18nHead.value.link,
+  meta: i18nHead.value.meta,
+}))
 
 useSiteOrganizationSchema()
 </script>

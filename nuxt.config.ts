@@ -46,7 +46,6 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      htmlAttrs: { lang: 'th' },
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
       meta: [
@@ -70,12 +69,9 @@ export default defineNuxtConfig({
     strategy: 'prefix_except_default',
     langDir: 'locales',
     lazy: true,
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'wp_i18n',
-      redirectOn: 'root',
-      alwaysRedirect: false,
-    },
+    // ปิด auto-detect — กัน hydration mismatch (SSR/prerender เป็น defaultLocale, client เปลี่ยนภาษาก่อน hydrate)
+    // ผู้ใช้เลือกภาษาเองจาก SiteLocaleSwitcher → URL /en/...
+    detectBrowserLanguage: false,
   },
 
   hooks: {
@@ -96,6 +92,10 @@ export default defineNuxtConfig({
       callback: '/admin/confirm',
       include: ['/admin/**'],
       exclude: ['/admin/login', '/admin/confirm'],
+    },
+    cookieOptions: {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
     },
     types: '~/types/database.types.ts',
   },

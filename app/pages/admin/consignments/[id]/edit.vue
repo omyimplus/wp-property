@@ -22,7 +22,16 @@ const successMessage = ref(route.query.created ? 'บันทึกฝากข
 
 const isApproved = computed(() => Boolean(consignment.value?.property_id))
 const isRejected = computed(() => consignment.value?.status === 'rejected')
+const isReadonly = computed(() => isApproved.value || isRejected.value)
 const deleting = ref(false)
+
+useHead({
+  title: computed(() => {
+    if (isApproved.value) return 'ดูรายละเอียดฝากขายทรัพย์'
+    if (isRejected.value) return 'รายการฝากขาย (ไม่อนุมัติ)'
+    return 'แก้ไขฝากขายทรัพย์'
+  }),
+})
 
 async function load() {
   loading.value = true
@@ -140,6 +149,20 @@ onMounted(load)
 
     <template v-else-if="form">
       <div
+        v-if="isReadonly && !isApproved"
+        class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950"
+      >
+        โหมดดูข้อมูล — รายการนี้ไม่อนุมัติแล้ว แก้ไขไม่ได้
+      </div>
+
+      <div
+        v-else-if="isApproved"
+        class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700"
+      >
+        โหมดดูข้อมูล — รายการอนุมัติแล้ว แก้ไขได้ที่หน้าทรัพย์ในระบบ
+      </div>
+
+      <div
         v-if="isRejected"
         class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900"
       >
@@ -173,7 +196,7 @@ onMounted(load)
         :property-id="id"
         :images="images"
         :saving="saving"
-        :readonly="isApproved || isRejected"
+        :readonly="isReadonly"
         @update:images="images = $event"
         @submit="onSubmit"
       />

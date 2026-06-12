@@ -1,4 +1,4 @@
-import type { ListingMode, PropertyType } from '~/types/property'
+import { formatThaiPrice, type ListingMode, type PropertyType } from '~/types/property'
 
 export type PropertyCustomerStatus = 'pending_approval' | 'rejected' | 'approved'
 export type ListingTab = 'all' | 'sale' | 'rent'
@@ -99,6 +99,65 @@ export function propertyCustomerHeadline(p: {
   if (title) return title
   const parts = [p.house_number, p.property_type].filter(Boolean)
   return parts.length ? parts.join(' · ') : 'รายการฝากขาย'
+}
+
+export function propertyCustomerListingLabel(p: { for_sale: boolean; for_rent: boolean }): string {
+  if (p.for_sale && p.for_rent) return 'ขาย / เช่า'
+  if (p.for_rent) return 'เช่า'
+  return 'ขาย'
+}
+
+export function propertyCustomerPriceText(p: {
+  for_sale: boolean
+  for_rent: boolean
+  sale_price: number | null
+  rent_price: number | null
+  rent_deposit_months: number | null
+}): string {
+  if (p.for_rent && !p.for_sale) {
+    const price = formatThaiPrice(p.rent_price, 'บาท/เดือน')
+    const dep = p.rent_deposit_months ? ` · มัดจำ ${p.rent_deposit_months} เดือน` : ''
+    return `${price}${dep}`
+  }
+  if (p.sale_price != null) return formatThaiPrice(p.sale_price)
+  if (p.rent_price != null) return formatThaiPrice(p.rent_price, 'บาท/เดือน')
+  return '—'
+}
+
+export function propertyCustomerAddressText(p: {
+  house_number?: string | null
+  address_line?: string | null
+  soi?: string | null
+  moo?: string | null
+  road?: string | null
+  subdistrict?: string | null
+  district?: string | null
+  province?: string | null
+}): string {
+  const parts = [
+    p.house_number,
+    p.address_line,
+    p.soi ? `ซ.${p.soi}` : null,
+    p.moo ? `ม.${p.moo}` : null,
+    p.road ? `ถ.${p.road}` : null,
+    p.subdistrict,
+    p.district,
+    p.province,
+  ].filter(Boolean)
+  return parts.length ? parts.join(' ') : '—'
+}
+
+export function propertyCustomerCreatedByLabel(created_by: string | null): string {
+  return created_by ? 'พนักงานบันทึกในระบบ' : 'ลูกค้าส่งจากเว็บ'
+}
+
+export function formatPropertyCustomerDateTime(iso: string | null | undefined): string {
+  if (!iso) return '—'
+  return new Date(iso).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' })
+}
+
+export function propertyCustomerSpecText(value: number | null | undefined, unit: string): string {
+  return value != null ? `${value} ${unit}` : '—'
 }
 
 export function propertyCustomerToFormData(p: PropertyCustomer): PropertyCustomerFormData {

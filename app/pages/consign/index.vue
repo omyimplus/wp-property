@@ -59,6 +59,7 @@ useStaticPageSeo('pages.consign.title', 'pages.consign.subtitle')
           :property-id="consignmentId"
           :images="images"
           :show-images="false"
+          :show-status="false"
           :saving="saving"
           @update:images="images = $event"
           @submit="onSubmit"

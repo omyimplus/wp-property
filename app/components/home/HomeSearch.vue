@@ -69,7 +69,11 @@ const fieldClass =
         <div class="relative -mt-px rounded-b-xl rounded-tr-xl rounded-tl-none bg-white p-4 shadow-sm sm:p-5">
           <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-3">
             <div class="relative lg:w-[22%] lg:shrink-0">
+              <label for="home-search-property-type" class="sr-only">
+                {{ t('home.search.typeLabel') }}
+              </label>
               <select
+                id="home-search-property-type"
                 v-model="searchType"
                 :class="fieldClass"
                 class="pr-9"
@@ -92,7 +96,11 @@ const fieldClass =
             </div>
 
             <div class="relative lg:w-[18%] lg:shrink-0">
+              <label for="home-search-price-range" class="sr-only">
+                {{ t('home.search.priceLabel') }}
+              </label>
               <select
+                id="home-search-price-range"
                 v-model="searchPrice"
                 :class="fieldClass"
                 class="pr-9"
@@ -113,6 +121,9 @@ const fieldClass =
             </div>
 
             <div class="relative lg:min-w-0 lg:flex-1">
+              <label for="home-search-keyword" class="sr-only">
+                {{ t('home.search.keywordLabel') }}
+              </label>
               <svg
                 class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-900"
                 fill="none"
@@ -123,6 +134,7 @@ const fieldClass =
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
+                id="home-search-keyword"
                 v-model="searchKeyword"
                 type="search"
                 :placeholder="t('home.search.keywordPlaceholder')"

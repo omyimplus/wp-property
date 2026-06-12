@@ -3,7 +3,13 @@ import {
   PROPERTY_CUSTOMER_LIST_PAGE_SIZE,
   PROPERTY_CUSTOMER_STATUS_TABS,
   emptyPropertyCustomerFilters,
+  formatPropertyCustomerDateTime,
+  propertyCustomerAddressText,
+  propertyCustomerCreatedByLabel,
   propertyCustomerHeadline,
+  propertyCustomerListingLabel,
+  propertyCustomerPriceText,
+  propertyCustomerSpecText,
   type ListingTab,
   type PropertyCustomer,
   type PropertyCustomerListFilters,
@@ -48,6 +54,8 @@ const totalPages = ref(1)
 const rejectingId = ref<string | null>(null)
 const approvingId = ref<string | null>(null)
 const statusSuccessMessage = ref('')
+const detailConsignment = ref<PropertyCustomer | null>(null)
+const detailLoading = ref(false)
 
 function buildQueryParams() {
   const q: Record<string, string> = {
@@ -112,6 +120,25 @@ const activeFilterSummary = computed(() => {
 function locationText(p: ConsignmentItem) {
   const parts = [p.subdistrict, p.district, p.province].filter(Boolean)
   return parts.length ? parts.join(' · ') : '—'
+}
+
+async function openDetail(p: ConsignmentItem) {
+  detailLoading.value = true
+  detailConsignment.value = null
+  errorMessage.value = ''
+  try {
+    const res = await $fetch<{ consignment: PropertyCustomer }>(`/api/admin/consignments/${p.id}`)
+    detailConsignment.value = res.consignment
+  } catch (e: unknown) {
+    const err = e as { data?: { statusMessage?: string } }
+    errorMessage.value = err.data?.statusMessage ?? 'โหลดรายละเอียดไม่สำเร็จ'
+  } finally {
+    detailLoading.value = false
+  }
+}
+
+function closeDetail() {
+  detailConsignment.value = null
 }
 
 async function load() {
@@ -225,6 +252,7 @@ async function onReject(p: ConsignmentItem) {
       body: { status: 'rejected' },
     })
     statusSuccessMessage.value = `ไม่อนุมัติรายการของ ${p.customer_name} แล้ว — สามารถลบออกจากระบบได้`
+    closeDetail()
     await load()
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
@@ -244,6 +272,7 @@ async function onApprove(p: ConsignmentItem) {
       { method: 'POST' },
     )
     statusSuccessMessage.value = `อนุมัติแล้ว — สร้างทรัพย์ ${res.property_code}`
+    closeDetail()
     await load()
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
@@ -272,6 +301,7 @@ async function onDelete(p: ConsignmentItem) {
   try {
     await $fetch(`/api/admin/consignments/${p.id}`, { method: 'DELETE' })
     statusSuccessMessage.value = `ลบรายการของ ${p.customer_name} ออกจากระบบแล้ว`
+    closeDetail()
     if (consignments.value.length <= 1 && page.value > 1) page.value--
     await load()
   } catch (e: unknown) {
@@ -297,7 +327,7 @@ onMounted(() => {
       <div>
         <h2 class="text-lg font-semibold text-slate-900">ฝากขายทรัพย์</h2>
         <p class="mt-1 text-sm text-slate-500">
-          เก็บในระบบแยกจากอสังหาริมทรัพย์ — อนุมัติแล้วจึงสร้างรหัส WP
+          คลิกการ์ดหรือ「ดูรายละเอียด」เพื่อดูข้อมูลครบ · อนุมัติแล้วจึงสร้างรหัส WP
         </p>
       </div>
       <NuxtLink
@@ -394,9 +424,12 @@ onMounted(() => {
       <article
         v-for="p in consignments"
         :key="p.id"
-        class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+        class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-violet-200"
       >
-        <div class="border-b border-violet-100 bg-violet-50/60 px-4 py-3">
+        <div
+          class="cursor-pointer border-b border-violet-100 bg-violet-50/60 px-4 py-3"
+          @click="openDetail(p)"
+        >
           <p class="text-xs font-medium uppercase tracking-wide text-violet-700">ลูกค้า</p>
           <p class="font-semibold text-slate-900">{{ p.customer_name }}</p>
           <p class="text-sm text-slate-600">
@@ -405,7 +438,7 @@ onMounted(() => {
           </p>
         </div>
 
-        <div class="flex gap-4 p-4">
+        <div class="flex gap-4 p-4 cursor-pointer" @click="openDetail(p)">
           <div class="h-24 w-32 shrink-0 overflow-hidden rounded-lg bg-slate-100">
             <img
               v-if="p.cover_url"
@@ -435,13 +468,20 @@ onMounted(() => {
           </div>
         </div>
 
-        <div class="flex flex-col gap-2 border-t border-slate-100 px-4 py-3">
+        <div class="flex flex-col gap-2 border-t border-slate-100 px-4 py-3" @click.stop>
           <div class="flex flex-wrap gap-2">
+            <button
+              type="button"
+              class="flex-1 rounded-lg border border-violet-200 bg-violet-50 py-1.5 text-center text-sm text-violet-900 hover:bg-violet-100"
+              @click="openDetail(p)"
+            >
+              ดูรายละเอียด
+            </button>
             <NuxtLink
               :to="`/admin/consignments/${p.id}/edit`"
               class="flex-1 rounded-lg border border-slate-300 py-1.5 text-center text-sm hover:bg-slate-50"
             >
-              {{ p.property_id ? 'ดูรายการ' : 'แก้ไข' }}
+              {{ p.property_id ? 'เปิดแบบฟอร์ม' : 'แก้ไข' }}
             </NuxtLink>
             <button
               v-if="!p.property_id && p.status !== 'rejected'"
@@ -511,6 +551,224 @@ onMounted(() => {
       >
         ถัดไป
       </button>
+    </div>
+
+    <!-- รายละเอียดฝากขาย -->
+    <div
+      v-if="detailConsignment || detailLoading"
+      class="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center"
+      @click.self="closeDetail"
+    >
+      <div
+        class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl bg-white p-6 shadow-xl"
+        role="dialog"
+        aria-labelledby="consignment-detail-title"
+      >
+        <div v-if="detailLoading" class="py-16 text-center text-slate-500">
+          กำลังโหลดรายละเอียด...
+        </div>
+
+        <template v-else-if="detailConsignment">
+          <div class="mb-4 flex items-start justify-between gap-3">
+            <div>
+              <h3 id="consignment-detail-title" class="text-lg font-semibold text-slate-900">
+                {{ propertyCustomerHeadline(detailConsignment) }}
+              </h3>
+              <div class="mt-1 flex flex-wrap items-center gap-2">
+                <PropertyCustomerStatusBadge :status="detailConsignment.status" />
+                <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700">
+                  {{ propertyCustomerListingLabel(detailConsignment) }}
+                </span>
+                <span
+                  v-if="detailConsignment.property_code"
+                  class="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800"
+                >
+                  {{ detailConsignment.property_code }}
+                </span>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+              aria-label="ปิด"
+              @click="closeDetail"
+            >
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div
+            v-if="detailConsignment.images?.length"
+            class="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3"
+          >
+            <a
+              v-for="img in detailConsignment.images"
+              :key="img.id"
+              :href="img.public_url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="aspect-[4/3] overflow-hidden rounded-lg bg-slate-100"
+            >
+              <img
+                :src="img.public_url"
+                alt=""
+                class="h-full w-full object-cover"
+              >
+            </a>
+          </div>
+
+          <div class="space-y-5 text-sm">
+            <section>
+              <h4 class="mb-2 font-semibold text-violet-900">ข้อมูลลูกค้า</h4>
+              <dl class="space-y-2">
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">ชื่อ</dt>
+                  <dd class="font-medium">{{ detailConsignment.customer_name }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">เบอร์โทร</dt>
+                  <dd>{{ detailConsignment.customer_phone }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">Line</dt>
+                  <dd>{{ detailConsignment.customer_line || '—' }}</dd>
+                </div>
+              </dl>
+            </section>
+
+            <section>
+              <h4 class="mb-2 font-semibold text-slate-900">ทรัพย์</h4>
+              <dl class="space-y-2">
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">ประเภท</dt>
+                  <dd>{{ propertyTypeLabel(detailConsignment.property_type) }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">โครงการ</dt>
+                  <dd>{{ detailConsignment.project_name || '—' }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">ราคา</dt>
+                  <dd class="font-medium">{{ propertyCustomerPriceText(detailConsignment) }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">ที่อยู่</dt>
+                  <dd>{{ propertyCustomerAddressText(detailConsignment) }}</dd>
+                </div>
+              </dl>
+            </section>
+
+            <section>
+              <h4 class="mb-2 font-semibold text-slate-900">รายละเอียดเพิ่มเติม</h4>
+              <dl class="grid gap-2 sm:grid-cols-2">
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">ห้องนอน</dt>
+                  <dd>{{ propertyCustomerSpecText(detailConsignment.bedrooms, 'ห้อง') }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">ห้องน้ำ</dt>
+                  <dd>{{ propertyCustomerSpecText(detailConsignment.bathrooms, 'ห้อง') }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">ที่จอดรถ</dt>
+                  <dd>{{ propertyCustomerSpecText(detailConsignment.parking_spaces, 'คัน') }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">ทิศ</dt>
+                  <dd>{{ detailConsignment.facing_direction || '—' }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">ชั้น</dt>
+                  <dd>{{ propertyCustomerSpecText(detailConsignment.floor_number, 'ชั้น') }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">จำนวนชั้น</dt>
+                  <dd>{{ propertyCustomerSpecText(detailConsignment.floors_total, 'ชั้น') }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">ที่ดิน</dt>
+                  <dd>{{ propertyCustomerSpecText(detailConsignment.land_area_sqm, 'ตร.ม.') }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">พื้นที่ใช้สอย</dt>
+                  <dd>{{ propertyCustomerSpecText(detailConsignment.usable_area_sqm, 'ตร.ม.') }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">อายุทรัพย์</dt>
+                  <dd>{{ propertyCustomerSpecText(detailConsignment.property_age_years, 'ปี') }}</dd>
+                </div>
+              </dl>
+            </section>
+
+            <section class="border-t border-slate-100 pt-4">
+              <dl class="space-y-2 text-xs text-slate-500">
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt>แหล่งข้อมูล</dt>
+                  <dd>{{ propertyCustomerCreatedByLabel(detailConsignment.created_by) }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt>ส่งเมื่อ</dt>
+                  <dd>{{ formatPropertyCustomerDateTime(detailConsignment.created_at) }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt>อัปเดตล่าสุด</dt>
+                  <dd>{{ formatPropertyCustomerDateTime(detailConsignment.updated_at) }}</dd>
+                </div>
+                <div v-if="detailConsignment.approved_at" class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt>อนุมัติเมื่อ</dt>
+                  <dd>{{ formatPropertyCustomerDateTime(detailConsignment.approved_at) }}</dd>
+                </div>
+              </dl>
+            </section>
+          </div>
+
+          <div class="mt-6 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+            <NuxtLink
+              :to="`/admin/consignments/${detailConsignment.id}/edit`"
+              class="flex-1 rounded-lg border border-slate-300 py-2 text-center text-sm hover:bg-slate-50"
+              @click="closeDetail"
+            >
+              {{ detailConsignment.property_id ? 'เปิดแบบฟอร์ม' : 'แก้ไขข้อมูล' }}
+            </NuxtLink>
+            <button
+              v-if="!detailConsignment.property_id && detailConsignment.status !== 'rejected'"
+              type="button"
+              class="flex-1 rounded-lg bg-emerald-700 py-2 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-60"
+              :disabled="approvingId === detailConsignment.id"
+              @click="onApprove(detailConsignment)"
+            >
+              {{ approvingId === detailConsignment.id ? 'กำลังอนุมัติ...' : 'อนุมัติเข้าระบบ' }}
+            </button>
+            <button
+              v-if="!detailConsignment.property_id && detailConsignment.status !== 'rejected'"
+              type="button"
+              class="rounded-lg border border-red-300 bg-red-50 px-4 py-2 text-sm font-medium text-red-800 hover:bg-red-100 disabled:opacity-60"
+              :disabled="rejectingId === detailConsignment.id"
+              @click="onReject(detailConsignment)"
+            >
+              {{ rejectingId === detailConsignment.id ? 'กำลังบันทึก...' : 'ไม่อนุมัติ' }}
+            </button>
+            <NuxtLink
+              v-if="detailConsignment.property_id"
+              :to="`/admin/properties/${detailConsignment.property_id}/edit`"
+              class="w-full rounded-lg border border-emerald-200 py-2 text-center text-sm text-emerald-800 hover:bg-emerald-50"
+              @click="closeDetail"
+            >
+              เปิดทรัพย์ในระบบ
+            </NuxtLink>
+            <button
+              v-if="!detailConsignment.property_id && detailConsignment.status === 'rejected'"
+              type="button"
+              class="w-full rounded-lg border border-red-300 bg-red-50 py-2 text-sm font-medium text-red-800 hover:bg-red-100"
+              @click="onDelete(detailConsignment)"
+            >
+              ลบออกจากระบบ
+            </button>
+          </div>
+        </template>
+      </div>
     </div>
 
     <div

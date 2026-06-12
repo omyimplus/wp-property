@@ -1,4 +1,5 @@
-import { serverSupabaseClient, serverSupabaseServiceRole } from '#supabase/server'
+import { serverSupabaseClient } from '#supabase/server'
+import { getServiceRoleClient } from '../../../utils/service-role-client'
 import { requireStaff } from '../../../utils/require-staff'
 import { generateNextPropertyCode } from '../../../utils/property-code'
 import { assertPropertyCreateRequired, parsePropertyBody, PROPERTY_SELECT } from '../../../utils/properties'
@@ -11,7 +12,7 @@ export default defineEventHandler(async (event) => {
   })
   assertPropertyCreateRequired(payload)
 
-  const service = serverSupabaseServiceRole(event)
+  const service = getServiceRoleClient(event)
   payload.property_code = await generateNextPropertyCode(service)
 
   const client = await serverSupabaseClient(event)

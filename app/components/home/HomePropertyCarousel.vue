@@ -10,31 +10,12 @@ const props = defineProps<{
 const { t } = useI18n()
 
 const current = ref(0)
-const slidesPerView = ref(2)
+const { slidesPerView } = useResponsiveSlidesPerView({ default: 1, sm: 2, lg: 4 })
 
 const slideCount = computed(() => props.properties.length)
 const maxIndex = computed(() => Math.max(0, slideCount.value - slidesPerView.value))
 const canSlide = computed(() => slideCount.value > slidesPerView.value)
 const slideWidth = computed(() => 100 / slidesPerView.value)
-
-function updateSlidesPerView() {
-  if (typeof window === 'undefined') return
-
-  const w = window.innerWidth
-  if (w < 640) {
-    slidesPerView.value = 1
-  }
-  else if (w < 1024) {
-    slidesPerView.value = 2
-  }
-  else {
-    slidesPerView.value = 4
-  }
-
-  if (current.value > maxIndex.value) {
-    current.value = maxIndex.value
-  }
-}
 
 function goTo(index: number) {
   current.value = Math.min(Math.max(index, 0), maxIndex.value)
@@ -58,15 +39,6 @@ watch(slidesPerView, () => {
   if (current.value > maxIndex.value) {
     current.value = maxIndex.value
   }
-})
-
-onMounted(() => {
-  updateSlidesPerView()
-  window.addEventListener('resize', updateSlidesPerView)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', updateSlidesPerView)
 })
 </script>
 

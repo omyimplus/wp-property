@@ -9,30 +9,12 @@ const reels = computed(() => data.value?.items ?? [])
 const showSection = computed(() => pending.value || reels.value.length > 0)
 
 const current = ref(0)
-const slidesPerView = ref(4)
+const { slidesPerView } = useResponsiveSlidesPerView({ default: 1, sm: 2, lg: 4 })
 
 const slideCount = computed(() => reels.value.length)
 const maxIndex = computed(() => Math.max(0, slideCount.value - slidesPerView.value))
 const canSlide = computed(() => slideCount.value > slidesPerView.value)
 const slideWidth = computed(() => 100 / slidesPerView.value)
-
-function updateSlidesPerView() {
-  if (typeof window === 'undefined') return
-
-  if (window.innerWidth < 640) {
-    slidesPerView.value = 1
-  }
-  else if (window.innerWidth < 1024) {
-    slidesPerView.value = 2
-  }
-  else {
-    slidesPerView.value = 4
-  }
-
-  if (current.value > maxIndex.value) {
-    current.value = maxIndex.value
-  }
-}
 
 function goTo(index: number) {
   current.value = Math.min(Math.max(index, 0), maxIndex.value)
@@ -56,15 +38,6 @@ watch(slideCount, () => {
   if (current.value > maxIndex.value) {
     current.value = maxIndex.value
   }
-})
-
-onMounted(() => {
-  updateSlidesPerView()
-  window.addEventListener('resize', updateSlidesPerView)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', updateSlidesPerView)
 })
 </script>
 

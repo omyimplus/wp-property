@@ -14,6 +14,17 @@ process.chdir(root)
 console.log('[wp-property] cwd:', root)
 console.log('[wp-property] node:', process.version)
 
+const hasSecretKey = Boolean(
+  process.env.NUXT_SUPABASE_SECRET_KEY
+  || process.env.SUPABASE_SECRET_KEY
+  || process.env.SUPABASE_SERVICE_KEY,
+)
+if (!hasSecretKey) {
+  console.error(
+    '[wp-property] NUXT_SUPABASE_SECRET_KEY is NOT set — สร้างทรัพย์/ผู้ใช้/อัปโหลดรูปใน admin จะไม่ได้',
+  )
+}
+
 if (!existsSync(serverEntry)) {
   console.error('[wp-property] BUILD MISSING:', serverEntry)
   process.exit(1)

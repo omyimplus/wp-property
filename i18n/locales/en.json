@@ -82,8 +82,11 @@
     },
     "search": {
       "typePlaceholder": "Select property type",
+      "typeLabel": "Property type",
       "pricePlaceholder": "Select price range",
+      "priceLabel": "Price range",
       "keywordPlaceholder": "Project, province, district, sub-district, road",
+      "keywordLabel": "Search keywords",
       "types": {
         "house": "House",
         "condo": "Condo",

@@ -2,7 +2,6 @@
 export const CONSOLE_IGNORE_PATTERNS = [
   // DevTools / extension noise
   /^Download the Vue Devtools/,
-  /^Hydration completed/,
 ]
 
 export function isIgnoredConsoleMessage(text) {
