@@ -1,15 +1,3 @@
-function supabaseImageHost(): string | undefined {
-  const raw = process.env.NUXT_PUBLIC_SUPABASE_URL
-  if (!raw) return undefined
-  try {
-    return new URL(raw).hostname
-  } catch {
-    return undefined
-  }
-}
-
-const supabaseHost = supabaseImageHost()
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -35,15 +23,7 @@ export default defineNuxtConfig({
 
   image: {
     format: ['webp'],
-    quality: 75,
-    domains: supabaseHost ? [supabaseHost] : [],
-    screens: {
-      xs: 320,
-      sm: 640,
-      md: 768,
-      lg: 1024,
-      xl: 1280,
-    },
+    quality: 80,
   },
 
   nitro: {
