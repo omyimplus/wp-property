@@ -29,8 +29,12 @@ const {
 
 const saleList = computed(() => saleData.value?.properties ?? [])
 const rentList = computed(() => rentData.value?.properties ?? [])
-const loading = computed(() => salePending.value || rentPending.value)
-const fetchFailed = computed(() => Boolean(saleError.value || rentError.value))
+const showLoading = computed(
+  () => (salePending.value || rentPending.value) && !saleList.value.length && !rentList.value.length,
+)
+const fetchFailed = computed(
+  () => Boolean(saleError.value || rentError.value) && !saleList.value.length && !rentList.value.length,
+)
 </script>
 
 <template>
@@ -48,7 +52,7 @@ const fetchFailed = computed(() => Boolean(saleError.value || rentError.value))
         </NuxtLink>
       </div>
 
-      <p v-if="loading" class="mt-8 text-center text-sm text-white/70">
+      <p v-if="showLoading" class="mt-8 text-center text-sm text-white/70">
         {{ t('pages.common.loading') }}
       </p>
       <p v-else-if="fetchFailed" class="mt-8 rounded-xl bg-red-500/15 px-4 py-3 text-center text-sm text-red-100">

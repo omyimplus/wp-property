@@ -31,7 +31,7 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/': { prerender: true },
+    '/': { ssr: true },
     '/about': { prerender: true },
     '/services': { prerender: true },
     '/services/**': { prerender: true },
