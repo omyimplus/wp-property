@@ -71,17 +71,20 @@ function buildQuery(overrides: {
   property_type?: string
   price?: string
   keyword?: string
+  page?: number
 } = {}) {
   const listingVal = overrides.listing ?? listing.value
   const typeVal = overrides.property_type !== undefined ? overrides.property_type : searchType.value
   const priceVal = overrides.price !== undefined ? overrides.price : searchPrice.value
   const keywordVal = overrides.keyword !== undefined ? overrides.keyword : searchKeyword.value
+  const pageVal = overrides.page ?? 1
 
   return {
     listing: listingVal,
     ...(typeVal ? { property_type: typeVal } : {}),
     ...(priceVal ? { price: priceVal } : {}),
     ...(keywordVal ? { keyword: keywordVal } : {}),
+    ...(pageVal > 1 ? { page: String(pageVal) } : {}),
   }
 }
 
@@ -104,6 +107,26 @@ function filterByType(propertyType: string) {
   navigateTo({
     path: listingPath.value,
     query: buildQuery({ property_type: nextType }),
+  })
+}
+
+const totalPages = computed(() => data.value?.total_pages ?? 1)
+
+const pageNumbers = computed(() => {
+  const n = totalPages.value
+  const current = page.value
+  const pages: number[] = []
+  for (let i = Math.max(1, current - 2); i <= Math.min(n, current + 2); i++) {
+    pages.push(i)
+  }
+  return pages
+})
+
+function goToPage(p: number) {
+  if (p < 1 || p > totalPages.value || p === page.value) return
+  navigateTo({
+    path: listingPath.value,
+    query: buildQuery({ page: p }),
   })
 }
 </script>
@@ -184,6 +207,42 @@ function filterByType(propertyType: string) {
       <p v-if="data?.total" class="mt-6 text-center text-sm text-white/70">
         {{ t('pages.properties.resultCount', { count: data.total }) }}
       </p>
+
+      <nav
+        v-if="!pending && !error && data?.properties.length && totalPages > 1"
+        class="mt-6 flex flex-wrap items-center justify-center gap-2"
+        :aria-label="t('pages.properties.paginationLabel')"
+      >
+        <button
+          type="button"
+          class="rounded-lg border border-white/30 px-3 py-1.5 text-sm text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+          :disabled="page <= 1"
+          @click="goToPage(page - 1)"
+        >
+          {{ t('pages.properties.pagePrev') }}
+        </button>
+        <button
+          v-for="p in pageNumbers"
+          :key="p"
+          type="button"
+          class="min-w-[2.25rem] rounded-lg px-2 py-1.5 text-sm transition"
+          :class="p === page
+            ? 'bg-white font-medium text-slate-900'
+            : 'border border-white/30 text-white hover:bg-white/10'"
+          :aria-current="p === page ? 'page' : undefined"
+          @click="goToPage(p)"
+        >
+          {{ p }}
+        </button>
+        <button
+          type="button"
+          class="rounded-lg border border-white/30 px-3 py-1.5 text-sm text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+          :disabled="page >= totalPages"
+          @click="goToPage(page + 1)"
+        >
+          {{ t('pages.properties.pageNext') }}
+        </button>
+      </nav>
     </div>
   </section>
 </template>
