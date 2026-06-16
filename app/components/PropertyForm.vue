@@ -300,6 +300,12 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
               {{ s.label }}
             </option>
           </select>
+          <p
+            v-if="form.status !== 'published'"
+            class="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
+          >
+            ทรัพย์ที่ไม่ใช่สถานะ「เผยแพร่แล้ว」จะไม่แสดงบนหน้าเว็บสาธารณะ
+          </p>
         </div>
         <div v-if="!isRent">
           <label class="mb-1 block text-sm font-medium text-slate-700">

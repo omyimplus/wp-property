@@ -22,7 +22,7 @@ const { data, error, pending } = await useFetch<{
   ignoreResponseError: true,
 })
 
-const { data: relatedData } = await useFetch<PublicPropertyListResponse>('/api/properties', {
+const { data: relatedData } = await useFreshFetch<PublicPropertyListResponse>('/api/properties', {
   query: { page_size: 8 },
   key: computed(() => `property-related-${code.value}`),
   default: () => ({ properties: [], total: 0, page: 1, page_size: 8, total_pages: 1 }),

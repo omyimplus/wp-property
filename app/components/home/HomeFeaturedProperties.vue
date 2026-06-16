@@ -11,7 +11,7 @@ const {
   data: saleData,
   pending: salePending,
   error: saleError,
-} = await useFetch<PublicPropertyListResponse>('/api/properties', {
+} = await useFreshFetch<PublicPropertyListResponse>('/api/properties', {
   key: 'home-properties-sale',
   query: { listing: 'sale', page_size: HOME_LIMIT },
   default: () => ({ properties: [], total: 0, page: 1, page_size: HOME_LIMIT, total_pages: 1 }),
@@ -21,7 +21,7 @@ const {
   data: rentData,
   pending: rentPending,
   error: rentError,
-} = await useFetch<PublicPropertyListResponse>('/api/properties', {
+} = await useFreshFetch<PublicPropertyListResponse>('/api/properties', {
   key: 'home-properties-rent',
   query: { listing: 'rent', page_size: HOME_LIMIT },
   default: () => ({ properties: [], total: 0, page: 1, page_size: HOME_LIMIT, total_pages: 1 }),

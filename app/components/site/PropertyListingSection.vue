@@ -45,7 +45,7 @@ const queryParams = computed(() => {
   }
 })
 
-const { data, pending, error } = await useFetch<PublicPropertyListResponse>('/api/properties', {
+const { data, pending, error } = await useFreshFetch<PublicPropertyListResponse>('/api/properties', {
   key: 'property-listing',
   query: queryParams,
   watch: [queryParams],

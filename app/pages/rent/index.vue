@@ -11,7 +11,7 @@ const saving = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 
-const { data: listings } = await useFetch<PublicPropertyListResponse>('/api/properties', {
+const { data: listings } = await useFreshFetch<PublicPropertyListResponse>('/api/properties', {
   query: { listing: 'rent', page_size: 4 },
 })
 
