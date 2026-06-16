@@ -10,7 +10,8 @@ export function useFreshFetch<T>(
     ...options,
     getCachedData(key, nuxtApp) {
       if (import.meta.server) {
-        return nuxtApp.payload.data[key] ?? nuxtApp.static.data[key]
+        // ไม่ใช้ static.data จาก prerender build — key เดิมอาจชนกันข้าม query (เช่น listing=sale vs rent)
+        return nuxtApp.payload.data[key]
       }
 
       const fromPayload = nuxtApp.payload.data[key]

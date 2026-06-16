@@ -1,4 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+const noCacheHtml = { 'cache-control': 'private, no-cache' } as const
+const noStore = { 'cache-control': 'no-store' } as const
+const staticPageCache = { 'cache-control': 'public, max-age=3600, s-maxage=3600' } as const
+
+/** หน้าที่ดึงข้อมูลจาก API — SSR + ไม่ให้ browser/proxy เก็บ HTML */
+const dynamicPage = { ssr: true, headers: noCacheHtml } as const
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: process.env.NODE_ENV === 'development' },
@@ -31,22 +39,41 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/': { ssr: true },
-    '/about': { prerender: true },
-    '/services': { prerender: true },
-    '/services/**': { prerender: true },
-    '/consign': { prerender: true },
-    '/contact': { prerender: true },
-    '/articles': { prerender: true },
-    '/reviews': { prerender: true },
-    '/privacy': { prerender: true },
-    '/terms': { prerender: true },
-    '/interesting-content': { prerender: true },
-    '/properties': { ssr: true },
-    '/services/properties': { ssr: true },
-    '/rent': { ssr: true },
-    '/admin/**': { robots: false },
-    '/sitemap.xml': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
+    '/': dynamicPage,
+    '/properties': dynamicPage,
+    '/properties/**': dynamicPage,
+    '/services/properties': dynamicPage,
+    '/rent': dynamicPage,
+    '/articles': dynamicPage,
+    '/articles/**': dynamicPage,
+    '/reviews': dynamicPage,
+    '/interesting-content': dynamicPage,
+    '/interesting-content/**': dynamicPage,
+    '/en': dynamicPage,
+    '/en/properties': dynamicPage,
+    '/en/properties/**': dynamicPage,
+    '/en/services/properties': dynamicPage,
+    '/en/rent': dynamicPage,
+    '/en/articles': dynamicPage,
+    '/en/articles/**': dynamicPage,
+    '/en/reviews': dynamicPage,
+    '/en/interesting-content': dynamicPage,
+    '/en/interesting-content/**': dynamicPage,
+    '/about': { prerender: true, headers: staticPageCache },
+    '/services': { prerender: true, headers: staticPageCache },
+    '/consign': { prerender: true, headers: staticPageCache },
+    '/contact': { prerender: true, headers: staticPageCache },
+    '/privacy': { prerender: true, headers: staticPageCache },
+    '/terms': { prerender: true, headers: staticPageCache },
+    '/en/about': { prerender: true, headers: staticPageCache },
+    '/en/services': { prerender: true, headers: staticPageCache },
+    '/en/consign': { prerender: true, headers: staticPageCache },
+    '/en/contact': { prerender: true, headers: staticPageCache },
+    '/en/privacy': { prerender: true, headers: staticPageCache },
+    '/en/terms': { prerender: true, headers: staticPageCache },
+    '/admin/**': { robots: false, headers: noStore },
+    '/api/**': { headers: noStore },
+    '/sitemap.xml': { headers: staticPageCache },
   },
 
   app: {

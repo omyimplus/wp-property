@@ -45,8 +45,22 @@ const queryParams = computed(() => {
   }
 })
 
+const fetchKey = computed(() => {
+  const q = queryParams.value
+  return [
+    'property-listing',
+    q.listing,
+    q.property_type ?? '',
+    q.min_price ?? '',
+    q.max_price ?? '',
+    q.keyword ?? '',
+    q.page,
+    q.page_size,
+  ].join('-')
+})
+
 const { data, pending, error } = await useFreshFetch<PublicPropertyListResponse>('/api/properties', {
-  key: 'property-listing',
+  key: fetchKey,
   query: queryParams,
   watch: [queryParams],
   default: () => ({ properties: [], total: 0, page: 1, page_size: 12, total_pages: 1 }),

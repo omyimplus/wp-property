@@ -56,7 +56,7 @@ watch(slidesPerView, () => {
         <div
           v-for="property in properties"
           :key="property.id"
-          class="shrink-0 px-2 first:pl-0 last:pr-0"
+          class="h-full shrink-0 px-2 first:pl-0 last:pr-0"
           :style="{ width: `${slideWidth}%` }"
         >
           <PropertyCard :property="property" :mode="mode" />
