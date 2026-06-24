@@ -46,7 +46,7 @@ async function onSubmit() {
     </NuxtLink>
 
     <p class="text-sm text-slate-600">
-      บันทึกรายการฝากขายแทนลูกค้า — ข้อมูลทรัพย์เหมือนหน้าเพิ่มอสังหาริมทรัพย์ (ยังไม่สร้างรหัส WP)
+      บันทึกรายการฝากขายแทนลูกค้า — ข้อมูลทรัพย์เหมือนหน้าเพิ่มอสังหาฯ (ยังไม่สร้างรหัส WP)
     </p>
 
     <p v-if="successMessage" class="rounded-lg bg-green-50 px-4 py-2 text-sm text-green-800">

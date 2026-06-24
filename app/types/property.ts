@@ -34,6 +34,8 @@ export interface Property {
   subdistrict: string | null
   district: string | null
   province: string | null
+  latitude: number | null
+  longitude: number | null
   facing_direction: string | null
   floors_total: number | null
   floor_number: number | null
@@ -43,6 +45,9 @@ export interface Property {
   land_area_sqm: number | null
   usable_area_sqm: number | null
   property_age_years: number | null
+  facilities: string[]
+  nearby_facilities: string[]
+  project_description: string | null
   status: PropertyStatus
   property_source: PropertySource
   created_by: string | null
@@ -87,9 +92,9 @@ export const PROPERTY_LIST_PAGE_SIZE = 12
 export const PROPERTY_TYPES: { value: PropertyType; label: string }[] = [
   { value: 'house', label: 'บ้าน' },
   { value: 'condo', label: 'คอนโด' },
-  { value: 'apartment', label: 'อพาร์ตเมนต์' },
+  { value: 'apartment', label: 'อะพาร์ตเมนต์' },
   { value: 'commercial', label: 'อาคารพาณิชย์' },
-  { value: 'townhouse', label: 'ทาวน์เฮ้าส์' },
+  { value: 'townhouse', label: 'ทาวน์เฮาส์' },
 ]
 
 export const PROPERTY_SOURCES: { value: PropertySource; label: string }[] = [
@@ -187,6 +192,8 @@ export function emptyPropertyForm(): PropertyFormData {
     subdistrict: null,
     district: null,
     province: null,
+    latitude: null,
+    longitude: null,
     facing_direction: null,
     floors_total: null,
     floor_number: null,
@@ -196,6 +203,9 @@ export function emptyPropertyForm(): PropertyFormData {
     land_area_sqm: null,
     usable_area_sqm: null,
     property_age_years: null,
+    facilities: [],
+    nearby_facilities: [],
+    project_description: null,
     status: 'draft',
     property_source: 'system',
   }

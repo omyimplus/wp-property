@@ -1,8 +1,9 @@
-export type DashboardAlertType = 'loan' | 'rental' | 'consignment' | 'property' | 'property_inquiry'
+export type DashboardAlertType = 'loan' | 'rental' | 'sale' | 'consignment' | 'property' | 'property_inquiry'
 
 export interface DashboardCounts {
   loans_pending: number
   rentals_pending: number
+  sales_pending: number
   consignments_pending: number
   properties_pending: number
   property_inquiries_sale_pending: number
@@ -26,8 +27,9 @@ export interface DashboardSummary {
 
 export const DASHBOARD_ALERT_TYPE_LABELS: Record<DashboardAlertType, string> = {
   loan: 'สินเชื่อ',
-  rental: 'เช่าทรัพย์',
+  rental: 'สนใจเช่า',
+  sale: 'สนใจซื้อ',
   consignment: 'ฝากขาย',
-  property: 'อสังหาริมทรัพย์',
-  property_inquiry: 'สนใจทรัพย์',
+  property: 'อสังหาฯ',
+  property_inquiry: 'สอบถามจากประกาศ',
 }

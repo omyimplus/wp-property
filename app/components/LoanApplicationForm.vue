@@ -8,11 +8,16 @@ import {
 } from '~/types/loan-application'
 import type { ThaiLocationValue } from '~/types/thai-location'
 
-const props = defineProps<{
-  modelValue: LoanApplicationFormData
-  saving?: boolean
-  readonly?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    modelValue: LoanApplicationFormData
+    saving?: boolean
+    readonly?: boolean
+    /** แสดงฟิลด์สถานะ (ปิดในหน้าที่ลูกค้ากรอกเอง) */
+    showStatus?: boolean
+  }>(),
+  { showStatus: true },
+)
 
 const emit = defineEmits<{
   'update:modelValue': [LoanApplicationFormData]
@@ -23,6 +28,12 @@ const validationError = ref('')
 
 const statusOptions = computed(() =>
   LOAN_STATUSES.filter(s => s.value !== 'rejected'),
+)
+
+const stackFields = computed(() => !props.showStatus)
+
+const fieldGridClass = computed(() =>
+  stackFields.value ? 'grid gap-4' : 'grid gap-4 sm:grid-cols-2',
 )
 
 const showOccupationOther = computed(
@@ -88,7 +99,7 @@ function onSubmit() {
 
     <section class="rounded-xl border border-sky-200 bg-sky-50/40 p-6 shadow-sm">
       <h3 class="mb-4 font-semibold text-sky-950">ข้อมูลติดต่อ</h3>
-      <div class="grid gap-4 sm:grid-cols-2">
+      <div class="grid gap-4">
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
             ชื่อ <span class="text-red-600">*</span>
@@ -113,7 +124,7 @@ function onSubmit() {
             @input="setField('callback_phone', ($event.target as HTMLInputElement).value)"
           >
         </div>
-        <div class="sm:col-span-2">
+        <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
             เบอร์โทร/ไลน์สำหรับติดต่อกลับ <span class="text-red-600">*</span>
           </label>
@@ -131,7 +142,7 @@ function onSubmit() {
 
     <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <h3 class="mb-4 font-semibold text-slate-900">ข้อมูลสินเชื่อ</h3>
-      <div class="grid gap-4 sm:grid-cols-2">
+      <div :class="fieldGridClass">
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
             หนี้ที่ต้องการปิด (บาท) <span class="text-red-600">*</span>
@@ -190,7 +201,7 @@ function onSubmit() {
             </option>
           </select>
         </div>
-        <div v-if="showOccupationOther" class="sm:col-span-2">
+        <div v-if="showOccupationOther">
           <label class="mb-1 block text-sm font-medium text-slate-700">
             ระบุอาชีพ (อื่นๆ) <span class="text-red-600">*</span>
           </label>
@@ -212,6 +223,7 @@ function onSubmit() {
         label-size="form"
         :required="!readonly"
         :allow-empty="false"
+        :stacked="stackFields"
       />
       <div class="mt-4">
         <label class="mb-1 block text-sm font-medium text-slate-700">
@@ -229,7 +241,7 @@ function onSubmit() {
     </section>
 
     <section
-      v-if="!readonly"
+      v-if="!readonly && showStatus"
       class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
     >
       <label class="mb-1 block text-sm font-medium text-slate-700">สถานะ</label>

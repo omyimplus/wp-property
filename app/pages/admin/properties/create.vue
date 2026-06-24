@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { emptyPropertyForm, type PropertyFormData, type PropertyImage } from '~/types/property'
 
-definePageMeta({ layout: 'admin', title: 'เพิ่มอสังหาริมทรัพย์' })
+definePageMeta({ layout: 'admin', title: 'เพิ่มอสังหาฯ' })
 
 const form = ref<PropertyFormData>(emptyPropertyForm())
 const propertyId = ref<string | null>(null)

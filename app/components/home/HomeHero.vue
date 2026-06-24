@@ -10,6 +10,35 @@ let timer: ReturnType<typeof setInterval> | null = null
 const slideCount = heroSlides.length
 const hasMultipleSlides = slideCount > 1
 
+const currentSlide = computed(() => heroSlides[current.value])
+const showTextOverlay = computed(() => !currentSlide.value?.fullBanner)
+const slideContentKey = computed(() => currentSlide.value?.contentKey ?? 'default')
+const isAltSlide = computed(() => slideContentKey.value !== 'default')
+const showStats = computed(() => {
+  const slide = currentSlide.value
+  if (slide && 'showStats' in slide && slide.showStats === false) return false
+  return slideContentKey.value === 'default'
+})
+
+function heroT(key: string) {
+  const ck = slideContentKey.value
+  if (ck === 'default') return t(`home.hero.${key}`)
+  return t(`home.hero.slides.${ck}.${key}`)
+}
+
+function slideImageClass(slide: (typeof heroSlides)[number]) {
+  if (slide.imageClass) return slide.imageClass
+  if (slide.fullBanner) return 'object-center'
+  return 'object-[center_38%] sm:object-[center_42%]'
+}
+
+const propertiesFeatureKeys = ['0', '1', '2'] as const
+
+const slideFeatures = computed(() => {
+  if (slideContentKey.value !== 'properties') return [] as string[]
+  return propertiesFeatureKeys.map(key => t(`home.hero.slides.properties.features.${key}`))
+})
+
 function goTo(index: number) {
   current.value = ((index % slideCount) + slideCount) % slideCount
 }
@@ -65,85 +94,148 @@ onUnmounted(stopAutoplay)
       >
         <OptimizedImage
           :src="slide.image"
-          alt=""
-          :width="768"
+          :alt="slide.altKey ? t(slide.altKey) : ''"
+          :width="1920"
           :height="600"
           sizes="100vw"
-          :quality="70"
-          class="h-full w-full object-cover object-[center_38%] sm:object-[center_42%]"
+          :quality="80"
+          class="h-full w-full object-cover"
+          :class="slideImageClass(slide)"
           :fetchpriority="index === 0 ? 'high' : 'low'"
           :loading="index === 0 ? 'eager' : 'lazy'"
+        />
+        <div
+          v-if="'contentKey' in slide && slide.contentKey === 'properties'"
+          class="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/90 via-white/55 to-transparent sm:via-white/35 lg:via-white/20"
+          aria-hidden="true"
         />
       </div>
     </div>
 
-    <!-- Content -->
-    <div class="site-container relative flex h-full items-center">
-      <div class="w-full max-w-4xl">
-        <p class="animate-hero-fade-up text-[22px] font-medium leading-tight text-wp-hero-navy [animation-delay:100ms]">
-          {{ t('home.hero.tagline') }}
-        </p>
-        <h1 class="mt-[25px]">
-          <span class="animate-hero-fade-up block text-[16px] font-medium leading-[1.05] text-wp-hero-navy drop-shadow-[0_3px_12px_rgba(15,43,82,0.35)] [animation-delay:280ms] sm:text-[32px] lg:text-[55px]">
-            {{ t('home.hero.titleLine1') }}
-          </span>
-          <span class="animate-hero-fade-up mt-[15px] block bg-gradient-to-r from-wp-hero-navy to-wp-hero-blue bg-clip-text text-[28px] font-bold leading-[1.05] text-transparent drop-shadow-[0_3px_12px_rgba(15,43,82,0.35)] [animation-delay:460ms] sm:text-[52px] lg:text-[80px]">
-            {{ t('home.hero.titleLine2') }}
-          </span>
-        </h1>
-
-        <!-- Stats bar -->
-        <div class="animate-hero-fade-up mt-[40px] grid w-full max-w-xl grid-cols-3 overflow-hidden rounded-2xl border border-white/10 bg-[#FFFFFF]/[43%] py-4 shadow-lg backdrop-blur-md [animation-delay:640ms] sm:py-5">
-          <div
-            v-for="(stat, index) in heroStats"
-            :key="stat.labelKey"
-            class="animate-hero-fade-up flex flex-col items-center justify-center gap-2 border-r border-white/10 px-2 last:border-r-0 sm:px-6"
-            :style="{ animationDelay: `${820 + index * 140}ms` }"
+    <!-- Content (เฉพาะสไลด์ที่ไม่ใช่แบนเนอร์เต็มภาพ) -->
+    <div v-if="showTextOverlay" class="site-container relative z-[2] flex h-full items-center">
+      <div class="relative flex h-[26rem] w-full max-w-4xl flex-col pb-[3.25rem] sm:h-[27rem] lg:h-[28rem]">
+        <div
+          class="flex min-h-0 flex-1 flex-col"
+          :class="isAltSlide ? 'justify-center' : ''"
+        >
+          <p
+            class="animate-hero-fade-up text-[22px] font-medium leading-tight text-wp-hero-navy [animation-delay:100ms]"
           >
-            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-wp-hero-navy">
-              <svg
-                v-if="stat.icon === 'trust'"
-                class="h-[27px] w-[27px] text-white"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              <svg
-                v-else-if="stat.icon === 'returns'"
-                class="h-[27px] w-[27px] text-white"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-              <svg
-                v-else
-                class="h-[27px] w-[27px] text-white"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+            {{ heroT('tagline') }}
+          </p>
+          <h1 class="mt-[25px]">
+          <span
+            class="animate-hero-fade-up block leading-[1.05] text-wp-hero-navy [animation-delay:280ms]"
+            :class="isAltSlide
+              ? 'text-[28px] font-semibold sm:text-[40px] lg:text-[55px]'
+              : 'text-[16px] font-medium drop-shadow-[0_3px_12px_rgba(15,43,82,0.35)] sm:text-[32px] lg:text-[55px]'"
+          >
+            {{ heroT('titleLine1') }}
+          </span>
+          <span
+            v-if="slideContentKey === 'default'"
+            class="animate-hero-fade-up mt-[15px] block bg-gradient-to-r from-wp-hero-navy to-wp-hero-blue bg-clip-text text-[28px] font-bold leading-[1.05] text-transparent drop-shadow-[0_3px_12px_rgba(15,43,82,0.35)] [animation-delay:460ms] sm:text-[52px] lg:text-[80px]"
+          >
+            {{ heroT('titleLine2') }}
+          </span>
+          <template v-else-if="slideContentKey === 'debt'">
+            <span
+              class="animate-hero-fade-up mt-3 block text-[20px] font-semibold leading-snug text-wp-hero-navy [animation-delay:400ms] sm:mt-4 sm:text-[28px] lg:text-[36px]"
+            >
+              {{ heroT('titleLine2') }}
             </span>
-            <span class="text-[1.35rem] font-bold leading-none text-wp-hero-navy sm:text-[1.75rem]">{{ t(stat.valueKey) }}</span>
-            <span class="text-center text-[0.65rem] leading-snug text-wp-hero-navy sm:text-[0.8rem]">
-              {{ t(stat.labelKey) }}
+            <span
+              class="animate-hero-fade-up mt-2 flex items-center gap-2 text-[20px] font-semibold text-wp-hero-blue [animation-delay:520ms] sm:mt-3 sm:text-[28px] lg:text-[36px]"
+            >
+              <span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500 sm:h-8 sm:w-8">
+                <svg class="h-4 w-4 text-white sm:h-[18px] sm:w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+              </span>
+              {{ heroT('titleAccent') }}
             </span>
+          </template>
+          <template v-else-if="slideContentKey === 'properties'">
+            <span
+              class="animate-hero-fade-up mt-3 block text-[20px] font-bold leading-snug text-wp-hero-blue [animation-delay:400ms] sm:mt-4 sm:text-[28px] lg:text-[40px]"
+            >
+              {{ heroT('titleLine2') }}
+            </span>
+            <ul
+              class="animate-hero-fade-up mt-4 flex flex-wrap gap-x-5 gap-y-2 [animation-delay:520ms] sm:mt-5 sm:gap-x-6"
+            >
+              <li
+                v-for="(feature, featureIndex) in slideFeatures"
+                :key="featureIndex"
+                class="flex items-center gap-2 text-sm font-semibold text-wp-hero-navy sm:text-base"
+              >
+                <span class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500 sm:h-6 sm:w-6">
+                  <svg class="h-3 w-3 text-white sm:h-3.5 sm:w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+                {{ feature }}
+              </li>
+            </ul>
+          </template>
+          </h1>
+
+          <div
+            v-if="showStats"
+            class="animate-hero-fade-up mt-[40px] grid w-full max-w-xl grid-cols-3 overflow-hidden rounded-2xl border border-white/10 bg-[#FFFFFF]/[43%] py-4 shadow-lg backdrop-blur-md [animation-delay:640ms] sm:py-5"
+          >
+            <div
+              v-for="(stat, index) in heroStats"
+              :key="stat.labelKey"
+              class="animate-hero-fade-up flex flex-col items-center justify-center gap-2 border-r border-white/10 px-2 last:border-r-0 sm:px-6"
+              :style="{ animationDelay: `${820 + index * 140}ms` }"
+            >
+              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-wp-hero-navy">
+                <svg
+                  v-if="stat.icon === 'trust'"
+                  class="h-[27px] w-[27px] text-white"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <svg
+                  v-else-if="stat.icon === 'returns'"
+                  class="h-[27px] w-[27px] text-white"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                <svg
+                  v-else
+                  class="h-[27px] w-[27px] text-white"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </span>
+              <span class="text-[1.35rem] font-bold leading-none text-wp-hero-navy sm:text-[1.75rem]">{{ t(stat.valueKey) }}</span>
+              <span class="text-center text-[0.65rem] leading-snug text-wp-hero-navy sm:text-[0.8rem]">
+                {{ t(stat.labelKey) }}
+              </span>
+            </div>
           </div>
         </div>
 
         <NuxtLink
           :to="navTo('/contact')"
-          class="animate-hero-fade-up mt-6 inline-flex items-center rounded-xl border border-wp-hero-cta-mid bg-gradient-to-br from-wp-hero-navy to-wp-hero-cta-mid px-10 py-3 text-lg font-medium text-white shadow-[0_6px_20px_rgba(15,43,82,0.45)] transition [animation-delay:1260ms] hover:brightness-110"
+          class="animate-hero-fade-up absolute bottom-0 left-0 inline-flex items-center rounded-xl border border-wp-hero-cta-mid bg-gradient-to-br from-wp-hero-navy to-wp-hero-cta-mid px-10 py-3 text-lg font-medium text-white shadow-[0_6px_20px_rgba(15,43,82,0.45)] transition [animation-delay:1260ms] hover:brightness-110"
         >
-          {{ t('home.hero.cta') }}
+          {{ heroT('cta') }}
         </NuxtLink>
       </div>
     </div>
@@ -152,7 +244,7 @@ onUnmounted(stopAutoplay)
     <template v-if="hasMultipleSlides">
       <button
         type="button"
-        class="absolute left-3 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-black/30 p-2.5 text-white backdrop-blur-sm transition hover:bg-black/50 sm:left-6 sm:flex"
+        class="absolute left-3 top-1/2 z-10 flex -translate-y-1/2 rounded-full bg-black/30 p-2.5 text-white backdrop-blur-sm transition hover:bg-black/50 sm:left-6"
         :aria-label="t('home.hero.slidePrev')"
         @click="prev"
       >
@@ -162,7 +254,7 @@ onUnmounted(stopAutoplay)
       </button>
       <button
         type="button"
-        class="absolute right-3 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-black/30 p-2.5 text-white backdrop-blur-sm transition hover:bg-black/50 sm:right-6 sm:flex"
+        class="absolute right-3 top-1/2 z-10 flex -translate-y-1/2 rounded-full bg-black/30 p-2.5 text-white backdrop-blur-sm transition hover:bg-black/50 sm:right-6"
         :aria-label="t('home.hero.slideNext')"
         @click="next"
       >

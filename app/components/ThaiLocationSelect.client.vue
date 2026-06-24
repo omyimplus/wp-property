@@ -7,10 +7,13 @@ const props = withDefaults(
     labelSize?: 'form' | 'filter'
     required?: boolean
     allowEmpty?: boolean
+    /** เรียงจังหวัด/อำเภอ/ตำบลลงมา (ใช้ในฟอร์มหน้าบริการ) */
+    stacked?: boolean
   }>(),
   {
     labelSize: 'form',
     allowEmpty: true,
+    stacked: false,
   },
 )
 
@@ -70,7 +73,7 @@ function onSubdistrictChange(e: Event) {
 </script>
 
 <template>
-  <div class="grid gap-3 sm:grid-cols-3">
+  <div class="grid gap-3" :class="stacked ? '' : 'sm:grid-cols-3'">
     <div>
       <label
         class="mb-1 block"

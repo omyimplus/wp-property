@@ -51,13 +51,17 @@ useStaticPageSeo('pages.rent.title', 'pages.rent.subtitle')
             {{ t('common.viewAll') }}
           </NuxtLink>
         </div>
-        <div v-if="listings?.properties.length" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <PropertyCard
+        <div v-if="listings?.properties.length" class="mt-6 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div
             v-for="property in listings.properties"
             :key="property.id"
-            :property="property"
-            mode="rent"
-          />
+            class="h-full"
+          >
+            <PropertyCard
+              :property="property"
+              mode="rent"
+            />
+          </div>
         </div>
       </div>
     </section>
@@ -67,9 +71,6 @@ useStaticPageSeo('pages.rent.title', 'pages.rent.subtitle')
         <h2 class="text-xl font-medium text-wp-navy">
           {{ t('pages.rent.formTitle') }}
         </h2>
-        <p class="mt-2 text-sm text-slate-600">
-          {{ t('pages.rent.adminNote') }}
-        </p>
         <p v-if="successMessage" class="mt-4 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-800">
           {{ successMessage }}
         </p>

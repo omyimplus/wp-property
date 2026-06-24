@@ -33,6 +33,8 @@ export interface PropertyCustomer {
   subdistrict: string | null
   district: string | null
   province: string | null
+  latitude: number | null
+  longitude: number | null
   facing_direction: string | null
   floors_total: number | null
   floor_number: number | null
@@ -42,6 +44,9 @@ export interface PropertyCustomer {
   land_area_sqm: number | null
   usable_area_sqm: number | null
   property_age_years: number | null
+  facilities: string[]
+  nearby_facilities: string[]
+  project_description: string | null
   status: PropertyCustomerStatus
   property_id: string | null
   approved_at: string | null
@@ -201,6 +206,8 @@ export function emptyPropertyCustomerForm(): PropertyCustomerFormData {
     subdistrict: null,
     district: null,
     province: null,
+    latitude: null,
+    longitude: null,
     facing_direction: null,
     floors_total: null,
     floor_number: null,
@@ -210,6 +217,9 @@ export function emptyPropertyCustomerForm(): PropertyCustomerFormData {
     land_area_sqm: null,
     usable_area_sqm: null,
     property_age_years: null,
+    facilities: [],
+    nearby_facilities: [],
+    project_description: null,
     status: 'pending_approval',
   }
 }

@@ -1,8 +1,6 @@
 import {
-  ADMIN_IMAGE_BUCKET,
-  ADMIN_IMAGE_MIME,
+  ADMIN_IMAGE_INPUT_TYPES,
   assertAdminImageWithinLimit,
-  buildAdminWebpStoragePath,
   prepareAdminImageForUpload,
 } from '~/utils/admin-image'
 import {
@@ -17,62 +15,57 @@ export function useRichTextMediaUpload(
   itemId: Ref<string | null>,
   entity: Ref<RichTextMediaEntity> | RichTextMediaEntity = 'ic',
 ) {
-  const supabase = useSupabaseClient()
   const entityRef = isRef(entity) ? entity : ref(entity)
 
-  const pathPrefix = computed(() => {
-    const id = itemId.value
-    if (!id) return null
-    return entityRef.value === 'articles' ? `articles/${id}/body/` : `ic/${id}/body/`
-  })
-
-  function publicUrl(storagePath: string) {
-    const { data } = supabase.storage.from(ADMIN_IMAGE_BUCKET).getPublicUrl(storagePath)
-    return data.publicUrl
+  function apiSegment() {
+    return entityRef.value === 'articles' ? 'articles' : 'interesting-content'
   }
 
   async function uploadImage(file: File) {
-    const prefix = pathPrefix.value
-    if (!prefix) throw new Error('บันทึกข้อมูลก่อนอัปโหลดรูป/วิดีโอ')
+    const id = itemId.value
+    if (!id) throw new Error('บันทึกข้อมูลก่อนอัปโหลดรูป/วิดีโอ')
 
     const prepared = await prepareAdminImageForUpload(file)
     assertAdminImageWithinLimit(prepared, file.name)
-    const storagePath = buildAdminWebpStoragePath(prefix)
 
-    const { error } = await supabase.storage.from(ADMIN_IMAGE_BUCKET).upload(storagePath, prepared, {
-      upsert: false,
-      cacheControl: '3600',
-      contentType: ADMIN_IMAGE_MIME,
-    })
-    if (error) throw new Error(error.message)
+    const form = new FormData()
+    form.append('file', prepared, prepared.name)
 
-    return { storagePath, publicUrl: publicUrl(storagePath) }
+    return await $fetch<{ storage_path: string, public_url: string }>(
+      `/api/admin/${apiSegment()}/${id}/body-media`,
+      { method: 'POST', body: form },
+    ).then(res => ({
+      storagePath: res.storage_path,
+      publicUrl: res.public_url,
+    }))
   }
 
   async function uploadVideo(file: File) {
-    const prefix = pathPrefix.value
-    if (!prefix) throw new Error('บันทึกข้อมูลก่อนอัปโหลดรูป/วิดีโอ')
+    const id = itemId.value
+    if (!id) throw new Error('บันทึกข้อมูลก่อนอัปโหลดรูป/วิดีโอ')
 
+    if (!isAllowedAdminVideoInput(file)) {
+      throw new Error('วิดีโอไม่รองรับ (ใช้ MP4 หรือ WebM เท่านั้น)')
+    }
     assertAdminVideoWithinLimit(file)
-    const ext = adminVideoExtension(file.type)
-    const storagePath = `${prefix}${crypto.randomUUID()}.${ext}`
 
-    const { error } = await supabase.storage.from(ADMIN_IMAGE_BUCKET).upload(storagePath, file, {
-      upsert: false,
-      cacheControl: '3600',
-      contentType: file.type,
-    })
-    if (error) throw new Error(error.message)
+    const form = new FormData()
+    form.append('file', file, file.name)
 
-    return { storagePath, publicUrl: publicUrl(storagePath) }
+    return await $fetch<{ storage_path: string, public_url: string }>(
+      `/api/admin/${apiSegment()}/${id}/body-media`,
+      { method: 'POST', body: form },
+    ).then(res => ({
+      storagePath: res.storage_path,
+      publicUrl: res.public_url,
+    }))
   }
 
   async function removeMedia(storagePaths: string[]) {
     const id = itemId.value
     if (!id || !storagePaths.length) return
 
-    const apiSegment = entityRef.value === 'articles' ? 'articles' : 'interesting-content'
-    await $fetch(`/api/admin/${apiSegment}/${id}/body-media`, {
+    await $fetch(`/api/admin/${apiSegment()}/${id}/body-media`, {
       method: 'DELETE',
       body: { storage_paths: storagePaths },
     })
@@ -82,6 +75,6 @@ export function useRichTextMediaUpload(
     uploadImage,
     uploadVideo,
     removeMedia,
-    canUpload: computed(() => Boolean(pathPrefix.value)),
+    canUpload: computed(() => Boolean(itemId.value)),
   }
 }

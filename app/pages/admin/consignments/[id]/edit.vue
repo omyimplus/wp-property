@@ -72,7 +72,7 @@ async function onSubmit() {
 }
 
 async function onApprove() {
-  if (!confirm('อนุมัติเข้าระบบอสังหาริมทรัพย์? ระบบจะสร้างทรัพย์และรหัส WP ใหม่')) return
+  if (!confirm('อนุมัติเข้าระบบอสังหาฯ? ระบบจะสร้างทรัพย์และรหัส WP ใหม่')) return
   approving.value = true
   errorMessage.value = ''
   try {

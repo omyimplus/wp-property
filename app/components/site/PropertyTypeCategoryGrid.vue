@@ -44,7 +44,7 @@ function prev() {
 </script>
 
 <template>
-  <div class="mt-5 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
+  <div class="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
     <!-- มือถือ: slide 3 หมวด -->
     <div
       class="sm:hidden"
@@ -123,13 +123,13 @@ function prev() {
       </div>
     </div>
 
-    <!-- tablet/desktop: grid -->
-    <div class="hidden grid-cols-2 gap-3 sm:grid sm:grid-cols-3 md:grid-cols-5 md:gap-4">
+    <!-- tablet/desktop: grid (tablet) / equal flex columns (PC) -->
+    <div class="hidden sm:grid sm:grid-cols-3 sm:gap-4 lg:flex lg:gap-4">
       <button
         v-for="ptype in propertyTypeKeys"
         :key="ptype.key"
         type="button"
-        class="flex flex-col items-center justify-center gap-2.5 rounded-xl border px-2 py-4 text-center transition sm:px-3 sm:py-5"
+        class="flex min-h-[6.75rem] flex-col items-center justify-center gap-2.5 rounded-xl border px-2 py-4 text-center transition sm:min-h-[7.25rem] lg:min-h-[7.5rem] lg:min-w-0 lg:flex-1"
         :class="isActive(ptype.key)
           ? 'border-wp-navy bg-wp-navy/5 ring-1 ring-wp-navy/20'
           : 'border-dashed border-slate-300 hover:border-slate-400 hover:bg-slate-50'"
@@ -143,7 +143,7 @@ function prev() {
           :height="56"
           sizes="56px"
           :quality="70"
-          class="h-12 w-12 object-contain sm:h-14 sm:w-14"
+          class="h-12 w-12 shrink-0 object-contain sm:h-14 sm:w-14"
         />
         <span class="text-xs font-medium leading-snug text-slate-900 sm:text-sm">
           {{ t(`home.search.propertyTypes.${ptype.key}`) }}

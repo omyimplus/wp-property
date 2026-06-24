@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PropertyCard from '~/components/site/PropertyCard.vue'
 import PropertyTypeCategoryGrid from '~/components/site/PropertyTypeCategoryGrid.vue'
-import { parsePriceRangeKey, type PublicPropertyListResponse } from '~/types/public-property'
+import { parsePriceRangeKey, RENT_PRICE_RANGE_KEYS, SALE_PRICE_RANGE_KEYS, type PublicPropertyListResponse } from '~/types/public-property'
 
 const props = defineProps<{
   basePath: string
@@ -33,7 +33,7 @@ watch(
 )
 
 const queryParams = computed(() => {
-  const range = parsePriceRangeKey(searchPrice.value)
+  const range = parsePriceRangeKey(searchPrice.value, listing.value)
   return {
     listing: listing.value,
     property_type: searchType.value || undefined,
@@ -45,6 +45,15 @@ const queryParams = computed(() => {
   }
 })
 
+const activePriceRangeKeys = computed(() =>
+  listing.value === 'rent' ? RENT_PRICE_RANGE_KEYS : SALE_PRICE_RANGE_KEYS,
+)
+
+function priceRangeLabel(key: string) {
+  const group = listing.value === 'rent' ? 'rentPrices' : 'prices'
+  return t(`home.search.${group}.${key}`)
+}
+
 const fetchKey = computed(() => {
   const q = queryParams.value
   return [
@@ -54,10 +63,10 @@ const fetchKey = computed(() => {
     q.min_price ?? '',
     q.max_price ?? '',
     q.keyword ?? '',
-    q.page,
-    q.page_size,
   ].join('-')
 })
+
+const showLoading = computed(() => pending.value && !(data.value?.properties?.length))
 
 const { data, pending, error } = await useFreshFetch<PublicPropertyListResponse>('/api/properties', {
   key: fetchKey,
@@ -98,7 +107,7 @@ function applySearch() {
 function setListing(mode: 'sale' | 'rent') {
   navigateTo({
     path: listingPath.value,
-    query: buildQuery({ listing: mode }),
+    query: buildQuery({ listing: mode, price: '' }),
   })
 }
 
@@ -127,6 +136,10 @@ function goToPage(p: number) {
   navigateTo({
     path: listingPath.value,
     query: buildQuery({ page: p }),
+  }).then(() => {
+    if (import.meta.client) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   })
 }
 </script>
@@ -163,11 +176,18 @@ function goToPage(p: number) {
             <option value="commercial">{{ t('home.search.types.commercial') }}</option>
             <option value="apartment">{{ t('home.search.types.apartment') }}</option>
           </select>
-          <select v-model="searchPrice" class="h-11 rounded-lg border border-slate-200 px-3 text-sm">
+          <select
+            v-model="searchPrice"
+            class="h-11 rounded-lg border border-slate-200 px-3 text-sm"
+          >
             <option value="">{{ t('home.search.pricePlaceholder') }}</option>
-            <option value="1-2">{{ t('home.search.prices.1-2') }}</option>
-            <option value="2-5">{{ t('home.search.prices.2-5') }}</option>
-            <option value="5+">{{ t('home.search.prices.5+') }}</option>
+            <option
+              v-for="key in activePriceRangeKeys"
+              :key="key"
+              :value="key"
+            >
+              {{ priceRangeLabel(key) }}
+            </option>
           </select>
           <input
             v-model="searchKeyword"
@@ -186,7 +206,7 @@ function goToPage(p: number) {
         @select="filterByType"
       />
 
-      <div v-if="pending" class="mt-8 text-center text-white/80">
+      <div v-if="showLoading" class="mt-8 text-center text-white/80">
         {{ t('pages.common.loading') }}
       </div>
       <div v-else-if="error" class="mt-8 rounded-xl bg-red-500/15 p-8 text-center text-sm text-red-100">
@@ -195,13 +215,28 @@ function goToPage(p: number) {
       <div v-else-if="!data?.properties.length" class="mt-8 rounded-xl bg-white/10 p-8 text-center text-white">
         {{ t('pages.properties.empty') }}
       </div>
-      <div v-else class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <PropertyCard
-          v-for="property in data.properties"
-          :key="property.id"
-          :property="property"
-          :mode="listing"
-        />
+      <div v-else class="relative mt-8">
+        <div
+          v-if="pending"
+          class="pointer-events-none absolute inset-0 z-10 flex items-start justify-center bg-wp-navy/40 pt-16"
+          aria-hidden="true"
+        >
+          <span class="rounded-full bg-white/90 px-4 py-2 text-sm text-slate-700">
+            {{ t('pages.common.loading') }}
+          </span>
+        </div>
+        <div class="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div
+            v-for="property in data.properties"
+            :key="property.id"
+            class="h-full"
+          >
+            <PropertyCard
+              :property="property"
+              :mode="listing"
+            />
+          </div>
+        </div>
       </div>
 
       <p v-if="data?.total" class="mt-6 text-center text-sm text-white/70">

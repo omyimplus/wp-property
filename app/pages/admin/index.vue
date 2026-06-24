@@ -29,11 +29,18 @@ const statCards = computed(() => {
       accent: 'sky',
     },
     {
-      label: 'เช่าทรัพย์',
+      label: 'สนใจเช่า',
       sublabel: 'รอดำเนินการ',
       value: c.rentals_pending,
       href: '/admin/rentals?status=pending_approval',
       accent: 'emerald',
+    },
+    {
+      label: 'สนใจซื้อ',
+      sublabel: 'รอดำเนินการ',
+      value: c.sales_pending,
+      href: '/admin/sales?status=pending_approval',
+      accent: 'sky',
     },
     {
       label: 'ฝากขายทรัพย์',
@@ -43,21 +50,21 @@ const statCards = computed(() => {
       accent: 'violet',
     },
     {
-      label: 'อสังหาริมทรัพย์',
+      label: 'อสังหาฯ',
       sublabel: 'รอเผยแพร่',
       value: c.properties_pending,
       href: '/admin/properties?status=pending_approval',
       accent: 'amber',
     },
     {
-      label: 'สนใจซื้อ',
+      label: 'สอบถามจากประกาศ (ซื้อ)',
       sublabel: 'รอติดต่อ',
       value: c.property_inquiries_sale_pending,
       href: '/admin/property-inquiries/sale?status=pending_approval',
       accent: 'rose',
     },
     {
-      label: 'สนใจเช่า',
+      label: 'สอบถามจากประกาศ (เช่า)',
       sublabel: 'รอติดต่อ',
       value: c.property_inquiries_rent_pending,
       href: '/admin/property-inquiries/rent?status=pending_approval',
@@ -83,6 +90,7 @@ function alertBadgeClass(type: DashboardAlert['type']) {
   const map: Record<DashboardAlert['type'], string> = {
     loan: 'bg-sky-100 text-sky-900',
     rental: 'bg-emerald-100 text-emerald-900',
+    sale: 'bg-blue-100 text-blue-900',
     consignment: 'bg-violet-100 text-violet-900',
     property: 'bg-amber-100 text-amber-900',
     property_inquiry: 'bg-rose-100 text-rose-900',

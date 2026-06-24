@@ -17,6 +17,8 @@
     "test:console": "node scripts/check-public-console.mjs",
     "test:site:setup": "playwright install chromium",
     "test:site": "node scripts/check-site.mjs",
+    "test:map:wp0060": "node scripts/test-property-map-wp0060.mjs",
+    "test:map:wp0060:db": "node scripts/test-map-wp0060-db.mjs",
     "test": "npm run test:build"
   },
   "dependencies": {

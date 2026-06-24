@@ -22,7 +22,7 @@ const listing = computed(() => {
 definePageMeta({ layout: 'admin' })
 
 useHead({
-  title: () => (listing.value === 'rent' ? 'สนใจเช่า' : 'สนใจซื้อ'),
+  title: () => (listing.value === 'rent' ? 'สอบถามจากประกาศ (เช่า)' : 'สอบถามจากประกาศ (ซื้อ)'),
 })
 
 const filters = reactive(emptyPropertyInquiryFilters(listing.value))
@@ -45,7 +45,7 @@ watch(listing, (next) => {
 })
 
 const pageTitle = computed(() =>
-  listing.value === 'rent' ? 'สนใจเช่า' : 'สนใจซื้อ',
+  listing.value === 'rent' ? 'สอบถามจากประกาศ (เช่า)' : 'สอบถามจากประกาศ (ซื้อ)',
 )
 
 const rangeLabel = computed(() => {

@@ -19,7 +19,7 @@ import {
 } from '~/types/property'
 import type { ThaiLocationValue } from '~/types/thai-location'
 
-definePageMeta({ layout: 'admin', title: 'อสังหาริมทรัพย์' })
+definePageMeta({ layout: 'admin', title: 'อสังหาฯ' })
 
 type PropertyListItem = Property & {
   image_count?: number
@@ -305,7 +305,7 @@ onMounted(load)
   <div class="space-y-6">
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h2 class="text-lg font-semibold text-slate-900">อสังหาริมทรัพย์</h2>
+        <h2 class="text-lg font-semibold text-slate-900">อสังหาฯ</h2>
         <p class="mt-1 text-sm text-slate-500">แยกรายการขายและเช่า · กดค้นหาเพื่อกรองข้อมูล</p>
       </div>
       <NuxtLink

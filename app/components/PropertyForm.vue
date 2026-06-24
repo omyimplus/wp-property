@@ -12,6 +12,10 @@ import {
   type PropertyImage,
 } from '~/types/property'
 import {
+  IN_UNIT_FACILITIES,
+  NEARBY_FACILITIES,
+} from '~/data/property-facilities'
+import {
   PROPERTY_CUSTOMER_STATUSES,
   validatePropertyCustomerContact,
   validatePropertyCustomerCreateForm,
@@ -58,6 +62,16 @@ const statusOptions = computed(() =>
   isConsignment.value
     ? PROPERTY_CUSTOMER_STATUSES.filter(s => s.value !== 'approved')
     : PROPERTY_STATUSES,
+)
+
+const stackFields = computed(() => !props.showStatus)
+
+const fieldGridClass = computed(() =>
+  stackFields.value ? 'grid gap-4' : 'grid gap-4 sm:grid-cols-2',
+)
+
+const specGridClass = computed(() =>
+  stackFields.value ? 'grid gap-4' : 'grid gap-4 sm:grid-cols-2 lg:grid-cols-3',
 )
 
 const emit = defineEmits<{
@@ -157,7 +171,7 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
       class="rounded-xl border border-violet-200 bg-violet-50/40 p-6 shadow-sm"
     >
       <h3 class="mb-4 font-semibold text-violet-950">ข้อมูลลูกค้าฝากขาย</h3>
-      <div class="grid gap-4 sm:grid-cols-2">
+      <div class="grid gap-4">
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
             ชื่อ<span v-if="isCreate" class="text-red-600"> *</span>
@@ -180,7 +194,7 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
             @input="setField('customer_phone', ($event.target as HTMLInputElement).value || null)"
           >
         </div>
-        <div class="sm:col-span-2">
+        <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
             ไลน์<span v-if="isCreate" class="text-red-600"> *</span>
           </label>
@@ -197,7 +211,7 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
 
     <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <h3 class="mb-4 font-semibold text-slate-900">ข้อมูลทั่วไป</h3>
-      <div class="grid gap-4 sm:grid-cols-2">
+      <div :class="fieldGridClass">
         <div v-if="!isConsignment">
           <label class="mb-1 block text-sm font-medium text-slate-700">รหัสทรัพย์</label>
           <input
@@ -353,7 +367,7 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
 
     <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <h3 class="mb-4 font-semibold text-slate-900">ที่อยู่</h3>
-      <div class="grid gap-4 sm:grid-cols-2">
+      <div :class="fieldGridClass">
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
             บ้านเลขที่<span v-if="isCreate" class="text-red-600"> *</span>
@@ -392,12 +406,13 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
             @input="setField('road', ($event.target as HTMLInputElement).value || null)"
           >
         </div>
-        <div class="sm:col-span-2">
+        <div :class="stackFields ? '' : 'sm:col-span-2'">
           <ThaiLocationSelect
             v-model="location"
             label-size="form"
             :required="isCreate"
             :allow-empty="false"
+            :stacked="stackFields"
           />
         </div>
         <div>
@@ -419,7 +434,7 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
             </option>
           </select>
         </div>
-        <div class="sm:col-span-2">
+        <div :class="stackFields ? '' : 'sm:col-span-2'">
           <label class="mb-1 block text-sm font-medium text-slate-700">รายละเอียดเพิ่มเติม</label>
           <textarea
             :value="form.address_line ?? ''"
@@ -430,11 +445,25 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
           />
         </div>
       </div>
+
+      <div class="mt-6 border-t border-slate-100 pt-6">
+        <h4 class="mb-1 text-sm font-semibold text-slate-900">ตำแหน่งบนแผนที่</h4>
+        <p class="mb-3 text-sm text-slate-500">
+          คัดลอก URL จาก Google Maps แล้ววางด้านล่าง ระบบจะแยกพิกัดให้อัตโนมัติ
+        </p>
+        <PropertyMapPicker
+          :latitude="form.latitude ?? null"
+          :longitude="form.longitude ?? null"
+          :disabled="readonly"
+          @update:latitude="setField('latitude', $event)"
+          @update:longitude="setField('longitude', $event)"
+        />
+      </div>
     </section>
 
     <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <h3 class="mb-4 font-semibold text-slate-900">รายละเอียดทรัพย์</h3>
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div :class="specGridClass">
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">จำนวนชั้น</label>
           <input
@@ -517,6 +546,47 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
           >
         </div>
       </div>
+    </section>
+
+    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h3 class="mb-1 font-semibold text-slate-900">สิ่งอำนวยความสะดวก</h3>
+      <p class="mb-4 text-sm text-slate-500">
+        อุปกรณ์และเฟอร์นิเจอร์ในห้อง / มาพร้อมยูนิต — คลิก chip เพื่อเลือก
+      </p>
+      <PropertyFacilityPicker
+        :model-value="form.facilities ?? []"
+        :options="IN_UNIT_FACILITIES"
+        :disabled="readonly"
+        @update:model-value="setField('facilities', $event)"
+      />
+    </section>
+
+    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h3 class="mb-1 font-semibold text-slate-900">ความสะดวกโดยรอบ</h3>
+      <p class="mb-4 text-sm text-slate-500">
+        สิ่งอำนวยความสะดวกในโครงการ / ส่วนกลาง — คลิก chip เพื่อเลือก
+      </p>
+      <PropertyFacilityPicker
+        :model-value="form.nearby_facilities ?? []"
+        :options="NEARBY_FACILITIES"
+        :disabled="readonly"
+        @update:model-value="setField('nearby_facilities', $event)"
+      />
+    </section>
+
+    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h3 class="mb-4 font-semibold text-slate-900">รายละเอียดโครงการ</h3>
+      <p class="mb-3 text-sm text-slate-500">
+        แสดงใต้รายการสิ่งอำนวยความสะดวกบนหน้ารายละเอียดทรัพย์ (ใช้ชื่อโครงการ + ทำเลเป็นหัวข้อ)
+      </p>
+      <textarea
+        :value="form.project_description ?? ''"
+        rows="6"
+        placeholder="อธิบายโครงการ จุดเด่น สิ่งอำนวยความสะดวกของโครงการ..."
+        class="w-full rounded-lg border border-slate-300 px-3 py-2"
+        :disabled="readonly"
+        @input="setField('project_description', ($event.target as HTMLTextAreaElement).value || null)"
+      />
     </section>
 
     <section

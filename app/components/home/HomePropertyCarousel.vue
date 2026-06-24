@@ -50,16 +50,16 @@ watch(slidesPerView, () => {
   >
     <div class="overflow-hidden">
       <div
-        class="flex transition-transform duration-500 ease-out"
+        class="-mx-2 flex items-stretch transition-transform duration-500 ease-out"
         :style="{ transform: `translateX(-${current * slideWidth}%)` }"
       >
         <div
           v-for="property in properties"
           :key="property.id"
-          class="h-full shrink-0 px-2 first:pl-0 last:pr-0"
-          :style="{ width: `${slideWidth}%` }"
+          class="min-w-0 shrink-0 px-2"
+          :style="{ flex: `0 0 ${slideWidth}%`, width: `${slideWidth}%` }"
         >
-          <PropertyCard :property="property" :mode="mode" />
+          <PropertyCard class="h-full w-full" :property="property" :mode="mode" />
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ import {
   type PropertyImage,
 } from '~/types/property'
 
-definePageMeta({ layout: 'admin', title: 'แก้ไขอสังหาริมทรัพย์' })
+definePageMeta({ layout: 'admin', title: 'แก้ไขอสังหาฯ' })
 
 const route = useRoute()
 const id = computed(() => route.params.id as string)

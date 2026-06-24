@@ -61,7 +61,7 @@ useSiteSeo({
 
         <div
           v-if="item.body_html"
-          class="rich-content prose prose-slate mt-8 max-w-none sm:mt-10"
+          class="rich-content mt-8 sm:mt-10"
           v-html="item.body_html"
         />
 

@@ -21,7 +21,8 @@
       "properties": "Properties",
       "loans": "Loan Services",
       "consign": "Consign for Sale / Rent",
-      "rent": "Rentals"
+      "rentInterest": "Interested in Renting",
+      "saleInterest": "Interested in Buying"
     }
   },
   "common": {
@@ -50,7 +51,7 @@
       "slidePrev": "Previous slide",
       "slideNext": "Next slide",
       "goToSlide": "Go to slide {n}",
-      "tagline": "WP Property Wealthy Millionaire",
+      "tagline": "WP PROPERTY WEALTHY MILLIONNAIRE",
       "titleLine1": "Real Estate Experts",
       "titleLine2": "for Over 19 Years",
       "cta": "Consult Us Now",
@@ -63,6 +64,30 @@
         "customers": "3,000+",
         "returns": "5–8%",
         "approval": "7 Days"
+      },
+      "slides": {
+        "alt": {
+          "debt": "Debt consolidation — make your home dreams possible",
+          "properties": "Rent-to-own and consignment — full-service property management"
+        },
+        "debt": {
+          "tagline": "WP PROPERTY WEALTHY MILLIONNAIRE",
+          "titleLine1": "Consolidate Debt, Clear Burdens",
+          "titleLine2": "Every dream of homeownership",
+          "titleAccent": "can come true",
+          "cta": "Consult Us Now"
+        },
+        "properties": {
+          "tagline": "WP PROPERTY WEALTHY MILLIONNAIRE",
+          "titleLine1": "Rent-to-Own, Consignment, Great Returns",
+          "titleLine2": "End-to-End Management, Full Care",
+          "features": [
+            "Customer care",
+            "Marketing support",
+            "No hassle on your part"
+          ],
+          "cta": "Consult Us Now"
+        }
       }
     },
     "services": {
@@ -95,9 +120,23 @@
         "apartment": "Apartment"
       },
       "prices": {
+        "lt-1": "Under 1M THB",
         "1-2": "1–2M THB",
-        "2-5": "2–5M THB",
-        "5+": "5M+ THB"
+        "2-3": "2–3M THB",
+        "3-5": "3–5M THB",
+        "5-7": "5–7M THB",
+        "7-10": "7–10M THB",
+        "10+": "10M THB and above"
+      },
+      "rentPrices": {
+        "lte-5k": "Up to 5,000 THB",
+        "5001-10000": "5,001–10,000 THB",
+        "10001-15000": "10,001–15,000 THB",
+        "15001-20000": "15,001–20,000 THB",
+        "20001-30000": "20,001–30,000 THB",
+        "30001-50000": "30,001–50,000 THB",
+        "50001-100000": "50,001–100,000 THB",
+        "100001+": "100,001 THB and above"
       },
       "propertyTypes": {
         "houseTown": "Detached / Semi-detached",
@@ -126,7 +165,13 @@
       "parking": "{n} parking",
       "card": {
         "title": "Detached house in the city center, near On Nut BTS",
-        "location": "On Nut Subdistrict, On Nut District, Bangkok"
+        "location": "On Nut Subdistrict, On Nut District, Bangkok",
+        "perMonth": "/mo",
+        "perSqm": "/ sq.m.",
+        "usableArea": "{n} sq.m.",
+        "landArea": "{n} sq.wa",
+        "nearTransit": "Near transit",
+        "postedAt": "Listed {date} ({relative})"
       }
     },
     "interestingContent": {
@@ -178,16 +223,17 @@
     }
   },
   "footer": {
-    "description": "WP Property Wealthy Millionaire Co., Ltd. — finance and real estate specialists offering end-to-end consultation and services including rent-to-own, consignment, and professional property management with over 19 years of experience.",
+    "companyName": "WP Property Setthi Ramruay Co., Ltd. (Head Office)",
+    "description": "WP Property Setthi Ramruay Co., Ltd. — finance and real estate specialists offering end-to-end consultation and services including rent-to-own, consignment, and professional property management with over 19 years of experience.",
     "sitemap": "Sitemap",
     "services": "Our Services",
     "contact": "Contact Us",
     "addressLabel": "Address",
-    "address": "255 Moo 9, Tha Sai Subdistrict, Mueang District, Chiang Rai",
+    "address": "378/44 The Grand Lux Bangna-Suan Luang, Kanchanaphisek Road, Dok Mai, Prawet, Bangkok 10250",
     "phoneLabel": "Phone",
-    "phone": "02 999 9999",
+    "phone": "Call Center 083-514-5454",
     "emailLabel": "Email",
-    "email": "info{'@'}wpproperty.co.th",
+    "email": "info{'@'}wp-landproperty.com",
     "lineLabel": "Line ID",
     "line": "{'@'}wpproperty",
     "privacy": "Privacy Policy",
@@ -204,7 +250,56 @@
       "properties": "Properties",
       "loans": "Loans",
       "consign": "Consign (Sale / Rent)",
-      "rent": "Rentals"
+      "rentInterest": "Interested in Renting",
+      "saleInterest": "Interested in Buying"
+    }
+  },
+  "propertyFacilities": {
+    "inUnitTitle": "Amenities",
+    "nearbyTitle": "Nearby conveniences",
+    "showLess": "Show less",
+    "expandInUnit": "View all {n} amenities",
+    "expandNearby": "View all {n} convenience services",
+    "inUnit": {
+      "cabinets": "Cabinets",
+      "cooker_hood": "Cooker hood",
+      "air_conditioner": "Air conditioner",
+      "dishwasher": "Dishwasher",
+      "refrigerator": "Refrigerator",
+      "water_heater": "Water heater",
+      "microwave": "Microwave",
+      "washing_machine": "Washing machine",
+      "tv": "TV",
+      "bed": "Bed",
+      "sofa": "Sofa",
+      "wardrobe": "Wardrobe",
+      "internet": "In-room Wi-Fi",
+      "pet_friendly": "Pet friendly"
+    },
+    "nearby": {
+      "elevator": "Elevator",
+      "elevator_lobby": "Elevator",
+      "parking": "Parking",
+      "motorcycle_parking": "Motorcycle parking",
+      "jacuzzi": "Jacuzzi",
+      "steam_room": "Steam room",
+      "sauna": "Sauna",
+      "fitness": "Gym / Fitness",
+      "swimming_pool": "Swimming pool",
+      "sports_court": "Sports court (tennis / basketball)",
+      "garden": "Garden / Green area",
+      "playground": "Playground / Kids area",
+      "library": "Library",
+      "meeting_room": "Meeting room",
+      "convenience_store": "On-site shops",
+      "restaurant": "On-site restaurant",
+      "laundry": "Laundry service",
+      "shuttle": "Shuttle service",
+      "security_24h": "24-hour security",
+      "cctv": "CCTV",
+      "access_control": "Access control (fingerprint / keycard)",
+      "ev_charger": "EV charger",
+      "near_transit": "Near transit"
     }
   },
   "pages": {
@@ -215,7 +310,8 @@
     "forms": {
       "error": "Submission failed. Please try again.",
       "loanSuccess": "Your loan request was submitted. Our team will contact you soon.",
-      "rentalSuccess": "Your rental request was submitted. Our team will contact you soon.",
+      "rentalSuccess": "Your rental interest request was submitted. Our team will contact you soon.",
+      "saleSuccess": "Your purchase interest request was submitted. Our team will contact you soon.",
       "consignSuccess": "Your consignment was submitted. Our team will contact you soon."
     },
     "properties": {
@@ -249,6 +345,46 @@
       "ageYears": "{n} years",
       "openGallery": "View all photos",
       "photoCount": "{n} photos",
+      "projectDescriptionTitle": "Project details",
+      "projectDescriptionMore": "View project details",
+      "projectDescriptionLess": "Show less",
+      "additionalDescriptionTitle": "Additional details",
+      "additionalNoteMore": "View more details",
+      "additionalNoteLess": "Show less",
+      "mapSectionTitle": "Map",
+      "listingType": "Listing type",
+      "listingCode": "Property code",
+      "postedAt": "Listed on",
+      "pricePerSqm": "฿{price} / sq.m.",
+      "detail": {
+        "detailsTitle": "Property details",
+        "aboutTitle": "About this property",
+        "viewAllDetails": "View all details",
+        "viewMore": "View more",
+        "bedroomsShort": "{n} bedrooms",
+        "bathroomsShort": "{n} bathrooms",
+        "areaShort": "{n} sq.m.",
+        "listingType": "{type} {listing}",
+        "listingSale": "for sale",
+        "listingRent": "for rent",
+        "furnished": "Fully furnished",
+        "builtYear": "Completed {date}",
+        "postedOn": "Listed {date}",
+        "listingId": "Listing ID - {code}",
+        "floorArea": "Floor area {n} sq.m.",
+        "photos": "Photos",
+        "viewOnMap": "View on map",
+        "saveListing": "Save listing",
+        "share": "Share",
+        "contactOther": "Contact via other methods",
+        "contactDisclaimer": "Contact through this platform is subject to WP Property terms of service and privacy policy.",
+        "agentName": "WP Property Team",
+        "verified": "Verified",
+        "companyName": "WP Property Consulting",
+        "nearTransit": "Near transit",
+        "perMonth": "/mo",
+        "currencyBadge": "THB"
+      },
       "inquiry": {
         "title": "Interested in this property",
         "subtitle": "Fill in your details and our team will get back to you soon",
@@ -281,30 +417,243 @@
         "detail": "Rent-to-own for houses, condos, land, and commercial properties in locations that suit living and investment. We help you find the right property, assess pricing, and handle paperwork from start to finish so you can become an owner more easily."
       },
       "consign": {
-        "detail": "Consign your property for sale or rent with an experienced team. Fill in property details and choose listing type (sale/rent). Submissions go to Admin → Consignments for evaluation, photography, and listing."
+        "detail": "Consign your property for sale or rent with an experienced team. Fill in property details and choose listing type (sale/rent). Our team will evaluate, photograph, and list your property."
       }
     },
     "loans": {
       "title": "Loan / Debt Consolidation Inquiry",
-      "subtitle": "Fill in your details and we will get back to you",
-      "adminNote": "Submissions go to Admin → Loan applications (source: website)"
+      "subtitle": "Fill in your details and we will get back to you"
+    },
+    "debtDetail": {
+      "title": "What is Debt Consolidation?",
+      "subtitle": "A way to combine multiple debts into one manageable monthly payment",
+      "introTitle": "What is debt consolidation?",
+      "introP1": "As living costs rise, many people juggle several types of debt at once—credit cards, personal loans, car loans, and other installments—leading to multiple due dates and interest rates that make monthly cash flow hard to manage.",
+      "introP2": "Debt consolidation brings multiple debts into a single obligation, often through a new loan or by using collateral such as a house or condo to pay off existing balances. You then manage one contract instead of many.",
+      "benefitsTitle": "Benefits of debt consolidation",
+      "benefits": {
+        "0": {
+          "title": "One monthly payment",
+          "description": "Less hassle than paying several creditors"
+        },
+        "1": {
+          "title": "Lower monthly installments",
+          "description": "Repayment terms can often be extended"
+        },
+        "2": {
+          "title": "Lower interest in some cases",
+          "description": "Especially when moving from high-rate debt such as credit cards to a lower-rate loan"
+        },
+        "3": {
+          "title": "Better cash flow",
+          "description": "More money left for everyday expenses"
+        },
+        "4": {
+          "title": "Lower default risk",
+          "description": "One contract makes financial planning easier"
+        }
+      },
+      "suitableTitle": "Who is it for?",
+      "suitableItems": {
+        "0": "People with multiple credit cards",
+        "1": "People with several personal loan contracts",
+        "2": "People struggling to manage many installments",
+        "3": "People who want to reduce monthly payments",
+        "4": "People who want to organize finances before bad debt"
+      },
+      "collateralTitle": "Consolidating with a house or condo",
+      "collateralP1": "If you own a house or condo, you may use it as collateral for a loan to close existing debts and combine everything into one contract.",
+      "collateralP2": "Secured loans often carry lower interest than unsecured debt, which can reduce long-term interest costs.",
+      "exampleTitle": "Example",
+      "exampleItems": {
+        "0": "Credit card debt: 300,000 THB",
+        "1": "Personal loan: 250,000 THB",
+        "2": "Car loan: 350,000 THB"
+      },
+      "exampleTotal": "Total debt of 900,000 THB consolidated into one secured home/condo loan with a single monthly payment.",
+      "summaryTitle": "Debt consolidation",
+      "summaryItems": {
+        "0": "Combines multiple debt types into one",
+        "1": "Reduces the number of creditors and monthly payments",
+        "2": "Helps manage multiple obligations systematically"
+      },
+      "considerationsTitle": "What to consider before deciding",
+      "considerationItems": {
+        "0": "Total outstanding debt",
+        "1": "Monthly repayment capacity",
+        "2": "New interest rate after consolidation",
+        "3": "Fees that may apply",
+        "4": "Appropriate repayment term"
+      },
+      "considerationsOutro": "Consolidation may lower monthly payments, but a longer term can increase total interest over the life of the loan. Review the terms carefully before deciding.",
+      "images": {
+        "intro": "WP Property debt consolidation service",
+        "benefits": "Five benefits of debt consolidation",
+        "collateral": "Debt consolidation with home or condo collateral",
+        "planning": "Financial planning before debt consolidation"
+      }
+    },
+    "rentBuyDetail": {
+      "title": "Why rent or buy property with WP Property?",
+      "subtitle": "End-to-end support from search to lease signing or ownership transfer",
+      "introTitle": "Why rent or buy property with WP Property?",
+      "introP1": "Finding the right home, condo, or property—for living or investment—takes time and involves many decisions: location, price, financing, and paperwork.",
+      "introP2": "WP Property supports you at every step—from search and comparison to negotiation and transfer or lease signing—so the process is smoother, faster, and more confident.",
+      "rentSectionTitle": "For renters",
+      "rentIntro": "If you are looking for a condo, house, or rental property, WP Property helps shortlist options that match your needs and budget.",
+      "rentBenefitsTitle": "What you get",
+      "rentBenefits": {
+        "0": "Properties matched to your budget and preferred area",
+        "1": "Viewing appointments coordinated with owners",
+        "2": "Review of lease terms",
+        "3": "Guidance on move-in costs",
+        "4": "Full support through the contract process"
+      },
+      "rentOutro": "Whether you need a unit near transit, a move-in-ready condo, a family home, or a long-term rental, our team helps find the best fit for you.",
+      "buySectionTitle": "For buyers",
+      "buyIntro": "Buying property is a major decision. WP Property helps you purchase a home or condo with greater confidence.",
+      "buyServicesTitle": "Our services",
+      "buyServices": {
+        "0": "Property search within your budget",
+        "1": "Project and location comparison",
+        "2": "Home loan advice",
+        "3": "Preliminary loan amount assessment",
+        "4": "Coordination with banks and owners",
+        "5": "Support from reservation to transfer day"
+      },
+      "buyOutro": "If you already carry debt, we can advise on consolidation, refinancing, or cash-out home loans to plan your finances before applying for a mortgage.",
+      "whyTitle": "Why choose WP Property?",
+      "whyItems": {
+        "0": {
+          "title": "Save time",
+          "description": "No need to search multiple sites—we filter options that match your needs."
+        },
+        "1": {
+          "title": "Expert guidance",
+          "description": "Advice from a team experienced in real estate and loans."
+        },
+        "2": {
+          "title": "End-to-end care",
+          "description": "From search and negotiation to transfer or move-in day."
+        },
+        "3": {
+          "title": "Free consultation",
+          "description": "Ask about buying, renting, home loans, or financial planning at no cost."
+        },
+        "4": {
+          "title": "Find the right home or condo",
+          "description": "Whether you rent, buy to live, or invest long term, WP Property makes every step easier."
+        }
+      },
+      "ctaTitle": "Contact our team today for advice and the best property options for you",
+      "ctaSubtitle": "Browse listings or fill in the form below—we will get back to you soon.",
+      "browseSale": "Browse for sale",
+      "browseRent": "Browse for rent",
+      "loanConsult": "Loan / debt consultation",
+      "images": {
+        "intro": "WP Property rent and buy service",
+        "rent": "Find rental properties",
+        "buy": "Buy property",
+        "why": "WP Property"
+      }
+    },
+    "consignDetail": {
+      "title": "Why consign for sale or rent with WP Property?",
+      "subtitle": "Professional representation for selling and renting your property end to end",
+      "introTitle": "Why consign for sale or rent with WP Property?",
+      "introP1": "Selling or renting property is more than posting a listing and waiting. It takes marketing, pricing, tenant/buyer screening, and paperwork to close safely and quickly.",
+      "introP2": "WP Property acts as your professional agent—marketing across online channels and our network of active buyers and tenants to improve your chances of a quality match.",
+      "saleSectionTitle": "Consignment sale service",
+      "saleIntro": "Selling a house, condo, townhouse, commercial building, or land—we support you from start to finish.",
+      "saleHelpsTitle": "What we help with",
+      "saleHelps": {
+        "0": "Initial market price appraisal",
+        "1": "Photography and compelling listing content",
+        "2": "Listings on our site and online channels",
+        "3": "Promotion via Facebook and social media",
+        "4": "Initial buyer screening",
+        "5": "Viewing appointments on your behalf",
+        "6": "Price negotiation support",
+        "7": "Paperwork through transfer day"
+      },
+      "saleSuitableTitle": "Suitable for",
+      "saleSuitable": {
+        "0": "Owners without time to manage the sale",
+        "1": "Investors selling multiple properties",
+        "2": "Resale home or condo sellers",
+        "3": "Owners who want a fair market price"
+      },
+      "rentSectionTitle": "Consignment rental service",
+      "rentIntro": "For owners seeking rental income, WP Property finds quality tenants and handles the process end to end.",
+      "rentServicesTitle": "Our services",
+      "rentServices": {
+        "0": "Marketing to find tenants",
+        "1": "Photography and property details",
+        "2": "Initial tenant screening",
+        "3": "Viewing coordination",
+        "4": "Lease contract preparation",
+        "5": "Advice on rent and lease terms",
+        "6": "Handover before move-in"
+      },
+      "rentAdvantagesTitle": "Benefits of consigning rentals to WP Property",
+      "rentAdvantages": {
+        "0": "Shorter time to find tenants",
+        "1": "Pre-screened tenants",
+        "2": "No handling calls and appointments yourself",
+        "3": "Help with documents and procedures",
+        "4": "Better chance of renting out quickly"
+      },
+      "whyTitle": "Why owners choose WP Property",
+      "whyItems": {
+        "0": {
+          "title": "Reach more customers",
+          "description": "We promote on leading property sites, social media, and our active buyer/tenant base."
+        },
+        "1": {
+          "title": "Team support",
+          "description": "Less burden on owners—you do not manage every step alone."
+        },
+        "2": {
+          "title": "Faster sales and rentals",
+          "description": "Experience in property marketing and an established customer network."
+        },
+        "3": {
+          "title": "End-to-end care",
+          "description": "From listing and screening to negotiation and transfer or handover day."
+        }
+      },
+      "closingP1": "Consign for sale or rent with WP Property today—whether you are selling a home or condo, renting out a unit, or need a professional team to manage your property, we advise and support you closely at every step.",
+      "closingP2": "Contact us for free advice and a property potential assessment.",
+      "ctaTitle": "Consign for sale / rent with WP Property",
+      "ctaSubtitle": "Fill in your property details below and our team will follow up to evaluate and list.",
+      "images": {
+        "intro": "WP Property consignment service",
+        "sale": "Consignment sale",
+        "rent": "Consignment rental",
+        "why": "WP Property"
+      }
     },
     "consign": {
       "title": "Consign for Sale / Rent",
-      "subtitle": "Submit property details and choose listing type (sale or rent) for our team to evaluate and list",
-      "adminNote": "Submissions go to Admin → Consignments (pending approval) based on the listing type selected"
+      "subtitle": "Submit property details and choose listing type (sale or rent) for our team to evaluate and list"
     },
     "rent": {
-      "title": "Rentals",
-      "subtitle": "Browse rental listings and submit a rental request",
-      "formTitle": "Rental request form",
-      "adminNote": "Submissions go to Admin → Rental requests"
+      "title": "Interested in Renting",
+      "subtitle": "Browse rental listings and submit a rental interest request",
+      "formTitle": "Rental interest form"
+    },
+    "buy": {
+      "title": "Interested in Buying",
+      "subtitle": "Browse sale listings and submit a purchase interest request",
+      "formTitle": "Purchase interest form"
     },
     "about": {
       "title": "About Us",
-      "subtitle": "WP Property — full-service finance and real estate experts",
-      "lead": "WP Property — full-service finance and real estate experts",
-      "intro": "WP Property (WP Property Wealthy Millionaire Co., Ltd.) is a finance and real estate specialist offering end-to-end services: loans, debt consolidation, home refinancing, property consignment, buying and selling, and rental property management — with over 19 years of experience.\n\nWe understand that financial and property management challenges matter. WP Property focuses on clear, transparent advice tailored to each client's goals — whether reducing debt, improving cash flow, or generating income from real estate.",
+      "subtitle": "WP Property Setthi Ramruay Co., Ltd. — full-service finance and real estate experts",
+      "companyName": "WP Property Setthi Ramruay Co., Ltd.",
+      "lead": "Full-service finance and real estate experts",
+      "videoTitle": "WP Property introduction video",
+      "intro": "WP Property Setthi Ramruay Co., Ltd. is a finance and real estate specialist offering end-to-end services: loans, debt consolidation, home refinancing, property consignment, buying and selling, and rental property management — with over 19 years of experience.\n\nWe understand that financial and property management challenges matter. We focus on clear, transparent advice tailored to each client's goals — whether reducing debt, improving cash flow, or generating income from real estate.",
       "sections": {
         "debtConsolidation": {
           "title": "Why consolidate debt with a home loan through WP Property?",
@@ -375,9 +724,21 @@
     },
     "contact": {
       "title": "Contact Us",
-      "subtitle": "Get in touch and explore related services",
+      "subtitle": "How to reach us and find our office",
       "cta": "Contact us",
-      "servicesTitle": "Related services"
+      "hoursLabel": "Business hours",
+      "hours": "Every day, 9:00 AM – 6:00 PM",
+      "addLine": "Add LINE friend",
+      "mapTitle": "WP Property office map",
+      "openInMaps": "Open in Google Maps",
+      "socialTitle": "Social media",
+      "social": {
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "line": "Line",
+        "youtube": "YouTube",
+        "tiktok": "TikTok"
+      }
     },
     "legal": {
       "privacyIntro": "WP Property privacy policy",

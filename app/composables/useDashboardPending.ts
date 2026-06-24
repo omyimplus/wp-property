@@ -10,6 +10,7 @@ export function useDashboardPending() {
     return (
       c.loans_pending
       + c.rentals_pending
+      + c.sales_pending
       + c.consignments_pending
       + c.properties_pending
       + c.property_inquiries_sale_pending
@@ -35,6 +36,7 @@ export function useDashboardPending() {
     if (!c) return 0
     if (path.startsWith('/admin/loans')) return c.loans_pending
     if (path.startsWith('/admin/rentals')) return c.rentals_pending
+    if (path.startsWith('/admin/sales')) return c.sales_pending
     if (path.startsWith('/admin/consignments')) return c.consignments_pending
     if (path.startsWith('/admin/properties')) return c.properties_pending
     if (path.startsWith('/admin/property-inquiries/sale')) return c.property_inquiries_sale_pending

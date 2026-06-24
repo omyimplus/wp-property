@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
   if (existing.property_id) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'รายการอนุมัติแล้ว — แก้ไขได้ที่หน้าอสังหาริมทรัพย์',
+      statusMessage: 'รายการอนุมัติแล้ว — แก้ไขได้ที่หน้าอสังหาฯ',
     })
   }
 

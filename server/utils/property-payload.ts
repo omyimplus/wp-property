@@ -1,10 +1,38 @@
 import type { ListingMode, PropertyType } from '~/types/property'
+import {
+  IN_UNIT_FACILITIES,
+  NEARBY_FACILITIES,
+} from '~/data/property-facilities'
+
+const IN_UNIT_KEYS = new Set(IN_UNIT_FACILITIES.map(f => f.key))
+const NEARBY_KEYS = new Set(NEARBY_FACILITIES.map(f => f.key))
 
 export function resolveListingMode(body: Record<string, unknown>): ListingMode {
   if (body.listing_mode === 'rent') return 'rent'
   if (body.listing_mode === 'sale') return 'sale'
   if (body.for_rent === true || body.for_rent === 'true') return 'rent'
   return 'sale'
+}
+
+export function parseStringArrayField(v: unknown, allowed?: Set<string>): string[] {
+  const raw = Array.isArray(v)
+    ? v
+    : typeof v === 'string' && v.trim().startsWith('[')
+      ? (() => {
+          try {
+            return JSON.parse(v) as unknown[]
+          } catch {
+            return []
+          }
+        })()
+      : []
+
+  const items = raw
+    .map(item => (typeof item === 'string' ? item.trim() : ''))
+    .filter(Boolean)
+
+  if (!allowed) return [...new Set(items)]
+  return [...new Set(items.filter(key => allowed.has(key)))]
 }
 
 export function payloadHelpers() {
@@ -25,6 +53,22 @@ export function payloadHelpers() {
   return { num, int, str }
 }
 
+function parseOptionalCoordinate(v: unknown): number | null {
+  if (v === null || v === undefined || v === '') return null
+  const n = Number(v)
+  return Number.isFinite(n) ? n : null
+}
+
+function parseMapCoordinates(body: Record<string, unknown>) {
+  const latitude = parseOptionalCoordinate(body.latitude)
+  const longitude = parseOptionalCoordinate(body.longitude)
+  // พิกัดไม่ครู่ไม่บันทึก (ป้องกันสถานะเสียแบบ lat=null แต่มี lng)
+  if ((latitude === null) !== (longitude === null)) {
+    return { latitude: null, longitude: null }
+  }
+  return { latitude, longitude }
+}
+
 /** ฟิลด์ทรัพย์ร่วม (properties และ property_customers) */
 export function parseListingPayload(body: Record<string, unknown>) {
   const { num, int, str } = payloadHelpers()
@@ -42,6 +86,7 @@ export function parseListingPayload(body: Record<string, unknown>) {
   const listing_mode = resolveListingMode(body)
   const for_sale = listing_mode === 'sale'
   const for_rent = listing_mode === 'rent'
+  const { latitude, longitude } = parseMapCoordinates(body)
 
   const sale_price = for_sale ? num(body.sale_price) : null
   const rent_price = for_rent ? num(body.rent_price) : null
@@ -75,6 +120,8 @@ export function parseListingPayload(body: Record<string, unknown>) {
     subdistrict: str(body.subdistrict),
     district: str(body.district),
     province: str(body.province),
+    latitude,
+    longitude,
     facing_direction: str(body.facing_direction),
     floors_total: int(body.floors_total),
     floor_number: int(body.floor_number),
@@ -84,6 +131,9 @@ export function parseListingPayload(body: Record<string, unknown>) {
     land_area_sqm: num(body.land_area_sqm),
     usable_area_sqm: num(body.usable_area_sqm),
     property_age_years: int(body.property_age_years),
+    facilities: parseStringArrayField(body.facilities, IN_UNIT_KEYS),
+    nearby_facilities: parseStringArrayField(body.nearby_facilities, NEARBY_KEYS),
+    project_description: str(body.project_description),
   }
 }
 

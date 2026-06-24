@@ -31,7 +31,7 @@ async function onSubmit() {
 <template>
   <div class="space-y-4">
     <NuxtLink to="/admin/rentals" class="text-sm text-slate-500 hover:text-slate-800">
-      ← กลับรายการเช่าทรัพย์
+      ← กลับรายการสนใจเช่า
     </NuxtLink>
     <p class="text-sm text-slate-600">
       บันทึกคำขอเช่าแทนลูกค้า (สำหรับทดสอบหรือกรอกให้โดยตรง)

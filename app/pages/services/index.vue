@@ -7,9 +7,9 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 
 const serviceLinks: Record<string, string> = {
-  debt: '/services/loans',
-  rentBuy: '/rent',
-  consign: '/consign',
+  debt: '/services/debt',
+  rentBuy: '/services/rent-buy',
+  consign: '/services/consign',
 }
 
 useStaticPageSeo('pages.services.title', 'pages.services.subtitle')

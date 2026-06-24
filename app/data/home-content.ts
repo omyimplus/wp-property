@@ -9,6 +9,21 @@ export const heroStats = [
 /** เพิ่มรูปใน array นี้เพื่อเพิ่มสไลด์ — ใส่ path ใต้ /public/images/ */
 export const heroSlides = [
   { id: '1', image: '/images/bg-hero.webp' },
+  {
+    id: '2',
+    image: '/images/banner-hero-section-2.webp',
+    contentKey: 'debt',
+    showStats: false,
+    imageClass: 'object-cover object-[72%_center] sm:object-[68%_center]',
+    altKey: 'home.hero.slides.alt.debt',
+  },
+  {
+    id: '3',
+    image: '/images/banner-hero-section-3.webp',
+    contentKey: 'properties',
+    showStats: false,
+    altKey: 'home.hero.slides.alt.properties',
+  },
 ] as const
 
 export const services = [

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PropertyTypeCategoryGrid from '~/components/site/PropertyTypeCategoryGrid.vue'
-import { parsePriceRangeKey } from '~/types/public-property'
+import { RENT_PRICE_RANGE_KEYS, SALE_PRICE_RANGE_KEYS } from '~/types/public-property'
 
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -10,8 +10,16 @@ const searchType = ref('')
 const searchPrice = ref('')
 const searchKeyword = ref('')
 
+const activePriceRangeKeys = computed(() =>
+  listingMode.value === 'rent' ? RENT_PRICE_RANGE_KEYS : SALE_PRICE_RANGE_KEYS,
+)
+
+function priceRangeLabel(key: string) {
+  const group = listingMode.value === 'rent' ? 'rentPrices' : 'prices'
+  return t(`home.search.${group}.${key}`)
+}
+
 function onSearch() {
-  const range = parsePriceRangeKey(searchPrice.value)
   navigateTo({
     path: localePath('/services/properties'),
     query: {
@@ -19,8 +27,6 @@ function onSearch() {
       ...(searchType.value ? { property_type: searchType.value } : {}),
       ...(searchPrice.value ? { price: searchPrice.value } : {}),
       ...(searchKeyword.value ? { keyword: searchKeyword.value } : {}),
-      ...(range.min ? { min_price: String(range.min) } : {}),
-      ...(range.max ? { max_price: String(range.max) } : {}),
     },
   })
 }
@@ -49,7 +55,7 @@ const fieldClass =
             :class="listingMode === 'sale'
               ? 'bg-white font-bold text-slate-900'
               : 'bg-[#e9ecef] font-normal text-slate-900'"
-            @click="listingMode = 'sale'"
+            @click="listingMode = 'sale'; searchPrice = ''"
           >
             {{ t('common.sale') }}
           </button>
@@ -59,7 +65,7 @@ const fieldClass =
             :class="listingMode === 'rent'
               ? 'bg-white font-bold text-slate-900'
               : 'bg-[#e9ecef] font-normal text-slate-900'"
-            @click="listingMode = 'rent'"
+            @click="listingMode = 'rent'; searchPrice = ''"
           >
             {{ t('common.rent') }}
           </button>
@@ -106,9 +112,13 @@ const fieldClass =
                 class="pr-9"
               >
                 <option value="">{{ t('home.search.pricePlaceholder') }}</option>
-                <option value="1-2">{{ t('home.search.prices.1-2') }}</option>
-                <option value="2-5">{{ t('home.search.prices.2-5') }}</option>
-                <option value="5+">{{ t('home.search.prices.5+') }}</option>
+                <option
+                  v-for="key in activePriceRangeKeys"
+                  :key="key"
+                  :value="key"
+                >
+                  {{ priceRangeLabel(key) }}
+                </option>
               </select>
               <svg
                 class="pointer-events-none absolute right-3 top-1/2 h-2.5 w-2.5 -translate-y-1/2 text-slate-900"
@@ -153,9 +163,9 @@ const fieldClass =
           </div>
         </div>
       </div>
-
-        <PropertyTypeCategoryGrid @select="searchByType" />
       </div>
+
+      <PropertyTypeCategoryGrid @select="searchByType" />
     </div>
   </section>
 </template>

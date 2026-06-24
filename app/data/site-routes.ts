@@ -4,15 +4,16 @@ export const serviceDropdownItems = [
   { key: 'properties', path: '/services/properties' },
   { key: 'loans', path: '/services/loans' },
   { key: 'consign', path: '/consign' },
-  { key: 'rent', path: '/rent' },
+  { key: 'rentInterest', path: '/rent' },
+  { key: 'saleInterest', path: '/buy' },
 ] as const
 
 export const serviceNavPaths = serviceDropdownItems.map(item => item.path)
 
-/** หน้าอสังหาริมทรัพย์ — highlight เมนู「เช่า-ซื้อ」เท่านั้น */
+/** หน้าอสังหาฯ — highlight เมนู「เช่า-ซื้อ」เท่านั้น */
 export const rentBuyNavPaths = ['/services/properties', '/properties'] as const
 
-/** paths ที่ทำให้เมนู「บริการของเรา」active (ไม่รวมอสังหาริมทรัพย์) */
+/** paths ที่ทำให้เมนู「บริการของเรา」active (ไม่รวมอสังหาฯ) */
 export const serviceNavPathsForParent = serviceDropdownItems
   .filter(item => item.path !== '/services/properties')
   .map(item => item.path)
@@ -39,5 +40,6 @@ export const footerServiceItems = [
   { key: 'properties', path: '/services/properties' },
   { key: 'loans', path: '/services/loans' },
   { key: 'consign', path: '/consign' },
-  { key: 'rent', path: '/rent' },
+  { key: 'rentInterest', path: '/rent' },
+  { key: 'saleInterest', path: '/buy' },
 ] as const

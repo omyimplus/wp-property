@@ -100,7 +100,7 @@ onMounted(load)
 <template>
   <div class="space-y-4">
     <NuxtLink to="/admin/rentals" class="text-sm text-slate-500 hover:text-slate-800">
-      ← กลับรายการเช่าทรัพย์
+      ← กลับรายการสนใจเช่า
     </NuxtLink>
 
     <p v-if="successMessage" class="rounded-lg bg-green-50 px-4 py-2 text-sm text-green-800">

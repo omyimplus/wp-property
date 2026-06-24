@@ -284,7 +284,7 @@ async function onApprove(p: ConsignmentItem) {
 
 async function onDelete(p: ConsignmentItem) {
   if (p.property_id) {
-    errorMessage.value = 'รายการอนุมัติแล้ว — ลบได้ที่หน้าอสังหาริมทรัพย์'
+    errorMessage.value = 'รายการอนุมัติแล้ว — ลบได้ที่หน้าอสังหาฯ'
     return
   }
   if (p.status !== 'rejected') {

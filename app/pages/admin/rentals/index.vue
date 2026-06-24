@@ -12,7 +12,7 @@ import {
 } from '~/types/rental-request'
 import type { ThaiLocationValue } from '~/types/thai-location'
 
-definePageMeta({ layout: 'admin', title: 'เช่าทรัพย์' })
+definePageMeta({ layout: 'admin', title: 'สนใจเช่า' })
 
 const filters = reactive(emptyRentalFilters())
 const draftFilters = reactive({
@@ -209,8 +209,8 @@ onMounted(() => {
   <div class="space-y-6">
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h2 class="text-lg font-semibold text-slate-900">เช่าทรัพย์</h2>
-        <p class="mt-1 text-sm text-slate-500">คลิกแถวเพื่อดูรายละเอียด · ใช้ไอคอนติ๊ก/กากบาทเปลี่ยนสถานะ</p>
+        <h2 class="text-lg font-semibold text-slate-900">สนใจเช่า</h2>
+        <p class="mt-1 text-sm text-slate-500">คำขอสนใจเช่าจากเว็บ · คลิกแถวเพื่อดูรายละเอียด</p>
       </div>
       <NuxtLink
         to="/admin/rentals/create"

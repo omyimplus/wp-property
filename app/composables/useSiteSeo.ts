@@ -1,5 +1,6 @@
 import type { MaybeRefOrGetter } from 'vue'
 import { toValue } from 'vue'
+import { formatPhoneE164 } from '~/composables/useSiteContact'
 import { absoluteSiteUrl, normalizeSiteUrl, resolveSiteMediaUrl } from '~/utils/site-url'
 
 type JsonLd = Record<string, unknown>
@@ -94,15 +95,18 @@ export function useSiteOrganizationSchema() {
           '@context': 'https://schema.org',
           '@type': 'RealEstateAgent',
           name: t('seo.siteName'),
+          legalName: t('footer.companyName'),
           url: absoluteSiteUrl(siteUrl, '/'),
           logo: absoluteSiteUrl(siteUrl, '/images/logo.webp'),
           image: absoluteSiteUrl(siteUrl, '/images/bg-hero.webp'),
           description: t('seo.defaultDescription'),
-          telephone: t('footer.phone'),
+          telephone: formatPhoneE164(t('footer.phone')),
           email: t('footer.email').replace(/\{'@'\}/g, '@'),
           address: {
             '@type': 'PostalAddress',
             streetAddress: t('footer.address'),
+            addressLocality: 'Bangkok',
+            postalCode: '10250',
             addressCountry: 'TH',
           },
           sameAs: [`https://line.me/R/ti/p/${encodeURIComponent(t('footer.line').replace(/\{'@'\}/g, '@'))}`],

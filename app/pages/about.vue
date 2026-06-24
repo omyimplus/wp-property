@@ -38,11 +38,28 @@ useStaticPageSeo('pages.about.title', 'pages.about.subtitle')
       <div class="mx-auto max-w-3xl px-4 sm:px-6">
         <div class="text-sm leading-relaxed text-slate-700 sm:text-base">
           <p class="text-base font-medium text-wp-navy sm:text-lg">
+            {{ t('pages.about.companyName') }}
+          </p>
+          <p class="mt-2 text-slate-600">
             {{ t('pages.about.lead') }}
           </p>
           <p class="mt-5 whitespace-pre-line">
             {{ t('pages.about.intro') }}
           </p>
+        </div>
+
+        <div class="mt-10 flex justify-center">
+          <div class="aspect-video w-full max-w-3xl overflow-hidden rounded-2xl bg-slate-900 shadow-lg">
+            <iframe
+              class="h-full w-full"
+              src="https://www.youtube.com/embed/3BgZhOd59PQ"
+              :title="t('pages.about.videoTitle')"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+              loading="lazy"
+            />
+          </div>
         </div>
 
         <div class="mt-10 space-y-3">

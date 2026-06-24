@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
   if (pc.property_id) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'รายการอนุมัติเข้าระบบแล้ว — ลบทรัพย์ได้ที่หน้าอสังหาริมทรัพย์',
+      statusMessage: 'รายการอนุมัติเข้าระบบแล้ว — ลบทรัพย์ได้ที่หน้าอสังหาฯ',
     })
   }
 

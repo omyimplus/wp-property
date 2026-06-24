@@ -6,11 +6,16 @@ import {
 } from '~/types/rental-request'
 import type { ThaiLocationValue } from '~/types/thai-location'
 
-const props = defineProps<{
-  modelValue: RentalRequestFormData
-  saving?: boolean
-  readonly?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    modelValue: RentalRequestFormData
+    saving?: boolean
+    readonly?: boolean
+    /** แสดงฟิลด์สถานะ (ปิดในหน้าที่ลูกค้ากรอกเอง) */
+    showStatus?: boolean
+  }>(),
+  { showStatus: true },
+)
 
 const emit = defineEmits<{
   'update:modelValue': [RentalRequestFormData]
@@ -21,6 +26,12 @@ const validationError = ref('')
 
 const statusOptions = computed(() =>
   RENTAL_STATUSES.filter(s => s.value !== 'rejected'),
+)
+
+const stackFields = computed(() => !props.showStatus)
+
+const fieldGridClass = computed(() =>
+  stackFields.value ? 'grid gap-4' : 'grid gap-4 sm:grid-cols-2',
 )
 
 function setField<K extends keyof RentalRequestFormData>(
@@ -74,7 +85,7 @@ function onSubmit() {
 
     <section class="rounded-xl border border-emerald-200 bg-emerald-50/40 p-6 shadow-sm">
       <h3 class="mb-4 font-semibold text-emerald-950">ข้อมูลติดต่อ</h3>
-      <div class="grid gap-4 sm:grid-cols-2">
+      <div class="grid gap-4">
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
             ชื่อ <span class="text-red-600">*</span>
@@ -99,7 +110,7 @@ function onSubmit() {
             @input="setField('callback_phone', ($event.target as HTMLInputElement).value)"
           >
         </div>
-        <div class="sm:col-span-2">
+        <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
             เบอร์โทร/ไลน์สำหรับติดต่อกลับ <span class="text-red-600">*</span>
           </label>
@@ -117,7 +128,7 @@ function onSubmit() {
 
     <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <h3 class="mb-4 font-semibold text-slate-900">ช่วงราคาในการเช่า (บาท/เดือน)</h3>
-      <div class="grid gap-4 sm:grid-cols-2">
+      <div :class="fieldGridClass">
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
             ราคาต่ำสุด <span class="text-red-600">*</span>
@@ -156,6 +167,7 @@ function onSubmit() {
         label-size="form"
         :required="!readonly"
         :allow-empty="false"
+        :stacked="stackFields"
       />
       <div class="mt-4">
         <label class="mb-1 block text-sm font-medium text-slate-700">
@@ -173,7 +185,7 @@ function onSubmit() {
     </section>
 
     <section
-      v-if="!readonly"
+      v-if="!readonly && showStatus"
       class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
     >
       <label class="mb-1 block text-sm font-medium text-slate-700">สถานะ</label>

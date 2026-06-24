@@ -37,6 +37,7 @@ export default defineEventHandler(async (event) => {
   const [
     loans_pending,
     rentals_pending,
+    sales_pending,
     consignments_pending,
     properties_pending,
     property_inquiries_sale_pending,
@@ -44,13 +45,14 @@ export default defineEventHandler(async (event) => {
   ] = await Promise.all([
     countPending(client, 'loan_applications', 'pending_approval'),
     countPending(client, 'rental_requests', 'pending_approval'),
+    countPending(client, 'sale_requests', 'pending_approval'),
     countPending(client, 'property_customers', 'pending_approval'),
     countPending(client, 'properties', 'pending_approval'),
     countPending(client, 'property_inquiries', 'pending_approval', { listing_type: 'sale' }),
     countPending(client, 'property_inquiries', 'pending_approval', { listing_type: 'rent' }),
   ])
 
-  const [loans, rentals, consignments, properties, propertyInquiries] = await Promise.all([
+  const [loans, rentals, sales, consignments, properties, propertyInquiries] = await Promise.all([
     client
       .from('loan_applications')
       .select('id, customer_name, callback_phone, created_at')
@@ -59,6 +61,12 @@ export default defineEventHandler(async (event) => {
       .limit(ALERT_LIMIT_PER_TYPE),
     client
       .from('rental_requests')
+      .select('id, customer_name, callback_phone, created_at')
+      .eq('status', 'pending_approval')
+      .order('created_at', { ascending: false })
+      .limit(ALERT_LIMIT_PER_TYPE),
+    client
+      .from('sale_requests')
       .select('id, customer_name, callback_phone, created_at')
       .eq('status', 'pending_approval')
       .order('created_at', { ascending: false })
@@ -83,7 +91,7 @@ export default defineEventHandler(async (event) => {
       .limit(ALERT_LIMIT_PER_TYPE),
   ])
 
-  for (const res of [loans, rentals, consignments, properties, propertyInquiries]) {
+  for (const res of [loans, rentals, sales, consignments, properties, propertyInquiries]) {
     if (res.error) {
       throw createError({ statusCode: 500, statusMessage: res.error.message })
     }
@@ -108,6 +116,16 @@ export default defineEventHandler(async (event) => {
       title: row.customer_name,
       subtitle: row.callback_phone,
       href: `/admin/rentals/${row.id}/edit`,
+      created_at: row.created_at,
+    })
+  }
+  for (const row of sales.data ?? []) {
+    alerts.push({
+      id: row.id,
+      type: 'sale',
+      title: row.customer_name,
+      subtitle: row.callback_phone,
+      href: `/admin/sales/${row.id}/edit`,
       created_at: row.created_at,
     })
   }
@@ -153,6 +171,7 @@ export default defineEventHandler(async (event) => {
   const counts = {
     loans_pending,
     rentals_pending,
+    sales_pending,
     consignments_pending,
     properties_pending,
     property_inquiries_sale_pending,
@@ -165,6 +184,7 @@ export default defineEventHandler(async (event) => {
     total_pending:
       loans_pending
       + rentals_pending
+      + sales_pending
       + consignments_pending
       + properties_pending
       + property_inquiries_sale_pending

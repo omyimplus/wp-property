@@ -9,6 +9,7 @@ import {
 } from '~/utils/admin-image'
 import { ADMIN_VIDEO_INPUT_TYPES, isAllowedAdminVideoInput } from '~/utils/admin-video'
 import { diffRemovedStoragePaths } from '~/utils/rich-text-media'
+import { tinymceContentStyle } from '~/utils/rich-content-css'
 
 const props = withDefaults(
   defineProps<{
@@ -84,9 +85,35 @@ function requireUploadAccess() {
   return true
 }
 
+function mediaErrorMessage(e: unknown, fallback: string) {
+  const err = e as { data?: { statusMessage?: string }, message?: string }
+  return err.data?.statusMessage ?? (e instanceof Error ? e.message : fallback)
+}
+
+async function uploadImageFile(file: File) {
+  if (!requireUploadAccess()) return null
+  mediaUploading.value = true
+  try {
+    return await uploadImage(file)
+  } catch (e: unknown) {
+    mediaError.value = mediaErrorMessage(e, 'อัปโหลดรูปไม่สำเร็จ')
+    return null
+  } finally {
+    mediaUploading.value = false
+  }
+}
+
+function tagUploadedImage(publicUrl: string, storagePath: string) {
+  const editor = editorRef.value
+  if (!editor) return
+  editor.getBody().querySelectorAll(`img[src="${publicUrl}"]`).forEach((img) => {
+    img.setAttribute('data-storage-path', storagePath)
+  })
+}
+
 function insertImage(publicUrl: string, storagePath: string) {
   editorRef.value?.insertContent(
-    `<p><img src="${escapeAttr(publicUrl)}" data-storage-path="${escapeAttr(storagePath)}" /></p>`,
+    `<p><img src="${escapeAttr(publicUrl)}" data-storage-path="${escapeAttr(storagePath)}" alt="" /></p>`,
   )
 }
 
@@ -98,16 +125,9 @@ function insertVideo(publicUrl: string, storagePath: string) {
 
 async function onImageSelected(fileList: FileList | File[] | null | undefined) {
   const file = Array.from(fileList ?? []).find(isAllowedAdminImageInput)
-  if (!file || !requireUploadAccess()) return
-  mediaUploading.value = true
-  try {
-    const { publicUrl, storagePath } = await uploadImage(file)
-    insertImage(publicUrl, storagePath)
-  } catch (e: unknown) {
-    mediaError.value = e instanceof Error ? e.message : 'อัปโหลดรูปไม่สำเร็จ'
-  } finally {
-    mediaUploading.value = false
-  }
+  if (!file) return
+  const result = await uploadImageFile(file)
+  if (result) insertImage(result.publicUrl, result.storagePath)
 }
 
 async function onVideoSelected(fileList: FileList | File[] | null | undefined) {
@@ -118,7 +138,7 @@ async function onVideoSelected(fileList: FileList | File[] | null | undefined) {
     const { publicUrl, storagePath } = await uploadVideo(file)
     insertVideo(publicUrl, storagePath)
   } catch (e: unknown) {
-    mediaError.value = e instanceof Error ? e.message : 'อัปโหลดวิดีโอไม่สำเร็จ'
+    mediaError.value = mediaErrorMessage(e, 'อัปโหลดวิดีโอไม่สำเร็จ')
   } finally {
     mediaUploading.value = false
   }
@@ -167,32 +187,31 @@ const editorInit = computed<RawEditorOptions>(() => ({
   toolbar:
     'undo redo | blocks fontsize | bold italic underline strikethrough | forecolor backcolor | '
     + 'alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | '
-    + 'link customimage uploadvideo media table | removeformat code fullscreen preview',
+    + 'link image uploadvideo media table | removeformat code fullscreen preview',
   toolbar_mode: 'sliding',
   branding: false,
   promotion: false,
   relative_urls: false,
   convert_urls: true,
-  image_advtab: true,
+  automatic_uploads: true,
+  paste_data_images: true,
+  image_uploadtab: true,
+  image_advtab: false,
   extended_valid_elements:
     'img[src|alt|width|height|class|data-storage-path],'
     + 'video[src|controls|width|height|class|data-storage-path|poster]',
-  content_style: `
-    body {
-      font-family: Prompt, sans-serif;
-      font-size: 14px;
-      line-height: 1.6;
-      color: #334155;
-    }
-    img, video {
-      display: block;
-      max-width: 100%;
-      height: auto;
-      margin: 0.75rem 0;
-      border-radius: 0.5rem;
-    }
-    video { background: #000; }
-  `,
+  content_style: tinymceContentStyle,
+  images_upload_handler: async (blobInfo) => {
+    const file = new File(
+      [blobInfo.blob()],
+      blobInfo.filename() || 'image.png',
+      { type: blobInfo.blob().type || 'image/png' },
+    )
+    const result = await uploadImageFile(file)
+    if (!result) throw new Error(mediaError.value || 'อัปโหลดรูปไม่สำเร็จ')
+    queueMicrotask(() => tagUploadedImage(result.publicUrl, result.storagePath))
+    return result.publicUrl
+  },
   setup(editor) {
     editor.ui.registry.addButton('uploadvideo', {
       text: 'วิดีโอ',
@@ -200,10 +219,11 @@ const editorInit = computed<RawEditorOptions>(() => ({
       onAction: () => pickVideoFile(),
     })
 
-    editor.ui.registry.addButton('customimage', {
-      icon: 'image',
-      tooltip: 'อัปโหลดรูป',
-      onAction: () => pickImageFile(),
+    editor.on('BeforeExecCommand', (event) => {
+      if (event.command === 'mceImage') {
+        event.preventDefault()
+        pickImageFile()
+      }
     })
   },
 }))
