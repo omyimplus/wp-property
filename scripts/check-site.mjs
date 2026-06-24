@@ -250,15 +250,17 @@ async function adminLogin(page) {
   }
 
   await page.goto(pathOnHost('/admin/login'), { waitUntil: 'domcontentloaded', timeout: 90_000 })
+  await page.waitForSelector('#email', { state: 'visible', timeout: 30_000 })
   await page.fill('#email', TEST_EMAIL)
   await page.fill('#password', TEST_PASSWORD)
-  await page.click('button[type="submit"]')
-
   try {
-    await page.waitForURL((url) => {
-      const p = pathnameFromUrl(url.toString())
-      return p !== '/admin/login' && (p === '/admin' || p.startsWith('/admin/'))
-    }, { timeout: 45_000 })
+    await Promise.all([
+      page.waitForURL((url) => {
+        const p = pathnameFromUrl(url.toString())
+        return p !== '/admin/login' && (p === '/admin' || p.startsWith('/admin/'))
+      }, { timeout: 90_000 }),
+      page.click('button[type="submit"]'),
+    ])
   } catch {
     const alert = page.locator('[role="alert"]')
     const msg = (await alert.count()) > 0 ? (await alert.first().textContent())?.trim() : 'timeout'
@@ -275,6 +277,13 @@ async function adminLogin(page) {
   }
 
   const adminShell = page.locator('aside').filter({ hasText: 'WP Property' })
+  try {
+    await adminShell.first().waitFor({ state: 'visible', timeout: 30_000 })
+  } catch {
+    record('admin login', false, `login สำเร็จแต่ไม่เห็น admin layout (อยู่ที่ ${finalPath})`)
+    return false
+  }
+
   const ok = (await adminShell.count()) > 0
   record('admin login', ok, ok ? `→ ${finalPath}` : 'login สำเร็จแต่ไม่เห็น admin layout')
   return ok
@@ -400,20 +409,25 @@ async function main() {
   const page = await context.newPage()
 
   await testPublicPages(page)
+  await browser.close()
 
-  const loggedIn = await adminLogin(page)
-  const apiContext = context.request
+  const adminBrowser = await chromium.launch({ headless: HEADLESS })
+  const adminContext = await adminBrowser.newContext()
+  const adminPage = await adminContext.newPage()
+
+  const loggedIn = await adminLogin(adminPage)
+  const apiContext = adminContext.request
 
   if (loggedIn) {
-    await testAdminPages(page)
-    await testAdminEditPages(page, apiContext)
+    await testAdminPages(adminPage)
+    await testAdminEditPages(adminPage, apiContext)
     await testAdminApis(apiContext)
-    await testAdminNavLinks(page)
+    await testAdminNavLinks(adminPage)
   } else {
     console.log('\nAdmin sections skipped (login failed)')
   }
 
-  await browser.close()
+  await adminBrowser.close()
 
   const success = printSummary()
   process.exit(success ? 0 : 1)

@@ -192,13 +192,15 @@ const detailTo = computed(() =>
         </p>
       </div>
 
-      <p
-        v-if="postedLabel"
-        class="mt-auto flex items-center gap-1 border-t border-slate-100 pt-2 text-[11px] leading-snug text-slate-400"
-      >
-        <PropertyIcon name="calendar" class="h-3.5 w-3.5 shrink-0 text-slate-400" :stroke-width="1.5" />
-        {{ postedLabel }}
-      </p>
+      <ClientOnly>
+        <p
+          v-if="postedLabel"
+          class="mt-auto flex items-center gap-1 border-t border-slate-100 pt-2 text-[11px] leading-snug text-slate-400"
+        >
+          <PropertyIcon name="calendar" class="h-3.5 w-3.5 shrink-0 text-slate-400" :stroke-width="1.5" />
+          {{ postedLabel }}
+        </p>
+      </ClientOnly>
     </div>
   </NuxtLink>
 </template>

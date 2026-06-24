@@ -40,17 +40,9 @@ const fetchFailed = computed(
 <template>
   <section id="properties" class="bg-wp-navy pb-10 pt-6 sm:pb-14 sm:pt-8">
     <div class="site-container">
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <h2 class="text-2xl font-medium text-white sm:text-3xl">
-          {{ t('home.properties.title') }}
-        </h2>
-        <NuxtLink
-          :to="localePath('/services/properties')"
-          class="rounded-full bg-white px-5 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-100"
-        >
-          {{ t('common.viewAll') }}
-        </NuxtLink>
-      </div>
+      <h2 class="text-2xl font-medium text-white sm:text-3xl">
+        {{ t('home.properties.title') }}
+      </h2>
 
       <p v-if="showLoading" class="mt-8 text-center text-sm text-white/70">
         {{ t('pages.common.loading') }}
@@ -61,9 +53,17 @@ const fetchFailed = computed(
 
       <template v-else>
         <div class="mt-8">
-          <span class="inline-block rounded-full bg-wp-hero-blue px-5 py-1.5 text-sm font-medium text-white">
-            {{ t('home.properties.listingSale') }}
-          </span>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-block rounded-full bg-wp-hero-blue px-5 py-1.5 text-sm font-medium text-white">
+              {{ t('home.properties.listingSale') }}
+            </span>
+            <NuxtLink
+              :to="localePath('/services/properties?listing=sale')"
+              class="rounded-full bg-white px-5 py-1.5 text-sm font-medium text-slate-900 transition hover:bg-slate-100"
+            >
+              {{ t('common.viewAll') }}
+            </NuxtLink>
+          </div>
           <HomePropertyCarousel
             v-if="saleList.length"
             class="mt-4"
@@ -76,9 +76,17 @@ const fetchFailed = computed(
         </div>
 
         <div class="mt-10">
-          <span class="inline-block rounded-full bg-wp-hero-blue px-5 py-1.5 text-sm font-medium text-white">
-            {{ t('home.properties.listingRent') }}
-          </span>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-block rounded-full bg-wp-hero-blue px-5 py-1.5 text-sm font-medium text-white">
+              {{ t('home.properties.listingRent') }}
+            </span>
+            <NuxtLink
+              :to="localePath('/services/properties?listing=rent')"
+              class="rounded-full bg-white px-5 py-1.5 text-sm font-medium text-slate-900 transition hover:bg-slate-100"
+            >
+              {{ t('common.viewAll') }}
+            </NuxtLink>
+          </div>
           <HomePropertyCarousel
             v-if="rentList.length"
             class="mt-4"

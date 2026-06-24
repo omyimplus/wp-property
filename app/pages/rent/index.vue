@@ -11,8 +11,10 @@ const saving = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 
-const { data: listings } = await useFreshFetch<PublicPropertyListResponse>('/api/properties', {
+const { data: listings } = await useFetch<PublicPropertyListResponse>('/api/properties', {
+  key: 'rent-interest-listings',
   query: { listing: 'rent', page_size: 4 },
+  default: () => ({ properties: [], total: 0, page: 1, page_size: 4, total_pages: 1 }),
 })
 
 async function onSubmit() {
@@ -51,18 +53,20 @@ useStaticPageSeo('pages.rent.title', 'pages.rent.subtitle')
             {{ t('common.viewAll') }}
           </NuxtLink>
         </div>
-        <div v-if="listings?.properties.length" class="mt-6 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div
-            v-for="property in listings.properties"
-            :key="property.id"
-            class="h-full"
-          >
-            <PropertyCard
-              :property="property"
-              mode="rent"
-            />
+        <ClientOnly>
+          <div v-if="listings?.properties.length" class="mt-6 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div
+              v-for="property in listings.properties"
+              :key="property.id"
+              class="h-full"
+            >
+              <PropertyCard
+                :property="property"
+                mode="rent"
+              />
+            </div>
           </div>
-        </div>
+        </ClientOnly>
       </div>
     </section>
 
@@ -78,7 +82,7 @@ useStaticPageSeo('pages.rent.title', 'pages.rent.subtitle')
           {{ errorMessage }}
         </p>
         <div class="mt-6">
-          <RentalRequestForm v-model="form" :saving="saving" @submit="onSubmit" />
+          <RentalRequestForm v-model="form" :show-status="false" :saving="saving" @submit="onSubmit" />
         </div>
       </div>
     </section>
