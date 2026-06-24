@@ -10,6 +10,7 @@ import {
   NEARBY_FACILITIES,
   resolveFacilityOptions,
 } from '~/data/property-facilities'
+import type { PropertyIconName } from '~/data/property-icons'
 import {
   formatPropertyPrice,
   propertyPricePerSqm,
@@ -28,6 +29,7 @@ definePageMeta({ layout: 'default' })
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+const { lineAddUrl, phoneHref } = useSiteContact()
 const code = computed(() => String(route.params.code))
 
 const { data, error, pending } = await useFetch<{
@@ -136,6 +138,66 @@ const salePricePerSqm = computed(() =>
 const rentPricePerSqm = computed(() =>
   propertyPricePerSqm(property.value?.rent_price, property.value?.usable_area_sqm),
 )
+
+type HighlightChip = { key: string, icon: PropertyIconName | undefined, label: string }
+
+const highlightChips = computed((): HighlightChip[] => {
+  const p = property.value
+  if (!p) return []
+
+  const chips: HighlightChip[] = []
+
+  if (p.bedrooms != null) {
+    chips.push({
+      key: 'bed',
+      icon: specItemIcon('bed'),
+      label: t('pages.properties.detail.bedroomsShort', { n: p.bedrooms }),
+    })
+  }
+  if (p.bathrooms != null) {
+    chips.push({
+      key: 'bath',
+      icon: specItemIcon('bath'),
+      label: t('pages.properties.detail.bathroomsShort', { n: p.bathrooms }),
+    })
+  }
+  if (p.usable_area_sqm != null) {
+    chips.push({
+      key: 'usable',
+      icon: specItemIcon('usable'),
+      label: t('pages.properties.detail.areaShort', { n: p.usable_area_sqm }),
+    })
+  }
+
+  return chips
+})
+
+const shareMessage = ref('')
+
+async function shareListing() {
+  if (!import.meta.client) return
+  const url = window.location.href
+  const title = listingTitle.value
+  shareMessage.value = ''
+
+  if (navigator.share) {
+    try {
+      await navigator.share({ title, url })
+      return
+    }
+    catch {
+      // fall through to copy
+    }
+  }
+
+  try {
+    await navigator.clipboard.writeText(url)
+    shareMessage.value = t('pages.properties.detail.shareCopied')
+  }
+  catch {
+    shareMessage.value = t('pages.properties.detail.shareFailed')
+  }
+}
 
 const postedDateLabel = computed(() => {
   const iso = property.value?.created_at
@@ -313,12 +375,17 @@ function openGallery(index = activeImage.value) {
         {{ t('pages.properties.notFound') }}
       </div>
 
-      <div v-else class="lg:flex lg:items-start lg:gap-6 xl:gap-10">
-        <div
-          class="min-w-0 flex-1 space-y-10 px-4 sm:px-6 lg:pl-[max(1.5rem,calc((100vw-68rem)/2+1.5rem))] lg:pr-4 xl:pr-8"
-        >
-              <!-- 1–3 หัวข้อ ที่อยู่ ราคา -->
-              <header class="space-y-4">
+      <div v-else class="site-container space-y-6 sm:space-y-8">
+        <SitePropertyDetailGallery
+          :image-urls="property.image_urls ?? []"
+          :alt="listingTitle"
+          @open="openGallery"
+        />
+
+        <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_18.5rem] lg:items-start lg:gap-8 xl:grid-cols-[minmax(0,1fr)_20rem] xl:gap-10">
+          <div class="min-w-0 space-y-8 sm:space-y-10">
+            <header class="space-y-4">
+              <div class="flex flex-wrap items-start justify-between gap-4">
                 <div
                   class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 sm:text-sm"
                 >
@@ -337,137 +404,119 @@ function openGallery(index = activeImage.value) {
                   </span>
                 </div>
 
-                <div class="flex flex-wrap items-center gap-2">
-                  <span
-                    v-if="property.for_sale"
-                    class="rounded-full bg-wp-hero-blue px-2.5 py-0.5 text-xs font-medium text-white"
-                  >
-                    {{ t('common.sale') }}
-                  </span>
-                  <span
-                    v-if="property.for_rent"
-                    class="rounded-full bg-wp-navy px-2.5 py-0.5 text-xs font-medium text-white"
-                  >
-                    {{ t('common.rent') }}
-                  </span>
-                </div>
-
-                <h1 class="text-2xl font-semibold leading-snug text-slate-900 sm:text-3xl">
-                  {{ listingTitle }}
-                </h1>
-
-                <p
-                  v-if="projectLine"
-                  class="text-base font-medium text-slate-700 sm:text-lg"
-                >
-                  {{ projectLine }}
-                </p>
-
-                <p
-                  v-if="streetAddress"
-                  class="text-sm leading-relaxed text-slate-600 sm:text-base"
-                >
-                  {{ streetAddress }}
-                </p>
-
-                <div class="space-y-2 border-t border-slate-100 pt-4">
-                  <div v-if="property.for_sale && property.sale_price != null">
-                    <p class="text-sm text-slate-600">
-                      {{ t('common.price') }}
-                    </p>
-                    <p class="text-2xl font-bold text-wp-navy sm:text-3xl">
-                      ฿{{ formatPropertyPrice(property.sale_price) }}
-                    </p>
-                    <p
-                      v-if="salePricePerSqm"
-                      class="mt-0.5 text-sm text-slate-500"
-                    >
-                      {{ t('pages.properties.pricePerSqm', { price: salePricePerSqm }) }}
-                    </p>
-                  </div>
-                  <div
-                    v-if="property.for_rent && property.rent_price != null"
-                    :class="property.for_sale ? 'border-t border-slate-100 pt-3' : ''"
-                  >
-                    <p class="text-sm text-slate-600">
-                      {{ t('common.price') }}
-                    </p>
-                    <p class="text-2xl font-bold text-wp-navy sm:text-3xl">
-                      ฿{{ formatPropertyPrice(property.rent_price) }}
-                      <span class="text-base font-medium text-slate-500">{{ t('home.properties.card.perMonth') }}</span>
-                    </p>
-                    <p
-                      v-if="rentPricePerSqm"
-                      class="mt-0.5 text-sm text-slate-500"
-                    >
-                      {{ t('pages.properties.pricePerSqm', { price: rentPricePerSqm }) }}
-                    </p>
-                  </div>
-                </div>
-              </header>
-
-              <!-- 4 แกลเลอรี่ -->
-              <section>
-                <button
-                  type="button"
-                  class="group relative block w-full overflow-hidden rounded-2xl bg-slate-100 ring-1 ring-slate-200/80"
-                  :aria-label="t('pages.properties.openGallery')"
-                  @click="openGallery()"
-                >
-                  <div class="aspect-[4/3]">
-                    <OptimizedImage
-                      v-if="property.image_urls?.[activeImage]"
-                      :src="property.image_urls[activeImage]"
-                      :alt="listingTitle"
-                      :width="768"
-                      :height="576"
-                      sizes="(max-width: 1024px) 100vw, calc(100vw - 22rem)"
-                      class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.01]"
-                    />
-                    <div
-                      v-else
-                      class="flex h-full items-center justify-center text-sm text-slate-400"
-                    >
-                      {{ t('pages.properties.noImage') }}
-                    </div>
-                  </div>
-                  <span
-                    v-if="property.image_urls?.length"
-                    class="absolute bottom-3 right-3 rounded-full bg-black/55 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm"
-                  >
-                    {{ t('pages.properties.photoCount', { n: property.image_urls.length }) }}
-                  </span>
-                </button>
-
-                <div
-                  v-if="property.image_urls?.length > 1"
-                  class="mt-3 flex gap-2 overflow-x-auto pb-1"
-                >
+                <div class="flex items-center gap-2">
                   <button
-                    v-for="(url, i) in property.image_urls"
-                    :key="i"
                     type="button"
-                    class="h-16 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition"
-                    :class="activeImage === i ? 'border-wp-navy' : 'border-transparent opacity-80 hover:opacity-100'"
-                    @click="activeImage = i"
+                    class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
                   >
-                    <OptimizedImage
-                      :src="url"
-                      alt=""
-                      :width="80"
-                      :height="64"
-                      sizes="80px"
-                      class="h-full w-full object-cover"
-                    />
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    {{ t('pages.properties.detail.saveListing') }}
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
+                    @click="shareListing"
+                  >
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                    </svg>
+                    {{ t('pages.properties.detail.share') }}
                   </button>
                 </div>
-              </section>
+              </div>
 
-              <!-- 5 รายละเอียดอสังหาฯ ซ้าย–ขวา -->
-              <section
-                v-if="specItems.length"
-                class="border-t border-slate-200 pt-8"
+              <p v-if="shareMessage" class="text-xs text-emerald-700 sm:text-sm">
+                {{ shareMessage }}
+              </p>
+
+              <div class="flex flex-wrap items-center gap-2">
+                <span
+                  v-if="property.for_sale"
+                  class="rounded-full bg-wp-hero-blue px-2.5 py-0.5 text-xs font-medium text-white"
+                >
+                  {{ t('common.sale') }}
+                </span>
+                <span
+                  v-if="property.for_rent"
+                  class="rounded-full bg-wp-navy px-2.5 py-0.5 text-xs font-medium text-white"
+                >
+                  {{ t('common.rent') }}
+                </span>
+              </div>
+
+              <h1 class="text-2xl font-semibold leading-snug text-slate-900 sm:text-3xl">
+                {{ listingTitle }}
+              </h1>
+
+              <p
+                v-if="projectLine"
+                class="text-base font-medium text-slate-700 sm:text-lg"
               >
+                {{ projectLine }}
+              </p>
+
+              <p
+                v-if="streetAddress"
+                class="text-sm leading-relaxed text-slate-600 sm:text-base"
+              >
+                {{ streetAddress }}
+              </p>
+
+              <div class="space-y-3 border-t border-slate-100 pt-4">
+                <div v-if="property.for_sale && property.sale_price != null">
+                  <p class="text-2xl font-bold text-wp-navy sm:text-3xl">
+                    ฿{{ formatPropertyPrice(property.sale_price) }}
+                  </p>
+                  <p
+                    v-if="salePricePerSqm"
+                    class="mt-0.5 text-sm text-slate-500"
+                  >
+                    {{ t('pages.properties.pricePerSqm', { price: salePricePerSqm }) }}
+                  </p>
+                </div>
+                <div
+                  v-if="property.for_rent && property.rent_price != null"
+                  :class="property.for_sale ? 'border-t border-slate-100 pt-3' : ''"
+                >
+                  <p class="text-2xl font-bold text-wp-navy sm:text-3xl">
+                    ฿{{ formatPropertyPrice(property.rent_price) }}
+                    <span class="text-base font-medium text-slate-500">{{ t('home.properties.card.perMonth') }}</span>
+                  </p>
+                  <p
+                    v-if="rentPricePerSqm"
+                    class="mt-0.5 text-sm text-slate-500"
+                  >
+                    {{ t('pages.properties.pricePerSqm', { price: rentPricePerSqm }) }}
+                  </p>
+                </div>
+              </div>
+
+              <ul
+                v-if="highlightChips.length"
+                class="flex flex-wrap gap-x-5 gap-y-2 border-t border-slate-100 pt-4"
+              >
+                <li
+                  v-for="chip in highlightChips"
+                  :key="chip.key"
+                  class="flex items-center gap-2 text-sm text-slate-700"
+                >
+                  <PropertyIcon
+                    v-if="chip.icon"
+                    :name="chip.icon"
+                    class="h-5 w-5 shrink-0 text-slate-500"
+                    :stroke-width="1.5"
+                  />
+                  <span>{{ chip.label }}</span>
+                </li>
+              </ul>
+            </header>
+
+            <section
+              v-if="specItems.length"
+              class="border-t border-slate-200 pt-8"
+            >
                 <h2 class="text-lg font-medium text-wp-navy sm:text-xl">
                   {{ t('pages.properties.specsTitle') }}
                 </h2>
@@ -592,25 +641,55 @@ function openGallery(index = activeImage.value) {
                   }}
                 </button>
               </section>
-        </div>
-
-        <!-- Sidebar ติดต่อ — ชิดขวาสุดจอ -->
-        <aside
-          class="mt-8 w-full shrink-0 px-4 sm:px-6 lg:sticky lg:top-24 lg:mt-0 lg:w-80 lg:px-0 lg:pr-6"
-        >
-          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-            <p class="text-sm text-slate-500">
-              {{ t('pages.properties.inquiry.subtitle') }}
-            </p>
-            <button
-              type="button"
-              class="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-wp-navy px-5 py-2.5 text-sm font-medium text-white transition hover:bg-wp-navy-light"
-              @click="inquiryOpen = true"
-            >
-              {{ t('pages.contact.cta') }}
-            </button>
           </div>
-        </aside>
+
+          <aside class="mt-8 lg:sticky lg:top-24 lg:mt-0">
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+              <div class="flex items-center gap-3">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-wp-navy text-sm font-semibold text-white">
+                  WP
+                </div>
+                <div class="min-w-0">
+                  <p class="truncate text-sm font-semibold text-slate-900">
+                    {{ t('pages.properties.detail.agentName') }}
+                  </p>
+                  <p class="truncate text-xs text-slate-500">
+                    {{ t('pages.properties.detail.companyName') }}
+                  </p>
+                </div>
+              </div>
+
+              <a
+                :href="lineAddUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#06C755] px-5 py-2.5 text-sm font-medium text-white transition hover:brightness-110"
+              >
+                <SiteSocialIcon name="line" class="h-5 w-5" />
+                Line
+              </a>
+
+              <button
+                type="button"
+                class="mt-3 inline-flex w-full items-center justify-center rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-medium text-slate-800 transition hover:bg-slate-50"
+                @click="inquiryOpen = true"
+              >
+                {{ t('pages.properties.detail.contactOther') }}
+              </button>
+
+              <a
+                :href="phoneHref"
+                class="mt-3 block text-center text-sm font-medium text-wp-navy hover:underline"
+              >
+                {{ t('footer.phoneLabel') }} : {{ t('footer.phone') }}
+              </a>
+
+              <p class="mt-4 text-xs leading-relaxed text-slate-500">
+                {{ t('pages.properties.detail.contactDisclaimer') }}
+              </p>
+            </div>
+          </aside>
+        </div>
       </div>
     </section>
 

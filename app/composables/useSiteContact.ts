@@ -1,4 +1,5 @@
 import { siteOffice } from '~/data/site-office'
+import { siteSocialUrls } from '~/data/site-social'
 import { googleMapsEmbedUrl, googleMapsPinUrl } from '~/utils/property-address'
 
 export function formatPhoneE164(phone: string): string {
@@ -17,7 +18,9 @@ export function useSiteContact() {
   const phoneHref = computed(() => `tel:${formatPhoneE164(t('footer.phone'))}`)
 
   const lineOaId = computed(() => String(config.public.lineOaId || 'wpproperty'))
-  const lineAddUrl = computed(() => `https://line.me/R/ti/p/@${lineOaId.value}`)
+  const lineAddUrl = computed(
+    () => siteSocialUrls.line || `https://line.me/R/ti/p/@${lineOaId.value}`,
+  )
   const lineDisplay = computed(() => t('footer.line').replace(/\{'@'\}/g, '@'))
 
   const mapEmbedUrl = computed(() =>

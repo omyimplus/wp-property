@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import HomeFeaturedProperties from '~/components/home/HomeFeaturedProperties.vue'
-import { services } from '~/data/home-content'
+import { serviceDetailLinks, services } from '~/data/home-content'
 
 definePageMeta({
   layout: 'default',
 })
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 
 useStaticPageSeo('seo.home.title', 'seo.home.description')
 </script>
@@ -26,11 +27,12 @@ useStaticPageSeo('seo.home.title', 'seo.home.description')
           </h2>
         </div>
         <div class="mx-auto mt-10 grid max-w-4xl gap-4 sm:grid-cols-2 sm:gap-5 lg:max-w-5xl lg:grid-cols-3">
-          <article
+          <NuxtLink
             v-for="service in services"
             :id="service.key === 'consign' ? 'consign-buy' : undefined"
             :key="service.key"
-            class="overflow-hidden rounded-2xl bg-white shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
+            :to="localePath(serviceDetailLinks[service.key])"
+            class="group block overflow-hidden rounded-2xl bg-white shadow-lg transition hover:-translate-y-1 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wp-gold"
           >
             <div class="aspect-[4/3] overflow-hidden">
               <OptimizedImage
@@ -39,7 +41,7 @@ useStaticPageSeo('seo.home.title', 'seo.home.description')
                 :width="400"
                 :height="300"
                 sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 400px"
-                class="h-full w-full object-cover transition duration-300 hover:scale-105"
+                class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
               />
             </div>
             <div class="p-4 sm:p-5">
@@ -50,7 +52,7 @@ useStaticPageSeo('seo.home.title', 'seo.home.description')
                 {{ t(`home.services.${service.key}.description`) }}
               </p>
             </div>
-          </article>
+          </NuxtLink>
         </div>
       </div>
     </section>

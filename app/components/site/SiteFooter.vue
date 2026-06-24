@@ -78,20 +78,19 @@ const serviceLinks = computed(() =>
               <span class="block">{{ t('footer.address') }}</span>
             </li>
             <li>
-              <span class="font-medium text-white">{{ t('footer.phoneLabel') }}</span>
+              <span class="font-medium text-white">{{ t('footer.phoneLabel') }} :</span>
               <a :href="phoneHref" class="ml-1 transition hover:text-wp-gold">
                 {{ t('footer.phone') }}
               </a>
             </li>
             <li>
-              <span class="font-medium text-white">{{ t('footer.emailLabel') }}</span>
+              <span class="font-medium text-white">{{ t('footer.emailLabel') }} :</span>
               <a :href="mailto" class="ml-1 transition hover:text-wp-gold">
                 {{ t('footer.email') }}
               </a>
             </li>
-            <li>
-              <span class="font-medium text-white">{{ t('footer.lineLabel') }}</span>
-              <span class="ml-1">{{ t('footer.line') }}</span>
+            <li class="pt-1">
+              <SiteSocialLinks />
             </li>
           </ul>
         </div>

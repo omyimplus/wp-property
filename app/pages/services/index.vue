@@ -1,16 +1,10 @@
 <script setup lang="ts">
-import { services } from '~/data/home-content'
+import { serviceDetailLinks, services } from '~/data/home-content'
 
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
 const localePath = useLocalePath()
-
-const serviceLinks: Record<string, string> = {
-  debt: '/services/debt',
-  rentBuy: '/services/rent-buy',
-  consign: '/services/consign',
-}
 
 useStaticPageSeo('pages.services.title', 'pages.services.subtitle')
 </script>
@@ -57,7 +51,7 @@ useStaticPageSeo('pages.services.title', 'pages.services.subtitle')
               {{ t(`pages.services.${service.key}.detail`) }}
             </p>
             <NuxtLink
-              :to="localePath(serviceLinks[service.key])"
+              :to="localePath(serviceDetailLinks[service.key])"
               class="mt-5 inline-flex items-center rounded-xl border border-wp-hero-cta-mid bg-gradient-to-br from-wp-hero-navy to-wp-hero-cta-mid px-5 py-2 text-sm font-medium text-white shadow-sm transition hover:brightness-110"
             >
               {{ t('pages.common.learnMore') }} →

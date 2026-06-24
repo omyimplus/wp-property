@@ -18,22 +18,36 @@ useStaticPageSeo('pages.contact.title', 'pages.contact.subtitle')
             <span class="block font-medium text-slate-900">{{ t('footer.companyName') }}</span>
             <span class="mt-1 block">{{ t('footer.address') }}</span>
           </p>
-          <p>
-            <span class="font-medium text-slate-900">{{ t('pages.contact.hoursLabel') }}:</span>
-            <span class="mt-1 block text-slate-600">{{ t('pages.contact.hours') }}</span>
-          </p>
-          <p>
-            <span class="font-medium text-slate-900">{{ t('footer.phoneLabel') }}:</span>
-            <a :href="phoneHref" class="text-wp-navy hover:underline">{{ t('footer.phone') }}</a>
-          </p>
-          <p>
-            <span class="font-medium text-slate-900">{{ t('footer.emailLabel') }}:</span>
-            <a :href="mailto" class="text-wp-navy hover:underline">{{ t('footer.email') }}</a>
-          </p>
-          <p>
-            <span class="font-medium text-slate-900">{{ t('footer.lineLabel') }}:</span>
-            <span class="text-slate-700">{{ lineDisplay }}</span>
-          </p>
+
+          <dl class="grid max-w-xl grid-cols-[max-content_minmax(0,1fr)] gap-x-3 gap-y-2.5">
+            <dt class="font-medium text-slate-900">
+              {{ t('pages.contact.hoursLabel') }} :
+            </dt>
+            <dd class="text-slate-600">
+              {{ t('pages.contact.hours') }}
+            </dd>
+
+            <dt class="font-medium text-slate-900">
+              {{ t('footer.phoneLabel') }} :
+            </dt>
+            <dd>
+              <a :href="phoneHref" class="text-wp-navy hover:underline">{{ t('footer.phone') }}</a>
+            </dd>
+
+            <dt class="font-medium text-slate-900">
+              {{ t('footer.emailLabel') }} :
+            </dt>
+            <dd>
+              <a :href="mailto" class="text-wp-navy hover:underline">{{ t('footer.email') }}</a>
+            </dd>
+
+            <dt class="font-medium text-slate-900">
+              {{ t('footer.lineLabel') }} :
+            </dt>
+            <dd class="text-slate-700">
+              {{ lineDisplay }}
+            </dd>
+          </dl>
 
           <div>
             <a
@@ -47,14 +61,7 @@ useStaticPageSeo('pages.contact.title', 'pages.contact.subtitle')
             </a>
           </div>
 
-          <div>
-            <p class="font-medium text-slate-900">
-              {{ t('pages.contact.socialTitle') }}
-            </p>
-            <div class="mt-3">
-              <SiteSocialLinks />
-            </div>
-          </div>
+          <SiteSocialLinks />
         </div>
 
         <div class="min-w-0">

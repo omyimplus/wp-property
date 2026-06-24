@@ -32,6 +32,12 @@ export const services = [
   { key: 'consign', image: '/images/service-3.webp' },
 ] as const
 
+export const serviceDetailLinks: Record<(typeof services)[number]['key'], string> = {
+  debt: '/services/debt',
+  rentBuy: '/services/rent-buy',
+  consign: '/services/consign',
+}
+
 export const propertyTypeKeys = [
   { key: 'houseTown', image: '/images/icon-property-1.webp' },
   { key: 'townhouse', image: '/images/icon-property-2.webp' },

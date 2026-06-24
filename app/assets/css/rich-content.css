@@ -65,11 +65,30 @@
 .rich-content ul,
 .rich-content ol {
   margin: 0 0 1rem;
-  padding-left: 1.5rem;
+  padding-left: 1.625rem;
+  list-style-position: outside;
+}
+
+.rich-content ul {
+  list-style-type: disc;
+}
+
+.rich-content ol {
+  list-style-type: decimal;
+}
+
+.rich-content ul ul {
+  list-style-type: circle;
+}
+
+.rich-content ol ol {
+  list-style-type: lower-alpha;
 }
 
 .rich-content li {
+  display: list-item;
   margin: 0.375rem 0;
+  padding-left: 0.25rem;
 }
 
 .rich-content li > ul,

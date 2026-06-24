@@ -9,18 +9,32 @@ export interface PropertyAddressParts {
   province?: string | null
 }
 
+const PLACEHOLDER_ADDRESS_PARTS = new Set(['-', '—', 'n/a', 'na', 'null', 'none', '.'])
+
+function isMeaningfulAddressPart(part: string | null | undefined): part is string {
+  const trimmed = part?.trim()
+  if (!trimmed) return false
+  return !PLACEHOLDER_ADDRESS_PARTS.has(trimmed.toLowerCase())
+}
+
+function formatAddressSegment(
+  value: string | null | undefined,
+  prefix = '',
+): string | null {
+  if (!isMeaningfulAddressPart(value)) return null
+  return `${prefix}${value.trim()}`
+}
+
 export function formatPropertyStreetAddress(parts: PropertyAddressParts): string {
   const segments = [
-    parts.house_number,
-    parts.road ? `ถนน${parts.road}` : null,
-    parts.soi ? `ซอย${parts.soi}` : null,
-    parts.moo ? `หมู่${parts.moo}` : null,
-    parts.subdistrict,
-    parts.district,
-    parts.province,
-  ]
-    .map(part => part?.trim())
-    .filter(Boolean)
+    formatAddressSegment(parts.house_number),
+    formatAddressSegment(parts.road, 'ถนน'),
+    formatAddressSegment(parts.soi, 'ซอย'),
+    formatAddressSegment(parts.moo, 'หมู่'),
+    formatAddressSegment(parts.subdistrict),
+    formatAddressSegment(parts.district),
+    formatAddressSegment(parts.province),
+  ].filter(Boolean)
 
   return segments.join(' ')
 }

@@ -39,4 +39,19 @@
   .site-container {
     @apply mx-auto w-full max-w-site px-4 sm:px-6;
   }
+
+  /* ชนะ Tailwind preflight — bullet ในเนื้อหาบทความ */
+  .rich-content ul {
+    list-style-type: disc;
+    padding-left: 1.625rem;
+  }
+
+  .rich-content ol {
+    list-style-type: decimal;
+    padding-left: 1.625rem;
+  }
+
+  .rich-content li {
+    display: list-item;
+  }
 }

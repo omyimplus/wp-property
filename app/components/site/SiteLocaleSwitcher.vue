@@ -5,15 +5,6 @@ const switchLocalePath = useSwitchLocalePath()
 const open = ref(false)
 const root = ref<HTMLElement | null>(null)
 
-const localeFlags: Record<string, string> = {
-  th: '🇹🇭',
-  en: '🇬🇧',
-}
-
-function flagFor(code: string) {
-  return localeFlags[code] ?? '🌐'
-}
-
 function labelFor(code: string) {
   return t(`locale.${code}` as 'locale.th' | 'locale.en')
 }
@@ -36,13 +27,13 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
   <div ref="root" class="relative">
     <button
       type="button"
-      class="flex items-center gap-1 rounded-full border border-white/60 px-2 py-1 text-xs font-medium text-white transition hover:bg-white/10"
+      class="flex items-center gap-1.5 rounded-full border border-white/60 px-2 py-1 text-xs font-medium text-white transition hover:bg-white/10"
       :aria-expanded="open"
       aria-haspopup="listbox"
+      :aria-label="labelFor(locale)"
       @click.stop="open = !open"
     >
-      <span aria-hidden="true" class="text-xs leading-none">{{ flagFor(locale) }}</span>
-      {{ locale.toUpperCase() }}
+      <SiteLocaleFlag :code="locale" />
       <svg
         class="h-3.5 w-3.5 transition-transform"
         :class="open ? 'rotate-180' : ''"
@@ -66,18 +57,18 @@ onUnmounted(() => document.removeEventListener('click', onClickOutside))
       <ul
         v-if="open"
         role="listbox"
-        class="absolute right-0 top-full z-50 mt-1.5 min-w-[8.5rem] overflow-hidden rounded-lg border border-white/15 bg-wp-header py-1 shadow-lg"
+        class="absolute right-0 top-full z-50 mt-1.5 min-w-[9.5rem] overflow-hidden rounded-lg border border-white/15 bg-wp-header py-1 shadow-lg"
       >
         <li v-for="loc in locales" :key="loc.code" role="option">
           <NuxtLink
             :to="switchLocalePath(loc.code)"
-            class="flex items-center gap-2 px-3 py-2 text-xs transition hover:bg-white/10 sm:text-sm"
+            class="flex items-center gap-2.5 px-3 py-2 text-xs transition hover:bg-white/10 sm:text-sm"
             :class="loc.code === locale
               ? 'bg-white/10 font-medium text-wp-gold-light'
               : 'text-white/90'"
             @click="selectLocale(loc.code)"
           >
-            <span aria-hidden="true">{{ flagFor(loc.code) }}</span>
+            <SiteLocaleFlag :code="loc.code" />
             <span>{{ labelFor(loc.code) }}</span>
           </NuxtLink>
         </li>

@@ -7,15 +7,13 @@ export type SiteSocialChannel = {
 }
 
 export function useSiteSocial() {
-  const config = useRuntimeConfig()
   const { t } = useI18n()
 
   const channels = computed((): SiteSocialChannel[] => {
-    const lineOa = String(config.public.lineOaId || 'wpproperty')
     const items: { key: SiteSocialKey, href: string | null }[] = [
       { key: 'facebook', href: siteSocialUrls.facebook || null },
       { key: 'instagram', href: siteSocialUrls.instagram || null },
-      { key: 'line', href: `https://line.me/R/ti/p/@${lineOa}` },
+      { key: 'line', href: siteSocialUrls.line || null },
       { key: 'youtube', href: siteSocialUrls.youtube || null },
       { key: 'tiktok', href: siteSocialUrls.tiktok || null },
     ]
