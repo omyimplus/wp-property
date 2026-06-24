@@ -96,6 +96,235 @@ async function fetchJson(path, { apiContext } = {}) {
   return { status, contentType, body, parseError, url }
 }
 
+async function postJson(path, body) {
+  const url = pathOnHost(path)
+  let status = 0
+  let bodyOut = null
+  let parseError = null
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { accept: 'application/json', 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    status = response.status
+    try {
+      bodyOut = await response.json()
+    } catch (error) {
+      parseError = error instanceof Error ? error.message : 'invalid json'
+    }
+  } catch (error) {
+    parseError = error instanceof Error ? error.message : 'fetch failed'
+  }
+
+  return { status, body: bodyOut, parseError, url }
+}
+
+async function postJsonAuth(apiContext, path, body) {
+  let status = 0
+  let bodyOut = null
+  let parseError = null
+
+  try {
+    const response = await apiContext.post(path, {
+      data: body,
+      headers: { accept: 'application/json' },
+    })
+    status = response.status()
+    try {
+      bodyOut = await response.json()
+    } catch (error) {
+      parseError = error instanceof Error ? error.message : 'invalid json'
+    }
+  } catch (error) {
+    parseError = error instanceof Error ? error.message : 'request failed'
+  }
+
+  return { status, body: bodyOut, parseError }
+}
+
+async function deleteAuth(apiContext, path) {
+  try {
+    const response = await apiContext.delete(path)
+    return { status: response.status(), parseError: null }
+  } catch (error) {
+    return {
+      status: 0,
+      parseError: error instanceof Error ? error.message : 'request failed',
+    }
+  }
+}
+
+async function findPublishedPropertyCode(listing) {
+  const { status, body, parseError } = await fetchJson(`/api/properties?listing=${listing}&page_size=5`)
+  if (status >= 400 || parseError) return null
+  const code = body?.properties?.[0]?.property_code
+  return typeof code === 'string' && code.trim() ? code.trim() : null
+}
+
+async function testPublicFormPosts() {
+  console.log('\nPublic form POST (smoke)')
+
+  const contact = {
+    customer_name: 'smoke-test',
+    callback_phone: '0812345678',
+    callback_line: 'smoke-line',
+  }
+
+  const loan = await postJson('/api/public/loans', {
+    ...contact,
+    debt_amount: 100000,
+    creditor_count: 1,
+    monthly_income: 30000,
+    occupation_kind: 'employee',
+    residence_province: 'กรุงเทพมหานคร',
+    residence_district: 'บางรัก',
+    residence_subdistrict: 'บางรัก',
+  })
+  record(
+    'POST /api/public/loans',
+    loan.status >= 200 && loan.status < 300 && loan.body?.loan?.id,
+    loan.status >= 200 && loan.status < 300 ? `HTTP ${loan.status}` : loan.parseError || loan.body?.statusMessage || `HTTP ${loan.status}`,
+  )
+
+  const rental = await postJson('/api/public/rentals', {
+    ...contact,
+    rent_budget_min: 5000,
+    rent_budget_max: 15000,
+    desired_province: 'กรุงเทพมหานคร',
+    desired_district: 'บางรัก',
+    desired_subdistrict: 'บางรัก',
+  })
+  record(
+    'POST /api/public/rentals',
+    rental.status >= 200 && rental.status < 300 && rental.body?.rental?.id,
+    rental.status >= 200 && rental.status < 300 ? `HTTP ${rental.status}` : rental.parseError || rental.body?.statusMessage || `HTTP ${rental.status}`,
+  )
+
+  const sale = await postJson('/api/public/sales', {
+    ...contact,
+    purchase_budget_min: 1000000,
+    purchase_budget_max: 3000000,
+    desired_province: 'กรุงเทพมหานคร',
+    desired_district: 'บางรัก',
+    desired_subdistrict: 'บางรัก',
+  })
+  record(
+    'POST /api/public/sales',
+    sale.status >= 200 && sale.status < 300 && sale.body?.sale?.id,
+    sale.status >= 200 && sale.status < 300 ? `HTTP ${sale.status}` : sale.parseError || sale.body?.statusMessage || `HTTP ${sale.status}`,
+  )
+
+  const consign = await postJson('/api/public/consignments', {
+    customer_name: contact.customer_name,
+    customer_phone: contact.callback_phone,
+    customer_line: contact.callback_line,
+    listing_title: 'smoke consign',
+    property_type: 'house',
+    listing_mode: 'sale',
+    sale_price: 1000000,
+    house_number: '1',
+    province: 'กรุงเทพมหานคร',
+    district: 'บางรัก',
+    subdistrict: 'บางรัก',
+  })
+  record(
+    'POST /api/public/consignments',
+    consign.status >= 200 && consign.status < 300 && consign.body?.consignment?.id,
+    consign.status >= 200 && consign.status < 300 ? `HTTP ${consign.status}` : consign.parseError || consign.body?.statusMessage || `HTTP ${consign.status}`,
+  )
+
+  for (const listing of ['sale', 'rent']) {
+    const propertyCode =
+      listing === 'sale' && process.env.TEST_PROPERTY_CODE?.trim()
+        ? process.env.TEST_PROPERTY_CODE.trim()
+        : await findPublishedPropertyCode(listing)
+    const label = listing === 'sale' ? 'ซื้อ' : 'เช่า'
+
+    if (!propertyCode) {
+      record(`POST /api/public/property-inquiries (${label})`, true, 'ไม่มีทรัพย์เผยแพร่ — ข้าม', true)
+      continue
+    }
+
+    const inquiry = await postJson('/api/public/property-inquiries', {
+      ...contact,
+      listing_type: listing,
+      property_code: propertyCode,
+      note: `smoke ${listing}`,
+    })
+    const ok = inquiry.status >= 200 && inquiry.status < 300 && inquiry.body?.inquiry?.id
+    record(
+      `POST /api/public/property-inquiries (${label})`,
+      ok,
+      ok
+        ? `HTTP ${inquiry.status} — ${propertyCode}`
+        : inquiry.parseError || inquiry.body?.statusMessage || `HTTP ${inquiry.status}`,
+    )
+  }
+}
+
+async function testAdminPropertyInquiries(apiContext) {
+  console.log('\nAdmin property inquiries (smoke)')
+
+  for (const listing of ['sale', 'rent']) {
+    const label = listing === 'sale' ? 'ซื้อ' : 'เช่า'
+    const path = `/api/admin/property-inquiries?listing=${listing}&status=pending_approval&page=1`
+    const { status, parseError, body } = await fetchJson(path, { apiContext })
+    const ok = status >= 200 && status < 400 && !parseError && Array.isArray(body?.inquiries)
+    const count = ok ? body.inquiries.length : 0
+    record(
+      `GET ${path}`,
+      ok,
+      ok ? `HTTP ${status} — ${count} รายการ` : parseError || `HTTP ${status}`,
+    )
+  }
+}
+
+async function testAdminArticleCreate(apiContext) {
+  console.log('\nAdmin article create (smoke)')
+
+  const stamp = Date.now()
+  const slug = `smoke-test-${stamp}`
+  const payload = {
+    title: `Smoke test article ${stamp}`,
+    slug,
+    excerpt: 'สร้างจาก smoke test — ลบอัตโนมัติหลังทดสอบ',
+    body_html: '<p>เนื้อหาทดสอบจาก smoke test</p>',
+    status: 'draft',
+    sort_order: 0,
+  }
+
+  const created = await postJsonAuth(apiContext, '/api/admin/articles', payload)
+  const id = created.body?.item?.id
+  const createOk = created.status >= 200 && created.status < 300 && id
+  record(
+    'POST /api/admin/articles',
+    createOk,
+    createOk
+      ? `HTTP ${created.status} — ${slug}`
+      : created.parseError || created.body?.statusMessage || `HTTP ${created.status}`,
+  )
+
+  if (!id) return
+
+  const fetched = await fetchJson(`/api/admin/articles/${id}`, { apiContext })
+  const fetchOk = fetched.status === 200 && fetched.body?.item?.slug === slug
+  record(
+    `GET /api/admin/articles/${id}`,
+    fetchOk,
+    fetchOk ? `HTTP ${fetched.status}` : fetched.parseError || `HTTP ${fetched.status}`,
+  )
+
+  const removed = await deleteAuth(apiContext, `/api/admin/articles/${id}`)
+  const deleteOk = removed.status >= 200 && removed.status < 300
+  record(
+    `DELETE /api/admin/articles/${id}`,
+    deleteOk,
+    deleteOk ? `HTTP ${removed.status}` : removed.parseError || `HTTP ${removed.status}`,
+  )
+}
+
 async function testPublicMeta() {
   console.log('\nPublic meta')
   for (const path of PUBLIC_META_ROUTES) {
@@ -104,6 +333,44 @@ async function testPublicMeta() {
       record(`GET ${path}`, res.ok, res.ok ? `HTTP ${res.status}` : `HTTP ${res.status}`)
     } catch (error) {
       record(`GET ${path}`, false, error instanceof Error ? error.message : 'fetch failed')
+    }
+  }
+}
+
+async function testNuxtStaticAssets() {
+  console.log('\nNuxt static assets')
+
+  let html = ''
+  try {
+    const res = await fetch(pathOnHost('/'), { headers: { accept: 'text/html' } })
+    html = await res.text()
+    record('GET / (HTML for chunks)', res.ok, res.ok ? `HTTP ${res.status}` : `HTTP ${res.status}`)
+  } catch (error) {
+    record('GET / (HTML for chunks)', false, error instanceof Error ? error.message : 'fetch failed')
+    return
+  }
+
+  const chunks = [...new Set(html.match(/\/_nuxt\/[A-Za-z0-9_-]+\.js/g) ?? [])].slice(0, 3)
+  if (!chunks.length) {
+    record('Nuxt entry chunks', false, 'ไม่พบ /_nuxt/*.js ใน HTML')
+    return
+  }
+
+  for (const chunkPath of chunks) {
+    try {
+      const res = await fetch(pathOnHost(chunkPath), {
+        headers: { accept: '*/*', 'accept-encoding': 'identity' },
+      })
+      const contentType = res.headers.get('content-type') || ''
+      const isJs = /javascript|ecmascript/i.test(contentType)
+      const ok = res.ok && isJs
+      record(
+        `GET ${chunkPath}`,
+        ok,
+        ok ? `HTTP ${res.status}` : `HTTP ${res.status} (${contentType || 'no content-type'})`,
+      )
+    } catch (error) {
+      record(`GET ${chunkPath}`, false, error instanceof Error ? error.message : 'fetch failed')
     }
   }
 }
@@ -402,7 +669,9 @@ async function main() {
   console.log(`\n🔍 Site E2E test → ${BASE_URL}`)
 
   await testPublicMeta()
+  await testNuxtStaticAssets()
   await testPublicApis()
+  await testPublicFormPosts()
 
   const browser = await chromium.launch({ headless: HEADLESS })
   const context = await browser.newContext()
@@ -422,6 +691,8 @@ async function main() {
     await testAdminPages(adminPage)
     await testAdminEditPages(adminPage, apiContext)
     await testAdminApis(apiContext)
+    await testAdminPropertyInquiries(apiContext)
+    await testAdminArticleCreate(apiContext)
     await testAdminNavLinks(adminPage)
   } else {
     console.log('\nAdmin sections skipped (login failed)')

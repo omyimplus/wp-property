@@ -69,6 +69,17 @@ jobs:
           path: server-node_modules.zip
           retention-days: 7
 
+      - name: Verify Nuxt public assets in bundle
+        run: |
+          CHUNKS=$(find deploy/.output/public/_nuxt -maxdepth 1 -name '*.js' ! -name '*.gz' | wc -l)
+          echo "Nuxt JS chunks in bundle: $CHUNKS"
+          test "$CHUNKS" -ge 20
+          ENTRY=$(grep -oE '/_nuxt/[^"]+\.js' deploy/.output/public/index.html 2>/dev/null | head -1 || true)
+          if [ -n "$ENTRY" ]; then
+            test -f "deploy/.output/public${ENTRY}"
+            echo "Entry chunk exists: $ENTRY"
+          fi
+
       - name: Deploy app to Plesk (FTPS)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:

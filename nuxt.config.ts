@@ -35,7 +35,8 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    compressPublicAssets: { gzip: true, brotli: true },
+    // ปิด brotli ไฟล์คู่ (.js.br) — บางโฮสต์ Plesk/Passenger ส่ง _nuxt ผ่าน Node แล้ว error 500
+    compressPublicAssets: { gzip: true, brotli: false },
   },
 
   routeRules: {

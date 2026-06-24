@@ -1,7 +1,7 @@
 /**
  * Plesk startup file — วางใน httpdocs/.output/app.cjs
  * Application root: /httpdocs/.output
- * Document root: /httpdocs/.output/public
+ * Document root: /httpdocs/.output/public  (สำคัญ — ถ้าผิด จะได้ /_nuxt/*.js 500 และหลังบ้านค้าง「กำลังโหลด」)
  */
 const { existsSync, readFileSync } = require('node:fs')
 const { join } = require('node:path')
