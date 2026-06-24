@@ -172,33 +172,6 @@ const highlightChips = computed((): HighlightChip[] => {
   return chips
 })
 
-const shareMessage = ref('')
-
-async function shareListing() {
-  if (!import.meta.client) return
-  const url = window.location.href
-  const title = listingTitle.value
-  shareMessage.value = ''
-
-  if (navigator.share) {
-    try {
-      await navigator.share({ title, url })
-      return
-    }
-    catch {
-      // fall through to copy
-    }
-  }
-
-  try {
-    await navigator.clipboard.writeText(url)
-    shareMessage.value = t('pages.properties.detail.shareCopied')
-  }
-  catch {
-    shareMessage.value = t('pages.properties.detail.shareFailed')
-  }
-}
-
 const postedDateLabel = computed(() => {
   const iso = property.value?.created_at
   if (!iso) return ''
@@ -385,51 +358,23 @@ function openGallery(index = activeImage.value) {
         <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_18.5rem] lg:items-start lg:gap-8 xl:grid-cols-[minmax(0,1fr)_20rem] xl:gap-10">
           <div class="min-w-0 space-y-8 sm:space-y-10">
             <header class="space-y-4">
-              <div class="flex flex-wrap items-start justify-between gap-4">
-                <div
-                  class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 sm:text-sm"
-                >
-                  <span>
-                    <span class="text-slate-400">{{ t('pages.properties.listingCode') }}</span>
-                    <span class="ml-1 font-semibold text-red-600">{{ property.property_code }}</span>
-                  </span>
-                  <span
-                    v-if="postedDateLabel"
-                    class="hidden text-slate-300 sm:inline"
-                    aria-hidden="true"
-                  >·</span>
-                  <span v-if="postedDateLabel">
-                    <span class="text-slate-400">{{ t('pages.properties.postedAt') }}</span>
-                    <span class="ml-1 font-medium text-slate-700">{{ postedDateLabel }}</span>
-                  </span>
-                </div>
-
-                <div class="flex items-center gap-2">
-                  <button
-                    type="button"
-                    class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
-                  >
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                    {{ t('pages.properties.detail.saveListing') }}
-                  </button>
-                  <button
-                    type="button"
-                    class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50 sm:text-sm"
-                    @click="shareListing"
-                  >
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                    </svg>
-                    {{ t('pages.properties.detail.share') }}
-                  </button>
-                </div>
+              <div
+                class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 sm:text-sm"
+              >
+                <span>
+                  <span class="text-slate-400">{{ t('pages.properties.listingCode') }}</span>
+                  <span class="ml-1 font-semibold text-red-600">{{ property.property_code }}</span>
+                </span>
+                <span
+                  v-if="postedDateLabel"
+                  class="hidden text-slate-300 sm:inline"
+                  aria-hidden="true"
+                >·</span>
+                <span v-if="postedDateLabel">
+                  <span class="text-slate-400">{{ t('pages.properties.postedAt') }}</span>
+                  <span class="ml-1 font-medium text-slate-700">{{ postedDateLabel }}</span>
+                </span>
               </div>
-
-              <p v-if="shareMessage" class="text-xs text-emerald-700 sm:text-sm">
-                {{ shareMessage }}
-              </p>
 
               <div class="flex flex-wrap items-center gap-2">
                 <span
