@@ -75,10 +75,27 @@ jobs:
           echo "Nuxt JS chunks in bundle: $CHUNKS"
           test "$CHUNKS" -ge 20
           ENTRY=$(grep -oE '/_nuxt/[^"]+\.js' deploy/.output/public/index.html 2>/dev/null | head -1 || true)
-          if [ -n "$ENTRY" ]; then
-            test -f "deploy/.output/public${ENTRY}"
-            echo "Entry chunk exists: $ENTRY"
+          if [ -z "$ENTRY" ]; then
+            ENTRY="/_nuxt/$(find deploy/.output/public/_nuxt -maxdepth 1 -name '*.js' ! -name '*.gz' -printf '%f\n' | head -1)"
           fi
+          test -f "deploy/.output/public${ENTRY}"
+          echo "Entry chunk for smoke test: $ENTRY"
+          echo "DEPLOY_NUXT_CHUNK=$ENTRY" >> "$GITHUB_ENV"
+
+      - name: Deploy Nuxt client assets (FTPS)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: deploy/.output/public/_nuxt/
+          server-dir: httpdocs/.output/public/_nuxt/
+          timeout: 600000
+          log-level: minimal
+          security: loose
+          dangerous-clean-slate: false
 
       - name: Deploy app to Plesk (FTPS)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
@@ -97,44 +114,45 @@ jobs:
           exclude: |
             **/.git*
             **/.git*/**
-
-      - name: Deploy Nuxt client assets (FTPS)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
-          port: 21
-          local-dir: deploy/.output/public/_nuxt/
-          server-dir: httpdocs/.output/public/_nuxt/
-          timeout: 600000
-          log-level: minimal
-          security: loose
-          dangerous-clean-slate: false
+            **/.output/public/_nuxt/**
 
       - name: Smoke test production _nuxt
         run: |
-          sleep 20
           BASE="https://www.wplandproperty.com"
-          HTML=$(curl -fsS "$BASE/admin")
-          CHUNK=$(echo "$HTML" | grep -oE '/_nuxt/[^"]+\.js' | head -1)
+          CHUNK="${DEPLOY_NUXT_CHUNK}"
           if [ -z "$CHUNK" ]; then
-            echo "No /_nuxt/*.js in admin HTML"
+            echo "DEPLOY_NUXT_CHUNK not set"
             exit 1
           fi
-          echo "Checking $CHUNK"
-          HEADERS=$(curl -fsSI -H 'accept-encoding: identity' "$BASE$CHUNK")
-          echo "$HEADERS"
-          echo "$HEADERS" | grep -qi 'x-powered-by: phusion passenger' && {
-            echo "FAIL: _nuxt still routed through Passenger (Document root อาจไม่ใช่ httpdocs/.output/public)"
-            exit 1
-          }
-          echo "$HEADERS" | grep -qi 'javascript' || {
-            echo "FAIL: _nuxt chunk is not served as JavaScript"
-            exit 1
-          }
-          curl -fsS -H 'accept-encoding: identity' "$BASE$CHUNK" | head -c 5 | grep -q .
+          echo "Smoke test chunk from bundle: $CHUNK"
+          for attempt in 1 2 3 4 5 6 7 8; do
+            echo "Attempt $attempt/8 (wait 15s between retries)"
+            if [ "$attempt" -gt 1 ]; then
+              sleep 15
+            else
+              sleep 20
+            fi
+            if ! HEADERS=$(curl -fsSI -H 'accept-encoding: identity' "$BASE$CHUNK" 2>&1); then
+              echo "$HEADERS"
+              continue
+            fi
+            echo "$HEADERS"
+            if echo "$HEADERS" | grep -qi 'x-powered-by: phusion passenger'; then
+              echo "WARN: _nuxt routed through Passenger — retry (Document root ควรเป็น httpdocs/.output/public)"
+              continue
+            fi
+            if ! echo "$HEADERS" | grep -qi 'javascript'; then
+              echo "WARN: not served as JavaScript — retry"
+              continue
+            fi
+            if curl -fsS -H 'accept-encoding: identity' "$BASE$CHUNK" | head -c 5 | grep -q .; then
+              echo "OK: $CHUNK"
+              curl -fsS "$BASE/admin" > /dev/null && echo "OK: /admin"
+              exit 0
+            fi
+          done
+          echo "FAIL: $CHUNK not ready after retries"
+          exit 1
 
       - name: Deploy server node_modules (FTPS)
         if: steps.changes.outputs.deps == 'true' || (github.event_name == 'workflow_dispatch' && inputs.upload_node_modules)

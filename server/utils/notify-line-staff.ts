@@ -6,7 +6,14 @@ export async function notifyLineStaff(event: H3Event, message: string): Promise<
   const config = useRuntimeConfig(event)
 
   const accessToken = config.lineChannelAccessToken
+  const groupId = config.lineNotifyGroupId
   const userId = config.lineNotifyUserId
+
+  if (accessToken && groupId) {
+    await pushLineText(accessToken, groupId, message)
+    return
+  }
+
   if (accessToken && userId) {
     await pushLineText(accessToken, userId, message)
     return
@@ -18,7 +25,9 @@ export async function notifyLineStaff(event: H3Event, message: string): Promise<
     return
   }
 
-  console.warn('[line] skip notify — ไม่มี NUXT_LINE_CHANNEL_ACCESS_TOKEN + NUXT_LINE_NOTIFY_USER_ID')
+  console.warn(
+    '[line] skip notify — ตั้ง NUXT_LINE_NOTIFY_GROUP_ID (กลุ่ม) หรือ NUXT_LINE_NOTIFY_USER_ID',
+  )
 }
 
 /** แจ้งเตือน LINE หลังบันทึกฟอร์ม — ไม่ทำให้ API ล้มถ้าส่งไม่สำเร็จ */

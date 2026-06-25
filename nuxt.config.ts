@@ -20,6 +20,7 @@ export default defineNuxtConfig({
     lineChannelId: process.env.NUXT_LINE_CHANNEL_ID || '',
     lineChannelSecret: process.env.NUXT_LINE_CHANNEL_SECRET || '',
     lineChannelAccessToken: process.env.NUXT_LINE_CHANNEL_ACCESS_TOKEN || '',
+    lineNotifyGroupId: process.env.NUXT_LINE_NOTIFY_GROUP_ID || '',
     lineNotifyUserId: process.env.NUXT_LINE_NOTIFY_USER_ID || '',
     public: {
       lineOaId: process.env.NUXT_PUBLIC_LINE_OA_ID || 'wpproperty',
