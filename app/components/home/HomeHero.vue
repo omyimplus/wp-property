@@ -105,8 +105,8 @@ onUnmounted(stopAutoplay)
           :loading="index === 0 ? 'eager' : 'lazy'"
         />
         <div
-          v-if="!('contentKey' in slide)"
-          class="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#fff_0%,#fff_35%,rgba(255,255,255,0.85)_48%,rgba(255,255,255,0.4)_62%,transparent_78%)]"
+          v-if="'whiteFade' in slide && slide.whiteFade"
+          class="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#fff_0%,#fff_30%,rgba(255,255,255,0.85)_43%,rgba(255,255,255,0.4)_57%,transparent_73%)]"
           aria-hidden="true"
         />
       </div>
