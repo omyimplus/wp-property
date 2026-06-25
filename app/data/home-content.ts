@@ -8,7 +8,7 @@ export const heroStats = [
 
 /** เพิ่มรูปใน array นี้เพื่อเพิ่มสไลด์ — ใส่ path ใต้ /public/images/ */
 export const heroSlides = [
-  { id: '1', image: '/images/hero-bg-1.webp' },
+  { id: '1', image: '/images/hero-bg-3.webp' },
   {
     id: '2',
     image: '/images/hero-bg-2.webp',
@@ -19,7 +19,7 @@ export const heroSlides = [
   },
   {
     id: '3',
-    image: '/images/hero-bg-3.webp',
+    image: '/images/hero-bg-1.webp',
     contentKey: 'properties',
     showStats: false,
     altKey: 'home.hero.slides.alt.properties',
