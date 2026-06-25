@@ -60,11 +60,29 @@ export function useEntityImageUpload(options: {
     }
   }
 
+  async function reorderImages(imageIds: string[]) {
+    const id = options.entityId.value
+    if (!id || !imageIds.length) return false
+
+    try {
+      await $fetch(`${options.apiBase}/${id}/images/reorder`, {
+        method: 'PATCH',
+        body: { image_ids: imageIds },
+      })
+      uploadError.value = ''
+      return true
+    } catch {
+      uploadError.value = 'จัดลำดับรูปไม่สำเร็จ'
+      return false
+    }
+  }
+
   return {
     uploading,
     uploadError,
     uploadFiles,
     removeImage,
+    reorderImages,
     publicUrl,
   }
 }
