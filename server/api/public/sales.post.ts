@@ -1,4 +1,6 @@
 import { SALE_REQUEST_SELECT, parseSaleRequestBody } from '../../utils/sale-requests'
+import { buildSaleRequestLineMessage } from '../../utils/line-form-messages'
+import { notifyLineStaffSafe } from '../../utils/notify-line-staff'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -21,6 +23,8 @@ export default defineEventHandler(async (event) => {
   if (error) {
     throw createError({ statusCode: 400, statusMessage: error.message })
   }
+
+  notifyLineStaffSafe(event, buildSaleRequestLineMessage(data))
 
   return { sale: data }
 })

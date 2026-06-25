@@ -105,8 +105,8 @@ onUnmounted(stopAutoplay)
           :loading="index === 0 ? 'eager' : 'lazy'"
         />
         <div
-          v-if="'contentKey' in slide && slide.contentKey === 'properties'"
-          class="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/90 via-white/55 to-transparent sm:via-white/35 lg:via-white/20"
+          v-if="!('contentKey' in slide)"
+          class="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#fff_0%,#fff_35%,rgba(255,255,255,0.85)_48%,rgba(255,255,255,0.4)_62%,transparent_78%)]"
           aria-hidden="true"
         />
       </div>

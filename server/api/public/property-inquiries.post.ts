@@ -1,5 +1,7 @@
 import { validatePropertyInquiryForm } from '~/types/property-inquiry'
 import { PROPERTY_INQUIRY_SELECT, parsePropertyInquiryBody } from '~~/server/utils/property-inquiries'
+import { buildPropertyInterestLineMessage } from '~~/server/utils/property-inquiry-message'
+import { notifyLineStaffSafe } from '~~/server/utils/notify-line-staff'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -65,6 +67,26 @@ export default defineEventHandler(async (event) => {
   if (insertError) {
     throw createError({ statusCode: 400, statusMessage: insertError.message })
   }
+
+  notifyLineStaffSafe(event, buildPropertyInterestLineMessage({
+    property: {
+      property_code: payload.property_code,
+      listing_title: payload.listing_title,
+      project_name: payload.project_name,
+      for_sale: body?.for_sale === true,
+      for_rent: body?.for_rent === true,
+      sale_price: typeof body?.sale_price === 'number' ? body.sale_price : null,
+      rent_price: typeof body?.rent_price === 'number' ? body.rent_price : null,
+      subdistrict: typeof body?.subdistrict === 'string' ? body.subdistrict : null,
+      district: typeof body?.district === 'string' ? body.district : null,
+      province: typeof body?.province === 'string' ? body.province : null,
+    },
+    form: {
+      ...form,
+      listing_type: payload.listing_type,
+    },
+    propertyUrl,
+  }))
 
   return { ok: true, inquiry }
 })

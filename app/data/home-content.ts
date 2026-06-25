@@ -8,10 +8,10 @@ export const heroStats = [
 
 /** เพิ่มรูปใน array นี้เพื่อเพิ่มสไลด์ — ใส่ path ใต้ /public/images/ */
 export const heroSlides = [
-  { id: '1', image: '/images/bg-hero.webp' },
+  { id: '1', image: '/images/hero-bg-1.webp' },
   {
     id: '2',
-    image: '/images/banner-hero-section-2.webp',
+    image: '/images/hero-bg-2.webp',
     contentKey: 'debt',
     showStats: false,
     imageClass: 'object-cover object-[72%_center] sm:object-[68%_center]',
@@ -19,7 +19,7 @@ export const heroSlides = [
   },
   {
     id: '3',
-    image: '/images/banner-hero-section-3.webp',
+    image: '/images/hero-bg-3.webp',
     contentKey: 'properties',
     showStats: false,
     altKey: 'home.hero.slides.alt.properties',
@@ -27,9 +27,9 @@ export const heroSlides = [
 ] as const
 
 export const services = [
-  { key: 'debt', image: '/images/service-1.webp' },
-  { key: 'rentBuy', image: '/images/service-2.webp' },
-  { key: 'consign', image: '/images/service-3.webp' },
+  { key: 'debt', image: '/images/service-bg-1.webp' },
+  { key: 'rentBuy', image: '/images/service-bg-2.webp' },
+  { key: 'consign', image: '/images/service-bg-3.webp' },
 ] as const
 
 export const serviceDetailLinks: Record<(typeof services)[number]['key'], string> = {

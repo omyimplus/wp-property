@@ -1,4 +1,6 @@
 import { RENTAL_REQUEST_SELECT, parseRentalRequestBody } from '../../utils/rental-requests'
+import { buildRentalRequestLineMessage } from '../../utils/line-form-messages'
+import { notifyLineStaffSafe } from '../../utils/notify-line-staff'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -21,6 +23,8 @@ export default defineEventHandler(async (event) => {
   if (error) {
     throw createError({ statusCode: 400, statusMessage: error.message })
   }
+
+  notifyLineStaffSafe(event, buildRentalRequestLineMessage(data))
 
   return { rental: data }
 })

@@ -44,7 +44,7 @@ watch(slideCount, () => {
 <template>
   <section
     v-if="showSection"
-    class="bg-wp-navy pb-10 pt-6 sm:pb-14 sm:pt-8"
+    class="bg-wp-navy pb-6 pt-6 sm:pb-8 sm:pt-8"
     aria-roledescription="carousel"
     :aria-label="t('home.clips.title')"
   >

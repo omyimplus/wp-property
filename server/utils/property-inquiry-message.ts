@@ -29,6 +29,7 @@ export function buildPropertyInterestLineMessage(input: {
 
   const lines = [
     'สนใจทรัพย์จากเว็บ WP Property',
+    `ประเภท: ${input.form.listing_type === 'rent' ? 'เช่า' : 'ขาย'}`,
     `รหัส: ${input.property.property_code}`,
     `ชื่อประกาศ: ${title}`,
     `ที่ตั้ง: ${propertyLocationLine(input.property) || '-'}`,

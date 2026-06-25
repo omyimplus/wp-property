@@ -17,6 +17,10 @@ export default defineNuxtConfig({
       serviceKey: '',
     },
     lineNotifyToken: process.env.NUXT_LINE_NOTIFY_TOKEN || '',
+    lineChannelId: process.env.NUXT_LINE_CHANNEL_ID || '',
+    lineChannelSecret: process.env.NUXT_LINE_CHANNEL_SECRET || '',
+    lineChannelAccessToken: process.env.NUXT_LINE_CHANNEL_ACCESS_TOKEN || '',
+    lineNotifyUserId: process.env.NUXT_LINE_NOTIFY_USER_ID || '',
     public: {
       lineOaId: process.env.NUXT_PUBLIC_LINE_OA_ID || 'wpproperty',
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://wplandproperty.com',

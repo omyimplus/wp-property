@@ -190,7 +190,7 @@ onUnmounted(() => {
   <section
     v-if="showSection"
     id="reviews"
-    class="bg-wp-navy pb-10 pt-6 sm:pb-14 sm:pt-8"
+    class="bg-wp-navy pb-8 pt-2 sm:pb-10 sm:pt-3"
     aria-roledescription="carousel"
     :aria-label="t('home.reviews.title')"
     @mouseenter="stopAutoplay"
@@ -205,8 +205,8 @@ onUnmounted(() => {
         {{ t('pages.common.loading') }}
       </div>
 
-      <div v-else class="relative overflow-hidden">
-        <div class="pointer-events-none relative mx-auto h-[400px] w-full sm:h-[520px] lg:h-[580px]">
+      <div v-else class="relative mt-4 overflow-hidden sm:mt-5">
+        <div class="pointer-events-none relative mx-auto h-[340px] w-full sm:h-[420px] lg:h-[470px]">
           <article
             v-for="slide in visibleSlides"
             :key="`${slide.item.id}-${slide.slotOffset}`"
