@@ -98,6 +98,44 @@ jobs:
             **/.git*
             **/.git*/**
 
+      - name: Deploy Nuxt client assets (FTPS)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: deploy/.output/public/_nuxt/
+          server-dir: httpdocs/.output/public/_nuxt/
+          timeout: 600000
+          log-level: minimal
+          security: loose
+          dangerous-clean-slate: false
+
+      - name: Smoke test production _nuxt
+        run: |
+          sleep 20
+          BASE="https://www.wplandproperty.com"
+          HTML=$(curl -fsS "$BASE/admin")
+          CHUNK=$(echo "$HTML" | grep -oE '/_nuxt/[^"]+\.js' | head -1)
+          if [ -z "$CHUNK" ]; then
+            echo "No /_nuxt/*.js in admin HTML"
+            exit 1
+          fi
+          echo "Checking $CHUNK"
+          HEADERS=$(curl -fsSI -H 'accept-encoding: identity' "$BASE$CHUNK")
+          echo "$HEADERS"
+          echo "$HEADERS" | grep -qi 'x-powered-by: phusion passenger' && {
+            echo "FAIL: _nuxt still routed through Passenger (Document root อาจไม่ใช่ httpdocs/.output/public)"
+            exit 1
+          }
+          echo "$HEADERS" | grep -qi 'javascript' || {
+            echo "FAIL: _nuxt chunk is not served as JavaScript"
+            exit 1
+          }
+          curl -fsS -H 'accept-encoding: identity' "$BASE$CHUNK" | head -c 5 | grep -q .
+
       - name: Deploy server node_modules (FTPS)
         if: steps.changes.outputs.deps == 'true' || (github.event_name == 'workflow_dispatch' && inputs.upload_node_modules)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6

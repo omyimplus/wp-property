@@ -3,7 +3,7 @@
  * Application root: /httpdocs/.output
  * Document root: /httpdocs/.output/public  (สำคัญ — ถ้าผิด จะได้ /_nuxt/*.js 500 และหลังบ้านค้าง「กำลังโหลด」)
  */
-const { existsSync, readFileSync } = require('node:fs')
+const { existsSync, readFileSync, readdirSync } = require('node:fs')
 const { join } = require('node:path')
 
 const root = __dirname
@@ -62,6 +62,23 @@ if (!secretKey) {
 if (!existsSync(serverEntry)) {
   console.error('[wp-property] BUILD MISSING:', serverEntry)
   process.exit(1)
+}
+
+const nuxtPublicDir = join(root, 'public/_nuxt')
+if (existsSync(nuxtPublicDir)) {
+  const jsChunks = readdirSync(nuxtPublicDir).filter(
+    name => name.endsWith('.js') && !name.endsWith('.js.gz'),
+  ).length
+  console.log('[wp-property] public/_nuxt JS chunks:', jsChunks)
+  if (jsChunks < 10) {
+    console.error(
+      '[wp-property] _nuxt น้อยผิดปกติ — deploy อาจไม่ครบ; admin จะค้าง「กำลังโหลด」',
+    )
+  }
+} else {
+  console.error(
+    '[wp-property] MISSING public/_nuxt — ตรวจว่า deploy ครบและ Document root = httpdocs/.output/public',
+  )
 }
 
 // ต้องใช้ path แบบ ./ เท่านั้น — Passenger copy ไป sandbox แล้ว absolute path จะพัง
