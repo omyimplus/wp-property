@@ -465,6 +465,26 @@ onMounted(() => {
             <dt class="text-slate-500">พื้นที่ต้องการเช่า</dt>
             <dd>{{ rentalDesiredAreaText(detailRental) }}</dd>
           </div>
+          <div class="grid grid-cols-[8rem_1fr] gap-2">
+            <dt class="text-slate-500">ห้องนอน</dt>
+            <dd>{{ detailRental.desired_bedrooms ?? '—' }} ห้อง</dd>
+          </div>
+          <div class="grid grid-cols-[8rem_1fr] gap-2">
+            <dt class="text-slate-500">ห้องน้ำ</dt>
+            <dd>{{ detailRental.desired_bathrooms ?? '—' }} ห้อง</dd>
+          </div>
+          <div class="grid grid-cols-[8rem_1fr] gap-2">
+            <dt class="text-slate-500">ที่จอดรถ</dt>
+            <dd>{{ detailRental.desired_parking_spaces ?? '—' }} คัน</dd>
+          </div>
+          <div class="grid grid-cols-[8rem_1fr] gap-2">
+            <dt class="text-slate-500">ระยะเวลาเช่า</dt>
+            <dd>{{ detailRental.lease_duration || '—' }}</dd>
+          </div>
+          <div class="grid grid-cols-[8rem_1fr] gap-2">
+            <dt class="text-slate-500">พักอาศัยได้</dt>
+            <dd>{{ detailRental.max_occupants ?? '—' }} คน</dd>
+          </div>
           <div class="grid grid-cols-[8rem_1fr] gap-2 border-t border-slate-100 pt-3">
             <dt class="text-slate-500">สร้างโดย</dt>
             <dd>

@@ -170,7 +170,7 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
       v-if="isConsignment"
       class="rounded-xl border border-violet-200 bg-violet-50/40 p-6 shadow-sm"
     >
-      <h3 class="mb-4 font-semibold text-violet-950">ข้อมูลลูกค้าฝากขาย</h3>
+      <h3 class="mb-4 font-semibold text-violet-950">ข้อมูลลูกค้าฝากขาย / ฝากเช่า</h3>
       <div class="grid gap-4">
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
@@ -545,10 +545,25 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
             @input="setField('property_age_years', ($event.target as HTMLInputElement).value ? Number(($event.target as HTMLInputElement).value) : null)"
           >
         </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">
+            พักอาศัยได้ (จำนวนคน)<span v-if="isCreate && isConsignment" class="text-red-600"> *</span>
+          </label>
+          <input
+            :value="form.max_occupants ?? ''"
+            type="number"
+            min="1"
+            class="w-full rounded-lg border border-slate-300 px-3 py-2"
+            @input="setField('max_occupants', ($event.target as HTMLInputElement).value ? Number(($event.target as HTMLInputElement).value) : null)"
+          >
+        </div>
       </div>
     </section>
 
-    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section
+      v-if="!isConsignment || showStatus"
+      class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+    >
       <h3 class="mb-1 font-semibold text-slate-900">สิ่งอำนวยความสะดวก</h3>
       <p class="mb-4 text-sm text-slate-500">
         อุปกรณ์และเฟอร์นิเจอร์ในห้อง / มาพร้อมยูนิต — คลิก chip เพื่อเลือก
@@ -561,7 +576,10 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
       />
     </section>
 
-    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section
+      v-if="!isConsignment || showStatus"
+      class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+    >
       <h3 class="mb-1 font-semibold text-slate-900">ความสะดวกโดยรอบ</h3>
       <p class="mb-4 text-sm text-slate-500">
         สิ่งอำนวยความสะดวกในโครงการ / ส่วนกลาง — คลิก chip เพื่อเลือก
@@ -574,7 +592,10 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
       />
     </section>
 
-    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section
+      v-if="!isConsignment || showStatus"
+      class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+    >
       <h3 class="mb-4 font-semibold text-slate-900">รายละเอียดโครงการ</h3>
       <p class="mb-3 text-sm text-slate-500">
         แสดงใต้รายการสิ่งอำนวยความสะดวกบนหน้ารายละเอียดทรัพย์ (ใช้ชื่อโครงการ + ทำเลเป็นหัวข้อ)

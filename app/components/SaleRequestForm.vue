@@ -85,7 +85,7 @@ function onSubmit() {
 
     <section class="rounded-xl border border-sky-200 bg-sky-50/40 p-6 shadow-sm">
       <h3 class="mb-4 font-semibold text-sky-950">ข้อมูลติดต่อ</h3>
-      <div :class="fieldGridClass">
+      <div class="grid gap-4">
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
             ชื่อ <span class="text-red-600">*</span>
@@ -176,11 +176,82 @@ function onSubmit() {
         <textarea
           :value="modelValue.desired_area_detail ?? ''"
           rows="3"
-          placeholder="เช่น ใกล้ BTS, ต้องการ 2 ห้องนอน..."
+          placeholder="เช่น ใกล้ BTS, ใกล้โรงเรียน..."
           class="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:bg-slate-50"
           :disabled="readonly"
           @input="setField('desired_area_detail', ($event.target as HTMLTextAreaElement).value || null)"
         />
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h3 class="mb-4 font-semibold text-slate-900">ความต้องการทรัพย์</h3>
+      <div :class="fieldGridClass">
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">
+            จำนวนห้องนอนที่ต้องการ <span class="text-red-600">*</span>
+          </label>
+          <input
+            :value="modelValue.desired_bedrooms ?? ''"
+            type="number"
+            min="0"
+            class="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:bg-slate-50"
+            :disabled="readonly"
+            @input="setField('desired_bedrooms', ($event.target as HTMLInputElement).value ? Number(($event.target as HTMLInputElement).value) : null)"
+          >
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">
+            จำนวนห้องน้ำที่ต้องการ <span class="text-red-600">*</span>
+          </label>
+          <input
+            :value="modelValue.desired_bathrooms ?? ''"
+            type="number"
+            min="0"
+            class="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:bg-slate-50"
+            :disabled="readonly"
+            @input="setField('desired_bathrooms', ($event.target as HTMLInputElement).value ? Number(($event.target as HTMLInputElement).value) : null)"
+          >
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">
+            จำนวนที่จอดรถยนต์ <span class="text-red-600">*</span>
+          </label>
+          <input
+            :value="modelValue.desired_parking_spaces ?? ''"
+            type="number"
+            min="0"
+            class="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:bg-slate-50"
+            :disabled="readonly"
+            @input="setField('desired_parking_spaces', ($event.target as HTMLInputElement).value ? Number(($event.target as HTMLInputElement).value) : null)"
+          >
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">
+            ระยะเวลาที่ต้องการย้ายเข้า <span class="text-red-600">*</span>
+          </label>
+          <input
+            :value="modelValue.desired_move_in ?? ''"
+            type="text"
+            placeholder="เช่น ภายใน 3 เดือน, 1 ปี"
+            class="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:bg-slate-50"
+            :disabled="readonly"
+            @input="setField('desired_move_in', ($event.target as HTMLInputElement).value || null)"
+          >
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">
+            พักอาศัยได้ (จำนวนคน) <span class="text-red-600">*</span>
+          </label>
+          <input
+            :value="modelValue.max_occupants ?? ''"
+            type="number"
+            min="1"
+            class="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:bg-slate-50"
+            :disabled="readonly"
+            @input="setField('max_occupants', ($event.target as HTMLInputElement).value ? Number(($event.target as HTMLInputElement).value) : null)"
+          >
+        </div>
       </div>
     </section>
 

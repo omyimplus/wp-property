@@ -15,6 +15,11 @@ export interface SaleRequest {
   desired_area_detail: string | null
   purchase_budget_min: number
   purchase_budget_max: number
+  desired_bedrooms: number | null
+  desired_bathrooms: number | null
+  desired_parking_spaces: number | null
+  desired_move_in: string | null
+  max_occupants: number | null
   status: SaleRequestStatus
   created_source: SaleCreatedSource
   created_by: string | null
@@ -125,6 +130,11 @@ export function emptySaleForm(): SaleRequestFormData {
     desired_area_detail: null,
     purchase_budget_min: null,
     purchase_budget_max: null,
+    desired_bedrooms: null,
+    desired_bathrooms: null,
+    desired_parking_spaces: null,
+    desired_move_in: null,
+    max_occupants: null,
     status: 'pending_approval',
   }
 }
@@ -169,6 +179,21 @@ export function validateSaleForm(data: SaleRequestFormData): string | null {
   }
   if (data.purchase_budget_max < data.purchase_budget_min) {
     return 'ราคาซื้อสูงสุดต้องไม่ต่ำกว่าราคาต่ำสุด'
+  }
+  if (data.desired_bedrooms == null || data.desired_bedrooms < 0) {
+    return 'กรุณาระบุจำนวนห้องนอนที่ต้องการ'
+  }
+  if (data.desired_bathrooms == null || data.desired_bathrooms < 0) {
+    return 'กรุณาระบุจำนวนห้องน้ำที่ต้องการ'
+  }
+  if (data.desired_parking_spaces == null || data.desired_parking_spaces < 0) {
+    return 'กรุณาระบุจำนวนที่จอดรถยนต์'
+  }
+  if (!data.desired_move_in?.trim()) {
+    return 'กรุณาระบุระยะเวลาที่ต้องการย้ายเข้า'
+  }
+  if (data.max_occupants == null || data.max_occupants < 1) {
+    return 'กรุณาระบุจำนวนคนที่พักอาศัยได้'
   }
   return null
 }

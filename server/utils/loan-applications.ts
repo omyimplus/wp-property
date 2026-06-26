@@ -2,8 +2,8 @@ import type { LoanApplicationStatus, LoanOccupationKind } from '~/types/loan-app
 import { payloadHelpers } from './property-payload'
 
 export const LOAN_APPLICATION_SELECT = `
-  id, customer_name, callback_phone, callback_line,
-  debt_amount, creditor_count,
+  id, customer_name, age, callback_phone, callback_line,
+  debt_amount, creditor_count, bureau_record, preferred_location,
   residence_province, residence_district, residence_subdistrict, residence_detail,
   occupation_kind, occupation_other,
   monthly_income, status,
@@ -51,51 +51,40 @@ export function parseLoanApplicationBody(body: Record<string, unknown>) {
 
   const debt_amount = num(body.debt_amount)
   const monthly_income = num(body.monthly_income)
-  const creditor_count = int(body.creditor_count)
+  const age = int(body.age)
 
   if (debt_amount == null || debt_amount <= 0) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุหนี้ที่ต้องการปิด' })
-  }
-  if (monthly_income == null || monthly_income <= 0) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุรายได้ต่อเดือน' })
-  }
-  if (creditor_count == null || creditor_count < 1 || creditor_count > 99) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'กรุณาระบุจำนวนสถาบันการเงิน (1–99)',
+      statusMessage: 'กรุณาระบุจำนวนหนี้ทั้งหมดที่ต้องการปิด',
     })
+  }
+  if (monthly_income == null || monthly_income <= 0) {
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุเงินเดือนหรือรายได้ต่อเดือน' })
+  }
+  if (age == null || age < 18 || age > 120) {
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุอายุ (18–120 ปี)' })
   }
 
   const customer_name = str(body.customer_name)
   const callback_phone = str(body.callback_phone)
   const callback_line = str(body.callback_line)
+  const bureau_record = str(body.bureau_record)
+  const preferred_location = str(body.preferred_location)
   const occupation_kind = parseOccupationKind(str(body.occupation_kind))
   const occupation_other = str(body.occupation_other)
-  const residence_detail = str(body.residence_detail)
 
   if (!customer_name) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุชื่อ' })
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุชื่อ-นามสกุล' })
   }
   if (!callback_phone) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุเบอร์โทรติดต่อกลับ' })
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุเบอร์โทรศัพท์' })
   }
-  if (!callback_line) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'กรุณาระบุเบอร์โทร/ไลน์สำหรับติดต่อกลับ',
-    })
-  }
-  if (!str(body.residence_province)) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกจังหวัด (พื้นที่อาศัย)' })
-  }
-  if (!str(body.residence_district)) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกอำเภอ' })
-  }
-  if (!str(body.residence_subdistrict)) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกตำบล' })
+  if (!preferred_location) {
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุทำเลที่สนใจเป็นพิเศษ' })
   }
   if (!occupation_kind) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกอาชีพ' })
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกอาชีพปัจจุบัน' })
   }
   if (occupation_kind === 'other' && !occupation_other) {
     throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุอาชีพ (เมื่อเลือกอื่นๆ)' })
@@ -103,14 +92,17 @@ export function parseLoanApplicationBody(body: Record<string, unknown>) {
 
   return {
     customer_name,
+    age,
     callback_phone,
-    callback_line,
+    callback_line: callback_line || null,
     debt_amount,
-    creditor_count,
-    residence_province: str(body.residence_province),
-    residence_district: str(body.residence_district),
-    residence_subdistrict: str(body.residence_subdistrict),
-    residence_detail,
+    creditor_count: null,
+    bureau_record: bureau_record || null,
+    preferred_location,
+    residence_province: null,
+    residence_district: null,
+    residence_subdistrict: null,
+    residence_detail: null,
     occupation_kind,
     occupation_other: occupation_kind === 'other' ? occupation_other : null,
     monthly_income,

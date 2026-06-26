@@ -465,6 +465,26 @@ onMounted(() => {
             <dt class="text-slate-500">พื้นที่ต้องการซื้อ</dt>
             <dd>{{ saleDesiredAreaText(detailSale) }}</dd>
           </div>
+          <div class="grid grid-cols-[8rem_1fr] gap-2">
+            <dt class="text-slate-500">ห้องนอน</dt>
+            <dd>{{ detailSale.desired_bedrooms ?? '—' }} ห้อง</dd>
+          </div>
+          <div class="grid grid-cols-[8rem_1fr] gap-2">
+            <dt class="text-slate-500">ห้องน้ำ</dt>
+            <dd>{{ detailSale.desired_bathrooms ?? '—' }} ห้อง</dd>
+          </div>
+          <div class="grid grid-cols-[8rem_1fr] gap-2">
+            <dt class="text-slate-500">ที่จอดรถ</dt>
+            <dd>{{ detailSale.desired_parking_spaces ?? '—' }} คัน</dd>
+          </div>
+          <div class="grid grid-cols-[8rem_1fr] gap-2">
+            <dt class="text-slate-500">ย้ายเข้า</dt>
+            <dd>{{ detailSale.desired_move_in || '—' }}</dd>
+          </div>
+          <div class="grid grid-cols-[8rem_1fr] gap-2">
+            <dt class="text-slate-500">พักอาศัยได้</dt>
+            <dd>{{ detailSale.max_occupants ?? '—' }} คน</dd>
+          </div>
           <div class="grid grid-cols-[8rem_1fr] gap-2 border-t border-slate-100 pt-3">
             <dt class="text-slate-500">สร้างโดย</dt>
             <dd>

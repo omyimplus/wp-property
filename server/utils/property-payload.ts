@@ -131,6 +131,7 @@ export function parseListingPayload(body: Record<string, unknown>) {
     land_area_sqm: num(body.land_area_sqm),
     usable_area_sqm: num(body.usable_area_sqm),
     property_age_years: int(body.property_age_years),
+    max_occupants: int(body.max_occupants),
     facilities: parseStringArrayField(body.facilities, IN_UNIT_KEYS),
     nearby_facilities: parseStringArrayField(body.nearby_facilities, NEARBY_KEYS),
     project_description: str(body.project_description),

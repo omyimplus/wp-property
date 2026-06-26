@@ -642,6 +642,10 @@ onMounted(() => {
               <h4 class="mb-2 font-semibold text-slate-900">ทรัพย์</h4>
               <dl class="space-y-2">
                 <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">หัวข้อประกาศ</dt>
+                  <dd>{{ detailConsignment.listing_title || '—' }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
                   <dt class="text-slate-500">ประเภท</dt>
                   <dd>{{ propertyTypeLabel(detailConsignment.property_type) }}</dd>
                 </div>
@@ -688,8 +692,8 @@ onMounted(() => {
                   <dd>{{ propertyCustomerSpecText(detailConsignment.floors_total, 'ชั้น') }}</dd>
                 </div>
                 <div class="grid grid-cols-[7rem_1fr] gap-2">
-                  <dt class="text-slate-500">ที่ดิน</dt>
-                  <dd>{{ propertyCustomerSpecText(detailConsignment.land_area_sqm, 'ตร.ม.') }}</dd>
+                  <dt class="text-slate-500">เนื้อที่</dt>
+                  <dd>{{ propertyCustomerSpecText(detailConsignment.land_area_sqm, 'ตร.วา') }}</dd>
                 </div>
                 <div class="grid grid-cols-[7rem_1fr] gap-2">
                   <dt class="text-slate-500">พื้นที่ใช้สอย</dt>
@@ -698,6 +702,10 @@ onMounted(() => {
                 <div class="grid grid-cols-[7rem_1fr] gap-2">
                   <dt class="text-slate-500">อายุทรัพย์</dt>
                   <dd>{{ propertyCustomerSpecText(detailConsignment.property_age_years, 'ปี') }}</dd>
+                </div>
+                <div class="grid grid-cols-[7rem_1fr] gap-2">
+                  <dt class="text-slate-500">พักอาศัยได้</dt>
+                  <dd>{{ propertyCustomerSpecText(detailConsignment.max_occupants, 'คน') }}</dd>
                 </div>
               </dl>
             </section>

@@ -4,7 +4,9 @@ import { payloadHelpers } from './property-payload'
 export const SALE_REQUEST_SELECT = `
   id, customer_name, callback_phone, callback_line,
   desired_province, desired_district, desired_subdistrict, desired_area_detail,
-  purchase_budget_min, purchase_budget_max, status,
+  purchase_budget_min, purchase_budget_max,
+  desired_bedrooms, desired_bathrooms, desired_parking_spaces, desired_move_in, max_occupants,
+  status,
   created_source, created_by, handled_by, handled_at,
   created_at, updated_at
 `
@@ -29,7 +31,7 @@ export function parseSaleRequestEditableStatus(
 }
 
 export function parseSaleRequestBody(body: Record<string, unknown>) {
-  const { num, str } = payloadHelpers()
+  const { num, str, int } = payloadHelpers()
 
   const purchase_budget_min = num(body.purchase_budget_min)
   const purchase_budget_max = num(body.purchase_budget_max)
@@ -74,6 +76,28 @@ export function parseSaleRequestBody(body: Record<string, unknown>) {
     throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกตำบล' })
   }
 
+  const desired_bedrooms = int(body.desired_bedrooms)
+  const desired_bathrooms = int(body.desired_bathrooms)
+  const desired_parking_spaces = int(body.desired_parking_spaces)
+  const desired_move_in = str(body.desired_move_in)
+  const max_occupants = int(body.max_occupants)
+
+  if (desired_bedrooms == null || desired_bedrooms < 0) {
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุจำนวนห้องนอนที่ต้องการ' })
+  }
+  if (desired_bathrooms == null || desired_bathrooms < 0) {
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุจำนวนห้องน้ำที่ต้องการ' })
+  }
+  if (desired_parking_spaces == null || desired_parking_spaces < 0) {
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุจำนวนที่จอดรถยนต์' })
+  }
+  if (!desired_move_in) {
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุระยะเวลาที่ต้องการย้ายเข้า' })
+  }
+  if (max_occupants == null || max_occupants < 1) {
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุจำนวนคนที่พักอาศัยได้' })
+  }
+
   return {
     customer_name,
     callback_phone,
@@ -84,6 +108,11 @@ export function parseSaleRequestBody(body: Record<string, unknown>) {
     desired_area_detail,
     purchase_budget_min,
     purchase_budget_max,
+    desired_bedrooms,
+    desired_bathrooms,
+    desired_parking_spaces,
+    desired_move_in,
+    max_occupants,
     status: parseSaleRequestEditableStatus(body),
   }
 }

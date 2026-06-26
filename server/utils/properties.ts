@@ -11,7 +11,7 @@ const PROPERTY_SELECT = `
   address_line, house_number, soi, moo, road, subdistrict, district, province,
   latitude, longitude,
   facing_direction, floors_total, floor_number, bathrooms, bedrooms, parking_spaces,
-  land_area_sqm, usable_area_sqm, property_age_years,
+  land_area_sqm, usable_area_sqm, property_age_years, max_occupants,
   facilities, nearby_facilities, project_description,
   status, property_source,
   created_by, created_at, updated_at

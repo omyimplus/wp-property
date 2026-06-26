@@ -1,5 +1,5 @@
 import {
-  assertPropertyCustomerCreateRequired,
+  assertConsignmentCreateRequired,
   parsePropertyCustomerBody,
   PROPERTY_CUSTOMER_SELECT,
 } from '../../utils/property-customers'
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     ...(body as Record<string, unknown>),
     status: 'pending_approval',
   })
-  assertPropertyCustomerCreateRequired(payload)
+  assertConsignmentCreateRequired(payload)
 
   const service = getServiceRoleClient(event)
   const { data, error } = await service

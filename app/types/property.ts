@@ -45,6 +45,7 @@ export interface Property {
   land_area_sqm: number | null
   usable_area_sqm: number | null
   property_age_years: number | null
+  max_occupants: number | null
   facilities: string[]
   nearby_facilities: string[]
   project_description: string | null
@@ -203,6 +204,7 @@ export function emptyPropertyForm(): PropertyFormData {
     land_area_sqm: null,
     usable_area_sqm: null,
     property_age_years: null,
+    max_occupants: null,
     facilities: [],
     nearby_facilities: [],
     project_description: null,

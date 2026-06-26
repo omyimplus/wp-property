@@ -4,7 +4,9 @@ import { payloadHelpers } from './property-payload'
 export const RENTAL_REQUEST_SELECT = `
   id, customer_name, callback_phone, callback_line,
   desired_province, desired_district, desired_subdistrict, desired_area_detail,
-  rent_budget_min, rent_budget_max, status,
+  rent_budget_min, rent_budget_max,
+  desired_bedrooms, desired_bathrooms, desired_parking_spaces, lease_duration, max_occupants,
+  status,
   created_source, created_by, handled_by, handled_at,
   created_at, updated_at
 `
@@ -74,6 +76,29 @@ export function parseRentalRequestBody(body: Record<string, unknown>) {
     throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกตำบล' })
   }
 
+  const { int } = payloadHelpers()
+  const desired_bedrooms = int(body.desired_bedrooms)
+  const desired_bathrooms = int(body.desired_bathrooms)
+  const desired_parking_spaces = int(body.desired_parking_spaces)
+  const lease_duration = str(body.lease_duration)
+  const max_occupants = int(body.max_occupants)
+
+  if (desired_bedrooms == null || desired_bedrooms < 0) {
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุจำนวนห้องนอนที่ต้องการ' })
+  }
+  if (desired_bathrooms == null || desired_bathrooms < 0) {
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุจำนวนห้องน้ำที่ต้องการ' })
+  }
+  if (desired_parking_spaces == null || desired_parking_spaces < 0) {
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุจำนวนที่จอดรถยนต์' })
+  }
+  if (!lease_duration) {
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุระยะเวลาในการเช่า' })
+  }
+  if (max_occupants == null || max_occupants < 1) {
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุจำนวนคนที่พักอาศัยได้' })
+  }
+
   return {
     customer_name,
     callback_phone,
@@ -84,6 +109,11 @@ export function parseRentalRequestBody(body: Record<string, unknown>) {
     desired_area_detail,
     rent_budget_min,
     rent_budget_max,
+    desired_bedrooms,
+    desired_bathrooms,
+    desired_parking_spaces,
+    lease_duration,
+    max_occupants,
     status: parseRentalRequestEditableStatus(body),
   }
 }

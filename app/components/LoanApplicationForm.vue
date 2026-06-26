@@ -6,7 +6,6 @@ import {
   type LoanApplicationFormData,
   type LoanOccupationKind,
 } from '~/types/loan-application'
-import type { ThaiLocationValue } from '~/types/thai-location'
 
 const props = withDefaults(
   defineProps<{
@@ -55,22 +54,6 @@ function onOccupationKindChange(kind: LoanOccupationKind) {
   })
 }
 
-const location = computed<ThaiLocationValue>({
-  get: () => ({
-    province: props.modelValue.residence_province ?? '',
-    district: props.modelValue.residence_district ?? '',
-    subdistrict: props.modelValue.residence_subdistrict ?? '',
-  }),
-  set: (loc) => {
-    emit('update:modelValue', {
-      ...props.modelValue,
-      residence_province: loc.province || null,
-      residence_district: loc.district || null,
-      residence_subdistrict: loc.subdistrict || null,
-    })
-  },
-})
-
 function onSubmit() {
   if (props.readonly) return
   const err = validateLoanForm(props.modelValue)
@@ -98,11 +81,11 @@ function onSubmit() {
     </p>
 
     <section class="rounded-xl border border-sky-200 bg-sky-50/40 p-6 shadow-sm">
-      <h3 class="mb-4 font-semibold text-sky-950">ข้อมูลติดต่อ</h3>
-      <div class="grid gap-4">
-        <div>
+      <h3 class="mb-4 font-semibold text-sky-950">ข้อมูลรวมหนี้</h3>
+      <div :class="fieldGridClass">
+        <div :class="stackFields ? '' : 'sm:col-span-2'">
           <label class="mb-1 block text-sm font-medium text-slate-700">
-            ชื่อ <span class="text-red-600">*</span>
+            ชื่อ-นามสกุล <span class="text-red-600">*</span>
           </label>
           <input
             :value="modelValue.customer_name"
@@ -114,77 +97,46 @@ function onSubmit() {
         </div>
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
-            เบอร์โทรติดต่อกลับ <span class="text-red-600">*</span>
+            อายุ <span class="text-red-600">*</span>
           </label>
           <input
-            :value="modelValue.callback_phone"
-            type="tel"
+            :value="modelValue.age ?? ''"
+            type="number"
+            min="18"
+            max="120"
+            step="1"
             class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 disabled:bg-slate-50"
             :disabled="readonly"
-            @input="setField('callback_phone', ($event.target as HTMLInputElement).value)"
+            @input="setField('age', ($event.target as HTMLInputElement).value ? Number(($event.target as HTMLInputElement).value) : null)"
           >
         </div>
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
-            เบอร์โทร/ไลน์สำหรับติดต่อกลับ <span class="text-red-600">*</span>
-          </label>
-          <input
-            :value="modelValue.callback_line"
-            type="text"
-            placeholder="เช่น 08x-xxx-xxxx หรือ Line ID"
-            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 disabled:bg-slate-50"
-            :disabled="readonly"
-            @input="setField('callback_line', ($event.target as HTMLInputElement).value)"
-          >
-        </div>
-      </div>
-    </section>
-
-    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h3 class="mb-4 font-semibold text-slate-900">ข้อมูลสินเชื่อ</h3>
-      <div :class="fieldGridClass">
-        <div>
-          <label class="mb-1 block text-sm font-medium text-slate-700">
-            หนี้ที่ต้องการปิด (บาท) <span class="text-red-600">*</span>
+            จำนวนหนี้ทั้งหมดที่ต้องการปิด (บาท) <span class="text-red-600">*</span>
           </label>
           <input
             :value="modelValue.debt_amount ?? ''"
             type="number"
             min="0"
             step="0.01"
-            class="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:bg-slate-50"
+            placeholder="ในระบบ/นอกระบบ"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 disabled:bg-slate-50"
             :disabled="readonly"
             @input="setField('debt_amount', ($event.target as HTMLInputElement).value ? Number(($event.target as HTMLInputElement).value) : null)"
           >
         </div>
-        <div>
+        <div :class="stackFields ? '' : 'sm:col-span-2'">
           <label class="mb-1 block text-sm font-medium text-slate-700">
-            จำนวนสถาบันการเงินที่เป็นหนี้ <span class="text-red-600">*</span>
+            เคยมีประวัติหรือติดบูโรหรือไม่ (ถ้ามี)
           </label>
-          <input
-            :value="modelValue.creditor_count ?? ''"
-            type="number"
-            min="1"
-            max="99"
-            step="1"
-            class="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:bg-slate-50"
+          <textarea
+            :value="modelValue.bureau_record ?? ''"
+            rows="2"
+            placeholder="ระบุรายละเอียด (ถ้ามี)"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 disabled:bg-slate-50"
             :disabled="readonly"
-            @input="setField('creditor_count', ($event.target as HTMLInputElement).value ? Number(($event.target as HTMLInputElement).value) : null)"
-          >
-        </div>
-        <div>
-          <label class="mb-1 block text-sm font-medium text-slate-700">
-            รายได้ต่อเดือน (บาท) <span class="text-red-600">*</span>
-          </label>
-          <input
-            :value="modelValue.monthly_income ?? ''"
-            type="number"
-            min="0"
-            step="0.01"
-            class="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:bg-slate-50"
-            :disabled="readonly"
-            @input="setField('monthly_income', ($event.target as HTMLInputElement).value ? Number(($event.target as HTMLInputElement).value) : null)"
-          >
+            @input="setField('bureau_record', ($event.target as HTMLTextAreaElement).value || null)"
+          />
         </div>
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
@@ -192,7 +144,7 @@ function onSubmit() {
           </label>
           <select
             :value="modelValue.occupation_kind"
-            class="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:bg-slate-50"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 disabled:bg-slate-50"
             :disabled="readonly"
             @change="onOccupationKindChange(($event.target as HTMLSelectElement).value as typeof modelValue.occupation_kind)"
           >
@@ -208,35 +160,63 @@ function onSubmit() {
           <input
             :value="modelValue.occupation_other ?? ''"
             type="text"
-            class="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:bg-slate-50"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 disabled:bg-slate-50"
             :disabled="readonly"
             @input="setField('occupation_other', ($event.target as HTMLInputElement).value || null)"
           >
         </div>
-      </div>
-    </section>
-
-    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h3 class="mb-4 font-semibold text-slate-900">พื้นที่อาศัย</h3>
-      <ThaiLocationSelect
-        v-model="location"
-        label-size="form"
-        :required="!readonly"
-        :allow-empty="false"
-        :stacked="stackFields"
-      />
-      <div class="mt-4">
-        <label class="mb-1 block text-sm font-medium text-slate-700">
-          รายละเอียดเพิ่มเติม (ถ้ามี)
-        </label>
-        <textarea
-          :value="modelValue.residence_detail ?? ''"
-          rows="3"
-          placeholder="เช่น บ้านเดี่ยว, คอนโดชั้น 12, ใกล้ BTS..."
-          class="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:bg-slate-50"
-          :disabled="readonly"
-          @input="setField('residence_detail', ($event.target as HTMLTextAreaElement).value || null)"
-        />
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">
+            เงินเดือนหรือรายได้ต่อเดือน (บาท) <span class="text-red-600">*</span>
+          </label>
+          <input
+            :value="modelValue.monthly_income ?? ''"
+            type="number"
+            min="0"
+            step="0.01"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 disabled:bg-slate-50"
+            :disabled="readonly"
+            @input="setField('monthly_income', ($event.target as HTMLInputElement).value ? Number(($event.target as HTMLInputElement).value) : null)"
+          >
+        </div>
+        <div :class="stackFields ? '' : 'sm:col-span-2'">
+          <label class="mb-1 block text-sm font-medium text-slate-700">
+            ทำเลที่สนใจเป็นพิเศษ <span class="text-red-600">*</span>
+          </label>
+          <input
+            :value="modelValue.preferred_location ?? ''"
+            type="text"
+            placeholder="เช่น บางนา, ลาดพร้าว, ใกล้ BTS..."
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 disabled:bg-slate-50"
+            :disabled="readonly"
+            @input="setField('preferred_location', ($event.target as HTMLInputElement).value || null)"
+          >
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">
+            เบอร์โทรศัพท์ <span class="text-red-600">*</span>
+          </label>
+          <input
+            :value="modelValue.callback_phone"
+            type="tel"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 disabled:bg-slate-50"
+            :disabled="readonly"
+            @input="setField('callback_phone', ($event.target as HTMLInputElement).value)"
+          >
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">
+            Line ID (ถ้ามี)
+          </label>
+          <input
+            :value="modelValue.callback_line ?? ''"
+            type="text"
+            placeholder="@lineid"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 disabled:bg-slate-50"
+            :disabled="readonly"
+            @input="setField('callback_line', ($event.target as HTMLInputElement).value || null)"
+          >
+        </div>
       </div>
     </section>
 

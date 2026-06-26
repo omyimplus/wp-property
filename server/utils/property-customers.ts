@@ -13,7 +13,7 @@ export const PROPERTY_CUSTOMER_SELECT = `
   address_line, house_number, soi, moo, road, subdistrict, district, province,
   latitude, longitude,
   facing_direction, floors_total, floor_number, bathrooms, bedrooms, parking_spaces,
-  land_area_sqm, usable_area_sqm, property_age_years,
+  land_area_sqm, usable_area_sqm, property_age_years, max_occupants,
   facilities, nearby_facilities, project_description,
   status,
   property_id, approved_at, approved_by, created_by, created_at, updated_at
@@ -56,10 +56,17 @@ export function parsePropertyCustomerBody(body: Record<string, unknown>) {
   }
 }
 
-export function assertPropertyCustomerCreateRequired(payload: Record<string, unknown>) {
+export function assertConsignmentCreateRequired(payload: Record<string, unknown>) {
   assertCustomerContactRequired(payload)
   assertListingCreateRequired(payload)
+  const { int } = payloadHelpers()
+  const occupants = int(payload.max_occupants)
+  if (occupants == null || occupants < 1) {
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุจำนวนคนที่พักอาศัยได้' })
+  }
 }
+
+export const assertPropertyCustomerCreateRequired = assertConsignmentCreateRequired
 
 export function storagePathPrefix(propertyCustomerId: string) {
   return `pc/${propertyCustomerId}/`

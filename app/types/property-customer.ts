@@ -44,6 +44,7 @@ export interface PropertyCustomer {
   land_area_sqm: number | null
   usable_area_sqm: number | null
   property_age_years: number | null
+  max_occupants: number | null
   facilities: string[]
   nearby_facilities: string[]
   project_description: string | null
@@ -217,6 +218,7 @@ export function emptyPropertyCustomerForm(): PropertyCustomerFormData {
     land_area_sqm: null,
     usable_area_sqm: null,
     property_age_years: null,
+    max_occupants: null,
     facilities: [],
     nearby_facilities: [],
     project_description: null,
@@ -252,6 +254,9 @@ export function validatePropertyCustomerCreateForm(data: PropertyCustomerFormDat
     if (data.rent_deposit_months == null || data.rent_deposit_months < 1) {
       return 'กรุณาเลือกมัดจำ (เช่า)'
     }
+  }
+  if (data.max_occupants == null || data.max_occupants < 1) {
+    return 'กรุณาระบุจำนวนคนที่พักอาศัยได้'
   }
   return null
 }

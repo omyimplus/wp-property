@@ -15,6 +15,11 @@ export interface RentalRequest {
   desired_area_detail: string | null
   rent_budget_min: number
   rent_budget_max: number
+  desired_bedrooms: number | null
+  desired_bathrooms: number | null
+  desired_parking_spaces: number | null
+  lease_duration: string | null
+  max_occupants: number | null
   status: RentalRequestStatus
   created_source: RentalCreatedSource
   created_by: string | null
@@ -125,6 +130,11 @@ export function emptyRentalForm(): RentalRequestFormData {
     desired_area_detail: null,
     rent_budget_min: null,
     rent_budget_max: null,
+    desired_bedrooms: null,
+    desired_bathrooms: null,
+    desired_parking_spaces: null,
+    lease_duration: null,
+    max_occupants: null,
     status: 'pending_approval',
   }
 }
@@ -169,6 +179,21 @@ export function validateRentalForm(data: RentalRequestFormData): string | null {
   }
   if (data.rent_budget_max < data.rent_budget_min) {
     return 'ราคาเช่าสูงสุดต้องไม่ต่ำกว่าราคาต่ำสุด'
+  }
+  if (data.desired_bedrooms == null || data.desired_bedrooms < 0) {
+    return 'กรุณาระบุจำนวนห้องนอนที่ต้องการ'
+  }
+  if (data.desired_bathrooms == null || data.desired_bathrooms < 0) {
+    return 'กรุณาระบุจำนวนห้องน้ำที่ต้องการ'
+  }
+  if (data.desired_parking_spaces == null || data.desired_parking_spaces < 0) {
+    return 'กรุณาระบุจำนวนที่จอดรถยนต์'
+  }
+  if (!data.lease_duration?.trim()) {
+    return 'กรุณาระบุระยะเวลาในการเช่า'
+  }
+  if (data.max_occupants == null || data.max_occupants < 1) {
+    return 'กรุณาระบุจำนวนคนที่พักอาศัยได้'
   }
   return null
 }

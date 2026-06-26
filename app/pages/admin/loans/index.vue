@@ -263,7 +263,7 @@ onMounted(() => {
           <tr>
             <th class="px-4 py-3 font-medium">ชื่อ</th>
             <th class="px-4 py-3 font-medium">เบอร์โทร</th>
-            <th class="px-4 py-3 font-medium">ไลน์ / ติดต่อ</th>
+            <th class="px-4 py-3 font-medium">Line ID</th>
             <th class="px-4 py-3 font-medium text-right">หนี้ที่ต้องการปิด</th>
             <th v-if="filters.status !== 'pending_approval'" class="px-4 py-3 font-medium">
               ผู้จัดการ
@@ -280,7 +280,7 @@ onMounted(() => {
           >
             <td class="px-4 py-3 font-medium">{{ row.customer_name }}</td>
             <td class="px-4 py-3 whitespace-nowrap">{{ row.callback_phone }}</td>
-            <td class="px-4 py-3">{{ row.callback_line }}</td>
+            <td class="px-4 py-3">{{ row.callback_line || '—' }}</td>
             <td class="px-4 py-3 text-right font-medium tabular-nums">
               {{ formatThaiPrice(row.debt_amount) }}
             </td>
@@ -450,20 +450,27 @@ onMounted(() => {
 
         <dl class="space-y-3 text-sm">
           <div class="grid grid-cols-[8rem_1fr] gap-2">
+            <dt class="text-slate-500">อายุ</dt>
+            <dd>{{ detailLoan.age != null ? `${detailLoan.age} ปี` : '—' }}</dd>
+          </div>
+          <div class="grid grid-cols-[8rem_1fr] gap-2">
             <dt class="text-slate-500">เบอร์โทร</dt>
             <dd>{{ detailLoan.callback_phone }}</dd>
           </div>
           <div class="grid grid-cols-[8rem_1fr] gap-2">
-            <dt class="text-slate-500">ไลน์ / ติดต่อ</dt>
-            <dd>{{ detailLoan.callback_line }}</dd>
+            <dt class="text-slate-500">Line ID</dt>
+            <dd>{{ detailLoan.callback_line || '—' }}</dd>
           </div>
           <div class="grid grid-cols-[8rem_1fr] gap-2">
             <dt class="text-slate-500">หนี้ที่ต้องการปิด</dt>
             <dd class="font-medium">{{ formatThaiPrice(detailLoan.debt_amount) }}</dd>
           </div>
-          <div class="grid grid-cols-[8rem_1fr] gap-2">
-            <dt class="text-slate-500">สถาบันเจ้าหนี้</dt>
-            <dd>{{ detailLoan.creditor_count }} แห่ง</dd>
+          <div
+            v-if="detailLoan.bureau_record?.trim()"
+            class="grid grid-cols-[8rem_1fr] gap-2"
+          >
+            <dt class="text-slate-500">บูโร</dt>
+            <dd class="whitespace-pre-wrap">{{ detailLoan.bureau_record }}</dd>
           </div>
           <div class="grid grid-cols-[8rem_1fr] gap-2">
             <dt class="text-slate-500">รายได้/เดือน</dt>
@@ -474,8 +481,15 @@ onMounted(() => {
             <dd>{{ loanOccupationLabel(detailLoan.occupation_kind, detailLoan.occupation_other) }}</dd>
           </div>
           <div class="grid grid-cols-[8rem_1fr] gap-2">
-            <dt class="text-slate-500">พื้นที่อาศัย</dt>
+            <dt class="text-slate-500">ทำเลที่สนใจ</dt>
             <dd>{{ loanLocationText(detailLoan) }}</dd>
+          </div>
+          <div
+            v-if="detailLoan.creditor_count != null"
+            class="grid grid-cols-[8rem_1fr] gap-2"
+          >
+            <dt class="text-slate-500">สถาบันเจ้าหนี้</dt>
+            <dd>{{ detailLoan.creditor_count }} แห่ง (ข้อมูลเก่า)</dd>
           </div>
           <div class="grid grid-cols-[8rem_1fr] gap-2 border-t border-slate-100 pt-3">
             <dt class="text-slate-500">สร้างโดย</dt>

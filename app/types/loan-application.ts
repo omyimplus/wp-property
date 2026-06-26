@@ -13,10 +13,13 @@ export type LoanOccupationKind =
 export interface LoanApplication {
   id: string
   customer_name: string
+  age: number | null
   callback_phone: string
-  callback_line: string
+  callback_line: string | null
   debt_amount: number
-  creditor_count: number
+  creditor_count: number | null
+  bureau_record: string | null
+  preferred_location: string | null
   residence_province: string | null
   residence_district: string | null
   residence_subdistrict: string | null
@@ -52,7 +55,9 @@ export type LoanApplicationFormData = Omit<
   | 'debt_amount'
   | 'creditor_count'
   | 'monthly_income'
+  | 'age'
 > & {
+  age: number | null
   debt_amount: number | null
   creditor_count: number | null
   monthly_income: number | null
@@ -108,11 +113,15 @@ export function loanOccupationLabel(kind: LoanOccupationKind, other?: string | n
 }
 
 export function loanLocationText(p: {
+  preferred_location?: string | null
   residence_subdistrict?: string | null
   residence_district?: string | null
   residence_province?: string | null
   residence_detail?: string | null
 }): string {
+  const preferred = p.preferred_location?.trim()
+  if (preferred) return preferred
+
   const parts = [p.residence_subdistrict, p.residence_district, p.residence_province].filter(Boolean)
   const loc = parts.length ? parts.join(' · ') : ''
   const detail = p.residence_detail?.trim()
@@ -138,10 +147,13 @@ export function staffDisplayName(
 export function emptyLoanForm(): LoanApplicationFormData {
   return {
     customer_name: '',
+    age: null,
     callback_phone: '',
-    callback_line: '',
+    callback_line: null,
     debt_amount: null,
     creditor_count: null,
+    bureau_record: null,
+    preferred_location: null,
     residence_province: null,
     residence_district: null,
     residence_subdistrict: null,
@@ -179,20 +191,19 @@ export function loanToFormData(a: LoanApplication): LoanApplicationFormData {
 }
 
 export function validateLoanForm(data: LoanApplicationFormData): string | null {
-  if (!data.customer_name?.trim()) return 'กรุณาระบุชื่อ'
-  if (!data.callback_phone?.trim()) return 'กรุณาระบุเบอร์โทรติดต่อกลับ'
-  if (!data.callback_line?.trim()) return 'กรุณาระบุเบอร์โทร/ไลน์สำหรับติดต่อกลับ'
-  if (data.debt_amount == null || data.debt_amount <= 0) return 'กรุณาระบุหนี้ที่ต้องการปิด'
-  if (data.creditor_count == null || data.creditor_count < 1) {
-    return 'กรุณาระบุจำนวนสถาบันการเงินที่เป็นหนี้'
+  if (!data.customer_name?.trim()) return 'กรุณาระบุชื่อ-นามสกุล'
+  if (data.age == null || data.age < 18 || data.age > 120) return 'กรุณาระบุอายุ (18–120 ปี)'
+  if (data.debt_amount == null || data.debt_amount <= 0) {
+    return 'กรุณาระบุจำนวนหนี้ทั้งหมดที่ต้องการปิด'
   }
-  if (!data.residence_province?.trim()) return 'กรุณาเลือกจังหวัด (พื้นที่อาศัย)'
-  if (!data.residence_district?.trim()) return 'กรุณาเลือกอำเภอ'
-  if (!data.residence_subdistrict?.trim()) return 'กรุณาเลือกตำบล'
-  if (data.monthly_income == null || data.monthly_income <= 0) return 'กรุณาระบุรายได้ต่อเดือน'
-  if (!data.occupation_kind) return 'กรุณาเลือกอาชีพ'
+  if (!data.occupation_kind) return 'กรุณาเลือกอาชีพปัจจุบัน'
   if (data.occupation_kind === 'other' && !data.occupation_other?.trim()) {
     return 'กรุณาระบุอาชีพ (เมื่อเลือกอื่นๆ)'
   }
+  if (data.monthly_income == null || data.monthly_income <= 0) {
+    return 'กรุณาระบุเงินเดือนหรือรายได้ต่อเดือน'
+  }
+  if (!data.preferred_location?.trim()) return 'กรุณาระบุทำเลที่สนใจเป็นพิเศษ'
+  if (!data.callback_phone?.trim()) return 'กรุณาระบุเบอร์โทรศัพท์'
   return null
 }
