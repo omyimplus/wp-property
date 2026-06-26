@@ -8,7 +8,7 @@ export const heroStats = [
 
 /** เพิ่มรูปใน array นี้เพื่อเพิ่มสไลด์ — ใส่ path ใต้ /public/images/ */
 export const heroSlides = [
-  { id: '1', image: '/images/hero-bg-3.webp', mobileImage: '/images/m1.webp', whiteFade: true },
+  { id: '1', image: '/images/hero-bg-3.webp', mobileImage: '/images/m1.webp' },
   {
     id: '2',
     image: '/images/hero-bg-2.webp',
@@ -24,7 +24,6 @@ export const heroSlides = [
     mobileImage: '/images/m3.webp',
     contentKey: 'properties',
     showStats: false,
-    whiteFade: true,
     altKey: 'home.hero.slides.alt.properties',
   },
 ] as const

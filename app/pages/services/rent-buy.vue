@@ -9,7 +9,7 @@ const localePath = useLocalePath()
 const form = ref<RentalRequestFormData>(emptyRentalForm())
 const saving = ref(false)
 const errorMessage = ref('')
-const successMessage = ref('')
+const showSuccessDialog = ref(false)
 
 const breadcrumbs = computed(() => [
   { label: t('nav.home'), to: localePath('/') },
@@ -42,11 +42,10 @@ const buyServices = computed(() => stringList('buyServices'))
 async function onSubmit() {
   saving.value = true
   errorMessage.value = ''
-  successMessage.value = ''
   try {
     await $fetch('/api/public/rentals', { method: 'POST', body: form.value })
-    successMessage.value = t('pages.forms.rentalSuccess')
     form.value = emptyRentalForm()
+    showSuccessDialog.value = true
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
     errorMessage.value = err.data?.statusMessage ?? t('pages.forms.error')
@@ -77,9 +76,6 @@ useStaticPageSeo('pages.rentBuyDetail.title', 'pages.rentBuyDetail.subtitle')
         <h3 class="mt-6 text-base font-medium text-wp-navy">
           {{ t('pages.rent.formTitle') }}
         </h3>
-        <p v-if="successMessage" class="mt-4 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-800">
-          {{ successMessage }}
-        </p>
         <p v-if="errorMessage" class="mt-4 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">
           {{ errorMessage }}
         </p>
@@ -185,5 +181,7 @@ useStaticPageSeo('pages.rentBuyDetail.title', 'pages.rentBuyDetail.subtitle')
         </div>
       </template>
     </SiteServiceDetailSplitLayout>
+
+    <SiteFormSubmitSuccessDialog :open="showSuccessDialog" @close="showSuccessDialog = false" />
   </div>
 </template>

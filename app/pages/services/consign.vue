@@ -15,7 +15,7 @@ const consignmentId = ref<string | null>(null)
 const images = ref<PropertyCustomerImage[]>([])
 const saving = ref(false)
 const errorMessage = ref('')
-const successMessage = ref('')
+const showSuccessDialog = ref(false)
 
 const breadcrumbs = computed(() => [
   { label: t('nav.home'), to: localePath('/') },
@@ -50,15 +50,14 @@ const rentAdvantages = computed(() => stringList('rentAdvantages'))
 async function onSubmit() {
   saving.value = true
   errorMessage.value = ''
-  successMessage.value = ''
   try {
     const { consignment } = await $fetch<{ consignment: { id: string } }>(
       '/api/public/consignments',
       { method: 'POST', body: form.value },
     )
     consignmentId.value = consignment.id
-    successMessage.value = t('pages.forms.consignSuccess')
     form.value = emptyPropertyCustomerForm()
+    showSuccessDialog.value = true
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
     errorMessage.value = err.data?.statusMessage ?? t('pages.forms.error')
@@ -85,9 +84,6 @@ useStaticPageSeo('pages.consignDetail.title', 'pages.consignDetail.subtitle')
         </h2>
         <p class="mt-2 text-sm text-slate-600 sm:text-[0.9375rem]">
           {{ t('pages.consignDetail.ctaSubtitle') }}
-        </p>
-        <p v-if="successMessage" class="mt-4 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-800">
-          {{ successMessage }}
         </p>
         <p v-if="errorMessage" class="mt-4 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">
           {{ errorMessage }}
@@ -230,5 +226,7 @@ useStaticPageSeo('pages.consignDetail.title', 'pages.consignDetail.subtitle')
         </div>
       </template>
     </SiteServiceDetailSplitLayout>
+
+    <SiteFormSubmitSuccessDialog :open="showSuccessDialog" @close="showSuccessDialog = false" />
   </div>
 </template>

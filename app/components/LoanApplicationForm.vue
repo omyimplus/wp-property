@@ -15,7 +15,7 @@ const props = withDefaults(
     /** แสดงฟิลด์สถานะ (ปิดในหน้าที่ลูกค้ากรอกเอง) */
     showStatus?: boolean
   }>(),
-  { showStatus: true },
+  { showStatus: false },
 )
 
 const emit = defineEmits<{
@@ -241,7 +241,7 @@ function onSubmit() {
       <button
         type="submit"
         :disabled="saving"
-        class="rounded-lg bg-sky-700 px-6 py-2.5 text-sm font-medium text-white hover:bg-sky-800 disabled:opacity-60"
+        class="rounded-lg bg-wp-navy px-6 py-2.5 text-sm font-medium text-white hover:brightness-110 disabled:opacity-60"
       >
         {{ saving ? 'กำลังบันทึก...' : 'บันทึกข้อมูล' }}
       </button>

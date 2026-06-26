@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * ทดสอบว่าทุกฟอร์ม public บันทึกได้ และเรียก LINE notify (ต้องรัน npm run dev ก่อน)
+ * ทดสอบฟอร์ม public ครบฟิลด์ + ส่ง LINE notify
+ * ต้องรัน: npm run dev (และตั้งค่า LINE ใน .env)
  * ใช้: node scripts/test-line-forms.mjs
  */
 import { loadEnvFile } from './load-env-file.mjs'
@@ -9,143 +10,202 @@ loadEnvFile('.env')
 
 const BASE = process.env.BASE_URL || 'http://localhost:3000'
 const stamp = Date.now()
+const tag = `LINE-AUDIT-${stamp}`
 
+function lineConfig() {
+  const token = process.env.NUXT_LINE_CHANNEL_ACCESS_TOKEN
+  const groupId = process.env.NUXT_LINE_NOTIFY_GROUP_ID
+  const userId = process.env.NUXT_LINE_NOTIFY_USER_ID
+  const notifyToken = process.env.NUXT_LINE_NOTIFY_TOKEN
+  if (token && groupId) return { mode: 'group', target: groupId }
+  if (token && userId) return { mode: 'user', target: userId }
+  if (notifyToken) return { mode: 'notify', target: '(LINE Notify token)' }
+  return null
+}
+
+/** ฟอร์มที่อัปเดตวันนี้ — payload ครบทุกฟิลด์บังคับ */
 const tests = [
   {
-    name: 'property-inquiries',
-    path: '/api/public/property-inquiries',
+    name: 'consignments (ฝากขาย/ฝากเช่า)',
+    path: '/api/public/consignments',
     body: {
-      listing_type: 'sale',
-      customer_name: `LINE-AUDIT-INQUIRY-${stamp}`,
-      callback_phone: '0812345678',
-      callback_line: 'audit_inquiry',
-      note: 'ทดสอบฟิลด์ note',
-      property_code: 'WP-0002',
-      listing_title: 'ทดสอบสนใจทรัพย์',
-      for_sale: true,
-      for_rent: true,
-      sale_price: 5000000,
-      rent_price: 25000,
-      subdistrict: 'คลองจั่น',
-      district: 'บางกะปิ',
+      listing_mode: 'sale',
+      property_type: 'house',
+      customer_name: `${tag}-CONSIGN`,
+      customer_phone: '0811111001',
+      customer_line: 'line_audit_consign',
+      listing_title: 'บ้านเดี่ยวทดสอบ LINE ครบฟิลด์',
+      project_name: 'โครงการทดสอบ WP',
+      house_number: '88/9',
+      soi: 'สุขุมวิท 71',
+      moo: '5',
+      road: 'สุขุมวิท',
       province: 'กรุงเทพมหานคร',
+      district: 'วัฒนา',
+      subdistrict: 'คลองตันเหนือ',
+      facing_direction: 'ตะวันออก',
+      address_line: 'ใกล้ BTS พร้อมพงษ์ นัดชมวันหยุดได้',
+      sale_price: 12500000,
+      floors_total: 2,
+      floor_number: 1,
+      bedrooms: 4,
+      bathrooms: 3,
+      parking_spaces: 2,
+      land_area_sqm: 50,
+      usable_area_sqm: 220,
+      property_age_years: 3,
+      max_occupants: 6,
     },
-    expectInLine: ['ประเภท: ขาย', 'WP-0002', 'ทดสอบฟิลด์ note'],
+    lineHints: ['ฝากขาย/เช่าทรัพย์', 'บ้านเดี่ยวทดสอบ', 'โครงการทดสอบ WP', 'พักอาศัยได้: 6'],
   },
   {
-    name: 'sales',
+    name: 'rentals (สนใจเช่า)',
+    path: '/api/public/rentals',
+    body: {
+      customer_name: `${tag}-RENT`,
+      callback_phone: '0822222002',
+      callback_line: 'line_audit_rent',
+      desired_province: 'กรุงเทพมหานคร',
+      desired_district: 'วัฒนา',
+      desired_subdistrict: 'คลองตัน',
+      desired_area_detail: 'ใกล้ BTS อโศก หรือ MRT สุขุมวิท',
+      rent_budget_min: 10001,
+      rent_budget_max: 15000,
+      desired_bedrooms: 2,
+      desired_bathrooms: 2,
+      desired_parking_spaces: 1,
+      lease_duration: '1 ปี (ต่อสัญญาได้)',
+      max_occupants: 3,
+    },
+    lineHints: ['คำขอสนใจเช่า', 'BTS อโศก', 'ห้องนอน: 2', '1 ปี', 'พักอาศัยได้: 3'],
+  },
+  {
+    name: 'sales (สนใจซื้อ)',
     path: '/api/public/sales',
     body: {
-      customer_name: `LINE-AUDIT-SALE-${stamp}`,
-      callback_phone: '0822222222',
-      callback_line: 'audit_sale',
+      customer_name: `${tag}-SALE`,
+      callback_phone: '0833333003',
+      callback_line: 'line_audit_sale',
       desired_province: 'กรุงเทพมหานคร',
       desired_district: 'บางกะปิ',
       desired_subdistrict: 'คลองจั่น',
-      desired_area_detail: 'ใกล้ BTS',
-      purchase_budget_min: 2000000,
-      purchase_budget_max: 3500000,
+      desired_area_detail: 'ใกล้รถไฟฟ้า ต้องการบ้านเดี่ยว',
+      purchase_budget_min: 3_000_001,
+      purchase_budget_max: 5_000_000,
       desired_bedrooms: 3,
       desired_bathrooms: 2,
       desired_parking_spaces: 2,
       desired_move_in: 'ภายใน 6 เดือน',
       max_occupants: 4,
     },
-    expectInLine: ['คำขอสนใจซื้อ', 'ใกล้ BTS', '2,000,000', 'ห้องนอน: 3', '6 เดือน'],
+    lineHints: ['คำขอสนใจซื้อ', 'คลองจั่น', '3,000,000', 'ย้ายเข้า: ภายใน 6 เดือน'],
   },
   {
-    name: 'rentals',
-    path: '/api/public/rentals',
-    body: {
-      customer_name: `LINE-AUDIT-RENT-${stamp}`,
-      callback_phone: '0833333333',
-      callback_line: 'audit_rent',
-      desired_province: 'กรุงเทพมหานคร',
-      desired_district: 'วัฒนา',
-      desired_subdistrict: 'คลองตัน',
-      desired_area_detail: 'ใกล้ BTS อโศก',
-      rent_budget_min: 15000,
-      rent_budget_max: 25000,
-      desired_bedrooms: 2,
-      desired_bathrooms: 1,
-      desired_parking_spaces: 1,
-      lease_duration: '1 ปี',
-      max_occupants: 3,
-    },
-    expectInLine: ['คำขอสนใจเช่า', 'BTS อโศก', 'บาท/เดือน', 'ห้องนอน: 2', '1 ปี'],
-  },
-  {
-    name: 'loans',
+    name: 'loans (รวมหนี้)',
     path: '/api/public/loans',
     body: {
-      customer_name: `LINE-AUDIT-LOAN-${stamp}`,
-      callback_phone: '0844444444',
-      callback_line: 'audit_loan',
-      debt_amount: 500000,
-      creditor_count: 2,
-      residence_province: 'กรุงเทพมหานคร',
-      residence_district: 'บางกะปิ',
-      residence_subdistrict: 'คลองจั่น',
-      residence_detail: 'คอนโด',
+      customer_name: `${tag}-LOAN`,
+      age: 35,
+      callback_phone: '0844444004',
+      callback_line: 'line_audit_loan',
+      debt_amount: 850000,
+      bureau_record: 'ไม่เคยติดบูโร / ปกติ',
+      preferred_location: 'กรุงเทพฯ ฝั่งตะวันออก ใกล้รถไฟฟ้า',
       occupation_kind: 'employee',
-      monthly_income: 45000,
+      monthly_income: 55000,
     },
-    expectInLine: ['คำขอสินเชื่อ', '500,000', 'พนักงานบริษัท'],
-  },
-  {
-    name: 'consignments',
-    path: '/api/public/consignments',
-    body: {
-      listing_mode: 'sale',
-      property_type: 'condo',
-      customer_name: `LINE-AUDIT-CONSIGN-${stamp}`,
-      customer_phone: '0855555555',
-      customer_line: 'audit_consign',
-      listing_title: 'คอนโดทดสอบ LINE',
-      house_number: '99/1',
-      soi: 'สุขุม',
-      province: 'กรุงเทพมหานคร',
-      district: 'บางกะปิ',
-      subdistrict: 'คลองจั่น',
-      sale_price: 2800000,
-      bedrooms: 2,
-      bathrooms: 1,
-      usable_area_sqm: 45,
-      project_description: 'วิวดี ใกล้รถไฟฟ้า',
-    },
-    expectInLine: ['ฝากขาย', 'คอนโด', 'ซอยสุขุม', 'ห้องนอน: 2'],
+    lineHints: ['คำขอรวมหนี้', 'อายุ: 35', '850,000', 'ทำเลที่สนใจ'],
   },
 ]
 
-let failed = 0
+async function main() {
+  console.log('=== WP Property — ทดสอบฟอร์ม + LINE ===\n')
+  console.log('BASE:', BASE)
+  console.log('tag: ', tag)
 
-for (const test of tests) {
-  process.stdout.write(`${test.name} ... `)
+  const line = lineConfig()
+  if (!line) {
+    console.warn('\n⚠️  ไม่พบ LINE config ใน .env — API บันทึกได้แต่จะไม่ส่ง LINE')
+    console.warn('   ตั้ง NUXT_LINE_CHANNEL_ACCESS_TOKEN + NUXT_LINE_NOTIFY_GROUP_ID\n')
+  } else {
+    console.log(`LINE: ${line.mode} → ${line.target}\n`)
+  }
+
   try {
-    const res = await fetch(`${BASE}${test.path}`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(test.body),
-    })
-    const text = await res.text()
-    if (!res.ok) {
-      console.log(`FAIL HTTP ${res.status}`)
-      console.log(text.slice(0, 300))
-      failed++
-      continue
+    const health = await fetch(BASE)
+    if (!health.ok) {
+      console.error(`❌ Server ตอบ ${health.status} — รัน npm run dev ก่อน`)
+      process.exit(1)
     }
-    console.log('OK')
-  } catch (error) {
-    console.log('FAIL', error instanceof Error ? error.message : error)
-    failed++
+  } catch {
+    console.error('❌ ต่อ server ไม่ได้ — รัน npm run dev ก่อน')
+    process.exit(1)
+  }
+
+  let failed = 0
+  const results = []
+
+  for (const test of tests) {
+    process.stdout.write(`${test.name} ... `)
+    try {
+      const res = await fetch(`${BASE}${test.path}`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(test.body),
+      })
+      const text = await res.text()
+      let data
+      try {
+        data = JSON.parse(text)
+      } catch {
+        data = null
+      }
+
+      if (!res.ok) {
+        console.log(`FAIL HTTP ${res.status}`)
+        console.log('  ', text.slice(0, 400))
+        failed++
+        results.push({ ...test, ok: false, error: text.slice(0, 200) })
+        continue
+      }
+
+      const id = data?.consignment?.id
+        ?? data?.rental?.id
+        ?? data?.sale?.id
+        ?? data?.loan?.id
+        ?? data?.id
+        ?? 'ok'
+      console.log(`OK (id: ${String(id).slice(0, 8)}…)`)
+      results.push({ ...test, ok: true, id })
+    } catch (error) {
+      console.log('FAIL', error instanceof Error ? error.message : error)
+      failed++
+      results.push({ ...test, ok: false, error: String(error) })
+    }
+  }
+
+  console.log('\n--- สรุป ---')
+  for (const r of results) {
+    console.log(`${r.ok ? '✅' : '❌'} ${r.name}`)
+    if (r.ok && r.lineHints?.length) {
+      console.log(`   ตรวจใน LINE: ${r.lineHints.join(' | ')}`)
+    }
+    if (!r.ok) console.log(`   ${r.error}`)
+  }
+
+  console.log('')
+  if (failed) {
+    console.error(`❌ ${failed}/${tests.length} ฟอร์มล้มเหลว`)
+    process.exit(1)
+  }
+
+  if (line) {
+    console.log(`✅ ฟอร์มครบ ${tests.length} รายการ — เปิดกลุ่ม LINE ทีม`)
+    console.log(`   ค้นหาข้อความที่มี "${tag}"`)
+    console.log('   (ส่งแบบ async — รอ 2–5 วินาทีถ้ายังไม่เห็น)')
+  } else {
+    console.log(`✅ ฟอร์มครบ ${tests.length} รายการ (บันทึก DB แล้ว แต่ไม่ได้ส่ง LINE)`)
   }
 }
 
-console.log('')
-if (failed) {
-  console.error(`❌ ${failed}/${tests.length} ฟอร์มล้มเหลว`)
-  process.exit(1)
-}
-
-console.log(`✅ ฟอร์มครบ ${tests.length} รายการ — ตรวจ LINE แชท OA ว่ามีข้อความ ${tests.length} ชุด`)
-console.log('   (ชื่อลูกค้าขึ้นต้น LINE-AUDIT-...)')
+main()

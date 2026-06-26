@@ -42,6 +42,6 @@ async function onSubmit() {
     <p v-if="errorMessage" class="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">
       {{ errorMessage }}
     </p>
-    <SaleRequestForm v-model="form" :saving="saving" @submit="onSubmit" />
+    <SaleRequestForm v-model="form" :show-status="true" :saving="saving" @submit="onSubmit" />
   </div>
 </template>

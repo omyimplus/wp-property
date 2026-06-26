@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import {
+  matchRentBudgetRangeId,
+  RENT_BUDGET_RANGES,
   RENTAL_STATUSES,
   validateRentalForm,
   type RentalRequestFormData,
@@ -14,7 +16,7 @@ const props = withDefaults(
     /** แสดงฟิลด์สถานะ (ปิดในหน้าที่ลูกค้ากรอกเอง) */
     showStatus?: boolean
   }>(),
-  { showStatus: true },
+  { showStatus: false },
 )
 
 const emit = defineEmits<{
@@ -56,6 +58,22 @@ const location = computed<ThaiLocationValue>({
     })
   },
 })
+
+const useBudgetDropdown = computed(() => !props.showStatus)
+
+const selectedBudgetRangeId = computed(() =>
+  matchRentBudgetRangeId(props.modelValue.rent_budget_min, props.modelValue.rent_budget_max),
+)
+
+function setBudgetRange(id: string) {
+  const range = RENT_BUDGET_RANGES.find(r => r.id === id)
+  if (!range) return
+  emit('update:modelValue', {
+    ...props.modelValue,
+    rent_budget_min: range.min,
+    rent_budget_max: range.max,
+  })
+}
 
 function onSubmit() {
   if (props.readonly) return
@@ -128,7 +146,25 @@ function onSubmit() {
 
     <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <h3 class="mb-4 font-semibold text-slate-900">ช่วงราคาในการเช่า (บาท/เดือน)</h3>
-      <div :class="fieldGridClass">
+      <div v-if="useBudgetDropdown">
+        <label class="mb-1 block text-sm font-medium text-slate-700">
+          ช่วงราคา <span class="text-red-600">*</span>
+        </label>
+        <select
+          :value="selectedBudgetRangeId"
+          class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 disabled:bg-slate-50"
+          :disabled="readonly"
+          @change="setBudgetRange(($event.target as HTMLSelectElement).value)"
+        >
+          <option value="" disabled>
+            — เลือกช่วงราคา —
+          </option>
+          <option v-for="range in RENT_BUDGET_RANGES" :key="range.id" :value="range.id">
+            {{ range.label }}
+          </option>
+        </select>
+      </div>
+      <div v-else :class="fieldGridClass">
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">
             ราคาต่ำสุด <span class="text-red-600">*</span>
@@ -276,7 +312,7 @@ function onSubmit() {
       <button
         type="submit"
         :disabled="saving"
-        class="rounded-lg bg-emerald-700 px-6 py-2.5 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-60"
+        class="rounded-lg bg-wp-navy px-6 py-2.5 text-sm font-medium text-white hover:brightness-110 disabled:opacity-60"
       >
         {{ saving ? 'กำลังบันทึก...' : 'บันทึกข้อมูล' }}
       </button>

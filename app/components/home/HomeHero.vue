@@ -84,11 +84,11 @@ onUnmounted(stopAutoplay)
     @mouseleave="onMouseLeave"
   >
     <!-- Slides -->
-    <div class="absolute inset-0 sm:animate-hero-fade-in">
+    <div class="absolute inset-0">
       <div
         v-for="(slide, index) in heroSlides"
         :key="slide.id"
-        class="absolute inset-0 max-sm:transition-none sm:transition-opacity sm:duration-700 sm:ease-in-out"
+        class="absolute inset-0 max-sm:transition-none"
         :class="index === current ? 'opacity-100' : 'opacity-0'"
         :aria-hidden="index !== current"
       >
@@ -113,11 +113,6 @@ onUnmounted(stopAutoplay)
           :class="slideImageClass(slide)"
           :fetchpriority="index === 0 ? 'high' : 'low'"
           :loading="index === 0 ? 'eager' : 'lazy'"
-        />
-        <div
-          v-if="'whiteFade' in slide && slide.whiteFade"
-          class="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,#fff_0%,#fff_30%,rgba(255,255,255,0.85)_43%,rgba(255,255,255,0.4)_57%,transparent_73%)] sm:block"
-          aria-hidden="true"
         />
       </div>
     </div>

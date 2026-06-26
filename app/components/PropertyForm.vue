@@ -46,7 +46,7 @@ const props = withDefaults(
     propertyId: null,
     images: () => [],
     showImages: true,
-    showStatus: true,
+    showStatus: false,
   },
 )
 
@@ -637,7 +637,7 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
         v-if="!readonly"
         type="submit"
         :disabled="saving"
-        class="rounded-lg bg-slate-900 px-6 py-2.5 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-60"
+        class="rounded-lg bg-wp-navy px-6 py-2.5 text-sm font-medium text-white hover:brightness-110 disabled:opacity-60"
       >
         {{ saving ? 'กำลังบันทึก...' : 'บันทึกข้อมูล' }}
       </button>

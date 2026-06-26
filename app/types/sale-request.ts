@@ -75,6 +75,34 @@ export const SALE_STATUSES: { value: SaleRequestStatus; label: string }[] = [
   { value: 'rejected', label: 'ไม่อนุมัติ' },
 ]
 
+/** ช่วงราคาซื้อ (บาท) — ฟอร์มสนใจซื้อหน้าบ้าน */
+export const PURCHASE_BUDGET_RANGES = [
+  { id: 'below_1m', label: 'ต่ำกว่า 1 ล้านบาท', min: 1, max: 999_999 },
+  { id: '1_2m', label: '1 - 2 ล้านบาท', min: 1_000_000, max: 2_000_000 },
+  { id: '2_3m', label: '2 - 3 ล้านบาท', min: 2_000_001, max: 3_000_000 },
+  { id: '3_5m', label: '3 - 5 ล้านบาท', min: 3_000_001, max: 5_000_000 },
+  { id: '5_7m', label: '5 - 7 ล้านบาท', min: 5_000_001, max: 7_000_000 },
+  { id: '7_10m', label: '7 - 10 ล้านบาท', min: 7_000_001, max: 10_000_000 },
+  { id: '10m_plus', label: '10 ล้านบาทขึ้นไป', min: 10_000_001, max: 99_999_999 },
+] as const
+
+export type PurchaseBudgetRangeId = (typeof PURCHASE_BUDGET_RANGES)[number]['id']
+
+export function matchPurchaseBudgetRangeId(
+  min: number | null | undefined,
+  max: number | null | undefined,
+): PurchaseBudgetRangeId | '' {
+  if (min == null || max == null) return ''
+  const found = PURCHASE_BUDGET_RANGES.find(r => r.min === min && r.max === max)
+  return found?.id ?? ''
+}
+
+export function purchaseBudgetRangeLabel(min: number, max: number): string {
+  const id = matchPurchaseBudgetRangeId(min, max)
+  if (id) return PURCHASE_BUDGET_RANGES.find(r => r.id === id)!.label
+  return saleBudgetText(min, max)
+}
+
 export const SALE_CREATED_SOURCE_LABELS: Record<SaleCreatedSource, string> = {
   admin: 'พนักงานกรอกในระบบ',
   customer_web: 'ลูกค้าส่งจากเว็บ',
@@ -171,14 +199,14 @@ export function validateSaleForm(data: SaleRequestFormData): string | null {
   if (!data.desired_province?.trim()) return 'กรุณาเลือกจังหวัด (พื้นที่ต้องการซื้อ)'
   if (!data.desired_district?.trim()) return 'กรุณาเลือกอำเภอ'
   if (!data.desired_subdistrict?.trim()) return 'กรุณาเลือกตำบล'
-  if (data.purchase_budget_min == null || data.purchase_budget_min <= 0) {
-    return 'กรุณาระบุราคาซื้อต่ำสุด'
+  if (data.purchase_budget_min == null || data.purchase_budget_max == null) {
+    return 'กรุณาเลือกช่วงราคาในการซื้อ'
   }
-  if (data.purchase_budget_max == null || data.purchase_budget_max <= 0) {
-    return 'กรุณาระบุราคาซื้อสูงสุด'
+  if (data.purchase_budget_min <= 0 || data.purchase_budget_max <= 0) {
+    return 'กรุณาเลือกช่วงราคาในการซื้อ'
   }
   if (data.purchase_budget_max < data.purchase_budget_min) {
-    return 'ราคาซื้อสูงสุดต้องไม่ต่ำกว่าราคาต่ำสุด'
+    return 'ช่วงราคาในการซื้อไม่ถูกต้อง'
   }
   if (data.desired_bedrooms == null || data.desired_bedrooms < 0) {
     return 'กรุณาระบุจำนวนห้องนอนที่ต้องการ'

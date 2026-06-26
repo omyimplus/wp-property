@@ -37,10 +37,10 @@ export function parseRentalRequestBody(body: Record<string, unknown>) {
   const rent_budget_max = num(body.rent_budget_max)
 
   if (rent_budget_min == null || rent_budget_min <= 0) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุราคาเช่าต่ำสุด' })
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกช่วงราคาในการเช่า' })
   }
   if (rent_budget_max == null || rent_budget_max <= 0) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุราคาเช่าสูงสุด' })
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกช่วงราคาในการเช่า' })
   }
   if (rent_budget_max < rent_budget_min) {
     throw createError({

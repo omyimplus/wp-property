@@ -200,6 +200,7 @@ onMounted(load)
 
       <RentalRequestForm
         v-model="form"
+        :show-status="true"
         :saving="saving"
         :readonly="readonly"
         @submit="onSubmit"

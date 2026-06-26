@@ -9,7 +9,7 @@ const localePath = useLocalePath()
 const form = ref<SaleRequestFormData>(emptySaleForm())
 const saving = ref(false)
 const errorMessage = ref('')
-const successMessage = ref('')
+const showSuccessDialog = ref(false)
 
 const { data: listings } = await useFetch<PublicPropertyListResponse>('/api/properties', {
   key: 'buy-interest-listings',
@@ -20,11 +20,10 @@ const { data: listings } = await useFetch<PublicPropertyListResponse>('/api/prop
 async function onSubmit() {
   saving.value = true
   errorMessage.value = ''
-  successMessage.value = ''
   try {
     await $fetch('/api/public/sales', { method: 'POST', body: form.value })
-    successMessage.value = t('pages.forms.saleSuccess')
     form.value = emptySaleForm()
+    showSuccessDialog.value = true
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
     errorMessage.value = err.data?.statusMessage ?? t('pages.forms.error')
@@ -75,9 +74,6 @@ useStaticPageSeo('pages.buy.title', 'pages.buy.subtitle')
         <h2 class="text-xl font-medium text-wp-navy">
           {{ t('pages.buy.formTitle') }}
         </h2>
-        <p v-if="successMessage" class="mt-4 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-800">
-          {{ successMessage }}
-        </p>
         <p v-if="errorMessage" class="mt-4 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">
           {{ errorMessage }}
         </p>
@@ -86,5 +82,7 @@ useStaticPageSeo('pages.buy.title', 'pages.buy.subtitle')
         </div>
       </div>
     </section>
+
+    <SiteFormSubmitSuccessDialog :open="showSuccessDialog" @close="showSuccessDialog = false" />
   </div>
 </template>

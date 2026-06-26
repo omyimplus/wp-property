@@ -73,6 +73,7 @@ onMounted(load)
     <PropertyForm
       v-else
       v-model="form"
+      :show-status="true"
       :property-id="id"
       :images="images"
       :saving="saving"

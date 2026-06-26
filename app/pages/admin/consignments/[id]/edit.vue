@@ -193,6 +193,7 @@ onMounted(load)
       <PropertyForm
         v-model="form"
         mode="consignment"
+        :show-status="true"
         :property-id="id"
         :images="images"
         :saving="saving"

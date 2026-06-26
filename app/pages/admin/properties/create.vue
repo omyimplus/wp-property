@@ -63,6 +63,7 @@ async function onSubmit() {
     <PropertyForm
       ref="propertyFormRef"
       v-model="form"
+      :show-status="true"
       :property-id="propertyId"
       :images="images"
       :saving="saving"

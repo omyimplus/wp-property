@@ -146,15 +146,26 @@ const inputClass =
         </div>
 
         <div v-if="submitted" class="space-y-4 px-5 py-8 text-center">
-          <p class="text-sm text-slate-700">
-            {{ t('pages.properties.inquiry.success') }}
+          <span
+            class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"
+            aria-hidden="true"
+          >
+            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </span>
+          <h3 class="text-lg font-semibold text-wp-navy">
+            {{ t('pages.forms.submitSuccessTitle') }}
+          </h3>
+          <p class="text-sm leading-relaxed text-slate-600">
+            {{ t('pages.forms.submitSuccessMessage') }}
           </p>
           <button
             type="button"
             class="rounded-xl bg-wp-navy px-6 py-2.5 text-sm font-medium text-white hover:brightness-110"
             @click="close"
           >
-            {{ t('pages.properties.inquiry.done') }}
+            {{ t('pages.forms.submitSuccessOk') }}
           </button>
         </div>
 

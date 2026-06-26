@@ -37,10 +37,10 @@ export function parseSaleRequestBody(body: Record<string, unknown>) {
   const purchase_budget_max = num(body.purchase_budget_max)
 
   if (purchase_budget_min == null || purchase_budget_min <= 0) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุราคาซื้อต่ำสุด' })
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกช่วงราคาในการซื้อ' })
   }
   if (purchase_budget_max == null || purchase_budget_max <= 0) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุราคาซื้อสูงสุด' })
+    throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกช่วงราคาในการซื้อ' })
   }
   if (purchase_budget_max < purchase_budget_min) {
     throw createError({

@@ -75,6 +75,35 @@ export const RENTAL_STATUSES: { value: RentalRequestStatus; label: string }[] = 
   { value: 'rejected', label: 'ไม่อนุมัติ' },
 ]
 
+/** ช่วงราคาเช่า (บาท/เดือน) — ฟอร์มสนใจเช่าหน้าบ้าน */
+export const RENT_BUDGET_RANGES = [
+  { id: 'up_to_5k', label: 'ไม่เกิน 5,000 บาท', min: 1, max: 5000 },
+  { id: '5k_10k', label: '5,001 - 10,000 บาท', min: 5001, max: 10000 },
+  { id: '10k_15k', label: '10,001 - 15,000 บาท', min: 10001, max: 15000 },
+  { id: '15k_20k', label: '15,001 - 20,000 บาท', min: 15001, max: 20000 },
+  { id: '20k_30k', label: '20,001 - 30,000 บาท', min: 20001, max: 30000 },
+  { id: '30k_50k', label: '30,001 - 50,000 บาท', min: 30001, max: 50000 },
+  { id: '50k_100k', label: '50,001 - 100,000 บาท', min: 50001, max: 100000 },
+  { id: '100k_plus', label: '100,001 บาทขึ้นไป', min: 100001, max: 999999 },
+] as const
+
+export type RentBudgetRangeId = (typeof RENT_BUDGET_RANGES)[number]['id']
+
+export function matchRentBudgetRangeId(
+  min: number | null | undefined,
+  max: number | null | undefined,
+): RentBudgetRangeId | '' {
+  if (min == null || max == null) return ''
+  const found = RENT_BUDGET_RANGES.find(r => r.min === min && r.max === max)
+  return found?.id ?? ''
+}
+
+export function rentBudgetRangeLabel(min: number, max: number): string {
+  const id = matchRentBudgetRangeId(min, max)
+  if (id) return RENT_BUDGET_RANGES.find(r => r.id === id)!.label
+  return rentalBudgetText(min, max)
+}
+
 export const RENTAL_CREATED_SOURCE_LABELS: Record<RentalCreatedSource, string> = {
   admin: 'พนักงานกรอกในระบบ',
   customer_web: 'ลูกค้าส่งจากเว็บ',
@@ -171,14 +200,14 @@ export function validateRentalForm(data: RentalRequestFormData): string | null {
   if (!data.desired_province?.trim()) return 'กรุณาเลือกจังหวัด (พื้นที่ต้องการเช่า)'
   if (!data.desired_district?.trim()) return 'กรุณาเลือกอำเภอ'
   if (!data.desired_subdistrict?.trim()) return 'กรุณาเลือกตำบล'
-  if (data.rent_budget_min == null || data.rent_budget_min <= 0) {
-    return 'กรุณาระบุราคาเช่าต่ำสุด'
+  if (data.rent_budget_min == null || data.rent_budget_max == null) {
+    return 'กรุณาเลือกช่วงราคาในการเช่า'
   }
-  if (data.rent_budget_max == null || data.rent_budget_max <= 0) {
-    return 'กรุณาระบุราคาเช่าสูงสุด'
+  if (data.rent_budget_min <= 0 || data.rent_budget_max <= 0) {
+    return 'กรุณาเลือกช่วงราคาในการเช่า'
   }
   if (data.rent_budget_max < data.rent_budget_min) {
-    return 'ราคาเช่าสูงสุดต้องไม่ต่ำกว่าราคาต่ำสุด'
+    return 'ช่วงราคาในการเช่าไม่ถูกต้อง'
   }
   if (data.desired_bedrooms == null || data.desired_bedrooms < 0) {
     return 'กรุณาระบุจำนวนห้องนอนที่ต้องการ'

@@ -60,6 +60,7 @@ async function onSubmit() {
       ref="propertyFormRef"
       v-model="form"
       mode="consignment"
+      :show-status="true"
       :property-id="consignmentId"
       :images="images"
       :saving="saving"

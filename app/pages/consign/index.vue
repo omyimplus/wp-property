@@ -13,20 +13,19 @@ const consignmentId = ref<string | null>(null)
 const images = ref<PropertyCustomerImage[]>([])
 const saving = ref(false)
 const errorMessage = ref('')
-const successMessage = ref('')
+const showSuccessDialog = ref(false)
 
 async function onSubmit() {
   saving.value = true
   errorMessage.value = ''
-  successMessage.value = ''
   try {
     const { consignment } = await $fetch<{ consignment: { id: string } }>(
       '/api/public/consignments',
       { method: 'POST', body: form.value },
     )
     consignmentId.value = consignment.id
-    successMessage.value = t('pages.forms.consignSuccess')
     form.value = emptyPropertyCustomerForm()
+    showSuccessDialog.value = true
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
     errorMessage.value = err.data?.statusMessage ?? t('pages.forms.error')
@@ -44,9 +43,6 @@ useStaticPageSeo('pages.consign.title', 'pages.consign.subtitle')
 
     <section id="consign-buy" class="py-10">
       <div class="mx-auto max-w-4xl px-4 sm:px-6">
-        <p v-if="successMessage" class="mb-4 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-800">
-          {{ successMessage }}
-        </p>
         <p v-if="errorMessage" class="mb-4 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">
           {{ errorMessage }}
         </p>
@@ -63,5 +59,7 @@ useStaticPageSeo('pages.consign.title', 'pages.consign.subtitle')
         />
       </div>
     </section>
+
+    <SiteFormSubmitSuccessDialog :open="showSuccessDialog" @close="showSuccessDialog = false" />
   </div>
 </template>

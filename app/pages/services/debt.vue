@@ -9,7 +9,7 @@ const localePath = useLocalePath()
 const form = ref<LoanApplicationFormData>(emptyLoanForm())
 const saving = ref(false)
 const errorMessage = ref('')
-const successMessage = ref('')
+const showSuccessDialog = ref(false)
 
 const breadcrumbs = computed(() => [
   { label: t('nav.home'), to: localePath('/') },
@@ -44,11 +44,10 @@ const considerationItems = computed(() => stringList('considerationItems'))
 async function onSubmit() {
   saving.value = true
   errorMessage.value = ''
-  successMessage.value = ''
   try {
     await $fetch('/api/public/loans', { method: 'POST', body: form.value })
-    successMessage.value = t('pages.forms.loanSuccess')
     form.value = emptyLoanForm()
+    showSuccessDialog.value = true
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string } }
     errorMessage.value = err.data?.statusMessage ?? t('pages.forms.error')
@@ -75,9 +74,6 @@ useStaticPageSeo('pages.debtDetail.title', 'pages.debtDetail.subtitle')
         </h2>
         <p class="mt-2 text-sm text-slate-600 sm:text-[0.9375rem]">
           {{ t('pages.loans.subtitle') }}
-        </p>
-        <p v-if="successMessage" class="mt-4 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-800">
-          {{ successMessage }}
         </p>
         <p v-if="errorMessage" class="mt-4 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">
           {{ errorMessage }}
@@ -210,5 +206,7 @@ useStaticPageSeo('pages.debtDetail.title', 'pages.debtDetail.subtitle')
         </div>
       </template>
     </SiteServiceDetailSplitLayout>
+
+    <SiteFormSubmitSuccessDialog :open="showSuccessDialog" @close="showSuccessDialog = false" />
   </div>
 </template>
