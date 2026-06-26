@@ -6,6 +6,8 @@ const props = withDefaults(
     modelValue: ThaiLocationValue
     labelSize?: 'form' | 'filter'
     required?: boolean
+    requireDistrict?: boolean
+    requireSubdistrict?: boolean
     allowEmpty?: boolean
     /** เรียงจังหวัด/อำเภอ/ตำบลลงมา (ใช้ในฟอร์มหน้าบริการ) */
     stacked?: boolean
@@ -14,6 +16,8 @@ const props = withDefaults(
     labelSize: 'form',
     allowEmpty: true,
     stacked: false,
+    requireDistrict: false,
+    requireSubdistrict: false,
   },
 )
 
@@ -95,7 +99,7 @@ function onSubdistrictChange(e: Event) {
         class="mb-1 block"
         :class="labelSize === 'form' ? 'text-sm font-medium text-slate-700' : 'text-xs text-slate-500'"
       >
-        อำเภอ<span v-if="required && labelSize === 'form'" class="text-red-600"> *</span>
+        อำเภอ<span v-if="requireDistrict && labelSize === 'form'" class="text-red-600"> *</span>
       </label>
       <select
         :value="modelValue.district"
@@ -112,7 +116,7 @@ function onSubdistrictChange(e: Event) {
         class="mb-1 block"
         :class="labelSize === 'form' ? 'text-sm font-medium text-slate-700' : 'text-xs text-slate-500'"
       >
-        ตำบล<span v-if="required && labelSize === 'form'" class="text-red-600"> *</span>
+        ตำบล<span v-if="requireSubdistrict && labelSize === 'form'" class="text-red-600"> *</span>
       </label>
       <select
         :value="modelValue.subdistrict"

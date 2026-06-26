@@ -8,11 +8,11 @@ export const heroStats = [
 
 /** เพิ่มรูปใน array นี้เพื่อเพิ่มสไลด์ — ใส่ path ใต้ /public/images/ */
 export const heroSlides = [
-  { id: '1', image: '/images/hero-bg-3.webp', mobileImage: '/images/m1.webp' },
+  { id: '1', image: '/images/hero-section/01.webp', mobileImage: '/images/hero-section/m1.webp' },
   {
     id: '2',
-    image: '/images/hero-bg-2.webp',
-    mobileImage: '/images/m2.webp',
+    image: '/images/hero-section/02.webp',
+    mobileImage: '/images/hero-section/m2.webp',
     contentKey: 'debt',
     showStats: false,
     imageClass: 'object-cover object-[72%_center] sm:object-[68%_center]',
@@ -20,8 +20,8 @@ export const heroSlides = [
   },
   {
     id: '3',
-    image: '/images/hero-bg-1.webp',
-    mobileImage: '/images/m3.webp',
+    image: '/images/hero-section/03.webp',
+    mobileImage: '/images/hero-section/m3.webp',
     contentKey: 'properties',
     showStats: false,
     altKey: 'home.hero.slides.alt.properties',

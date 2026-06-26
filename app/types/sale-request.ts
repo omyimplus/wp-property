@@ -197,8 +197,6 @@ export function validateSaleForm(data: SaleRequestFormData): string | null {
   if (!data.callback_phone?.trim()) return 'กรุณาระบุเบอร์โทรติดต่อกลับ'
   if (!data.callback_line?.trim()) return 'กรุณาระบุเบอร์โทร/ไลน์สำหรับติดต่อกลับ'
   if (!data.desired_province?.trim()) return 'กรุณาเลือกจังหวัด (พื้นที่ต้องการซื้อ)'
-  if (!data.desired_district?.trim()) return 'กรุณาเลือกอำเภอ'
-  if (!data.desired_subdistrict?.trim()) return 'กรุณาเลือกตำบล'
   if (data.purchase_budget_min == null || data.purchase_budget_max == null) {
     return 'กรุณาเลือกช่วงราคาในการซื้อ'
   }

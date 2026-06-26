@@ -310,7 +310,7 @@
     "forms": {
       "error": "Submission failed. Please try again.",
       "submitSuccessTitle": "Request submitted",
-      "submitSuccessMessage": "Your request has been sent to our team. We will contact you soon. Thank you.",
+      "submitSuccessMessage": "Your information has been received. Our team will contact you shortly. Thank you.",
       "submitSuccessOk": "OK",
       "loanSuccess": "Your loan request was submitted. Our team will contact you soon.",
       "rentalSuccess": "Your rental interest request was submitted. Our team will contact you soon.",

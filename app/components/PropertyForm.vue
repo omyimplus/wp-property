@@ -411,6 +411,8 @@ defineExpose({ scrollToImages: () => imagesSectionRef.value?.scrollIntoView({ be
             v-model="location"
             label-size="form"
             :required="isCreate"
+            :require-district="isCreate"
+            :require-subdistrict="isCreate"
             :allow-empty="false"
             :stacked="stackFields"
           />

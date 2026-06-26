@@ -69,12 +69,6 @@ export function parseSaleRequestBody(body: Record<string, unknown>) {
   if (!str(body.desired_province)) {
     throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกจังหวัด (พื้นที่ต้องการซื้อ)' })
   }
-  if (!str(body.desired_district)) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกอำเภอ' })
-  }
-  if (!str(body.desired_subdistrict)) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกตำบล' })
-  }
 
   const desired_bedrooms = int(body.desired_bedrooms)
   const desired_bathrooms = int(body.desired_bathrooms)

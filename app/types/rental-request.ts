@@ -198,8 +198,6 @@ export function validateRentalForm(data: RentalRequestFormData): string | null {
   if (!data.callback_phone?.trim()) return 'กรุณาระบุเบอร์โทรติดต่อกลับ'
   if (!data.callback_line?.trim()) return 'กรุณาระบุเบอร์โทร/ไลน์สำหรับติดต่อกลับ'
   if (!data.desired_province?.trim()) return 'กรุณาเลือกจังหวัด (พื้นที่ต้องการเช่า)'
-  if (!data.desired_district?.trim()) return 'กรุณาเลือกอำเภอ'
-  if (!data.desired_subdistrict?.trim()) return 'กรุณาเลือกตำบล'
   if (data.rent_budget_min == null || data.rent_budget_max == null) {
     return 'กรุณาเลือกช่วงราคาในการเช่า'
   }

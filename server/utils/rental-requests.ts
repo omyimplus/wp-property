@@ -69,12 +69,6 @@ export function parseRentalRequestBody(body: Record<string, unknown>) {
   if (!str(body.desired_province)) {
     throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกจังหวัด (พื้นที่ต้องการเช่า)' })
   }
-  if (!str(body.desired_district)) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกอำเภอ' })
-  }
-  if (!str(body.desired_subdistrict)) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาเลือกตำบล' })
-  }
 
   const { int } = payloadHelpers()
   const desired_bedrooms = int(body.desired_bedrooms)
