@@ -63,6 +63,7 @@ const fetchKey = computed(() => {
     q.min_price ?? '',
     q.max_price ?? '',
     q.keyword ?? '',
+    String(q.page),
   ].join('-')
 })
 
